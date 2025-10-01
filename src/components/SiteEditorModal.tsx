@@ -53,7 +53,7 @@ export const SiteEditorModal: React.FC<SiteEditorModalProps> = ({ isOpen, onClos
   const utilizationPercent = site.capacityMW > 0 ? (allocatedMW / site.capacityMW) * 100 : 0;
 
   return (
-    <div className="fixed inset-0 flex items-start justify-center pt-16 z-[10000]">
+    <div className="fixed inset-0 flex items-start justify-center pt-16 z-[10002]">
       <div className="bg-white rounded-lg w-full max-w-2xl h-[75vh] flex flex-col shadow-2xl">
         <div className="flex justify-between items-center p-6 border-b border-gray-200">
           <h2 className="text-xl font-semibold">Edit Site - {site.name}</h2>
