@@ -72,12 +72,14 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
   // const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   const monthsSinceInstallation = monthIndex;
   
+  // Calculate chip-specific rate (needed in JSX)
+  const gpuHourRate = batch.chipType === 'B200' ? settings.gpuHourRate.b200 : settings.gpuHourRate.gb300;
+  
   // Calculate detailed breakdown based on phase
   const getPhaseDetails = () => {
     try {
       const hoursPerMonth = 730; // Average hours per month
       const utilizationRate = settings.utilizationRate / 100; // From settings
-      const gpuHourRate = batch.chipType === 'B200' ? settings.gpuHourRate.b200 : settings.gpuHourRate.gb300; // From settings - chip-specific
       const datacenterOverhead = settings.datacenterOverhead; // From settings
       // Calculate electrical cost based on actual GPU usage (same as calculations.ts)
       const hoursGpusRun = hoursPerMonth * utilizationRate; // Hours GPUs actually run

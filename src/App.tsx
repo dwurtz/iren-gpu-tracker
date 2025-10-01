@@ -365,10 +365,11 @@ function App() {
         });
         
         // Calculate forward 12-month revenue based on live GPUs
+        // Note: This is an approximation - we use average of B200 and GB300 rates for mixed fleets
         const hoursPerMonth = 730;
         const utilizationRate = settings.utilizationRate / 100;
-        const gpuHourRate = settings.gpuHourRate;
-        const monthlyRevenuePerGPU = hoursPerMonth * utilizationRate * gpuHourRate;
+        const avgGpuHourRate = (settings.gpuHourRate.b200 + settings.gpuHourRate.gb300) / 2;
+        const monthlyRevenuePerGPU = hoursPerMonth * utilizationRate * avgGpuHourRate;
         const annualRevenue = liveGPUs * monthlyRevenuePerGPU * 12;
         
         arrData.push({ value: annualRevenue || 0 });

@@ -11,7 +11,10 @@ interface ARRModalProps {
   allBatchData: { value: number; phase: string | null }[][];
   settings: {
     utilizationRate: number;
-    gpuHourRate: number;
+    gpuHourRate: {
+      b200: number;
+      gb300: number;
+    };
   };
   onEditBatch?: (batch: Batch) => void;
 }
@@ -74,10 +77,10 @@ const ARRModal: React.FC<ARRModalProps> = ({
         const gpuCount = batch.quantity || 0;
         totalLiveGPUs += gpuCount;
 
-        // Calculate revenue for this batch
+        // Calculate revenue for this batch - chip-specific
         const hoursPerMonth = 730;
         const utilizationRate = settings.utilizationRate / 100;
-        const gpuHourRate = settings.gpuHourRate;
+        const gpuHourRate = batch.chipType === 'B200' ? settings.gpuHourRate.b200 : settings.gpuHourRate.gb300;
         const monthlyRevenuePerGPU = hoursPerMonth * utilizationRate * gpuHourRate;
         const monthlyRevenue = gpuCount * monthlyRevenuePerGPU;
         const annualRevenue = monthlyRevenue * 12;
