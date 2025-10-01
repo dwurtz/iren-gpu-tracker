@@ -162,12 +162,8 @@ export const BatchRow: React.FC<BatchRowProps> = ({ batch, monthlyData, onEdit, 
             <div className="text-xs text-gray-500 mb-1">
               {['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][batch.installationMonth]}
             </div>
-            <div className="font-medium text-gray-900 text-sm">
-              {batch.name.split('\n').map((line, index) => (
-                <div key={index} className={index === 0 ? 'text-blue-600' : 'text-gray-600 text-xs'}>
-                  {line}
-                </div>
-              ))}
+            <div className="font-medium text-gray-900 text-sm text-blue-600">
+              {batch.name}
             </div>
           </div>
           <div className="flex space-x-1 ml-2">

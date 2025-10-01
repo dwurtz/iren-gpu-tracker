@@ -33,7 +33,7 @@ export const NewBatchModal: React.FC<NewBatchModalProps> = ({ isOpen, onClose, o
     const site = sites.find(s => s.id === formData.siteId);
     const siteName = site ? site.name : '';
     const batch: Omit<Batch, 'id'> = {
-      name: `${formData.quantity.toLocaleString()} ${formData.chipType}s\n(${mwEquivalent}MW${siteName ? ` • ${siteName}` : ''})`,
+      name: `${formData.quantity.toLocaleString()} ${formData.chipType}s (${mwEquivalent}MW${siteName ? ` • ${siteName}` : ''})`,
       chipType: formData.chipType,
       quantity: formData.quantity,
       installationMonth: formData.installationMonth,
