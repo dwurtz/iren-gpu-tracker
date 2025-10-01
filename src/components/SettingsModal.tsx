@@ -157,7 +157,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, s
                       type="number"
                       value={formData.upfrontGpuCost.b200}
                       onChange={(e) => updateNestedField(['upfrontGpuCost', 'b200'], parseInt(e.target.value))}
-                      className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className={`w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${getHighlightClass('upfrontGpuCost.b200')}`}
                     />
                   </div>
                   <div>
@@ -166,7 +166,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, s
                       type="number"
                       value={formData.upfrontGpuCost.gb300}
                       onChange={(e) => updateNestedField(['upfrontGpuCost', 'gb300'], parseInt(e.target.value))}
-                      className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className={`w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${getHighlightClass('upfrontGpuCost.gb300')}`}
                     />
                   </div>
                 </div>
@@ -182,7 +182,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, s
                     step="0.1"
                     value={formData.interestRate}
                     onChange={(e) => setFormData({...formData, interestRate: parseFloat(e.target.value)})}
-                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className={`w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${getHighlightClass('interestRate')}`}
                   />
                 </div>
                 <div>
@@ -208,7 +208,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, s
                     type="number"
                     value={formData.installationCost}
                     onChange={(e) => setFormData({...formData, installationCost: parseInt(e.target.value)})}
-                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className={`w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${getHighlightClass('installationCost')}`}
                   />
                 </div>
                 <div>

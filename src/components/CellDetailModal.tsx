@@ -100,7 +100,7 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
       const gpuCostPerUnit = batch.chipType === 'B200' ? 54500 : 80000;
       const totalGpuCost = gpuCostPerUnit * batch.quantity;
       const monthlyGpuPayment = calculateMonthlyPayment(totalGpuCost);
-      const installationCostPerGpu = 2000;
+      const installationCostPerGpu = settings.installationCost; // From settings
       const totalInstallationCost = installationCostPerGpu * batch.quantity;
       
       switch (phase) {
@@ -114,7 +114,14 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
               { label: 'GPU Cost (Financed)', value: `${formatValue(gpuCostPerUnit)} per GPU` },
               { label: 'Financing Terms', value: `36 months @ 9% APR` },
               { label: 'Monthly GPU Payment', value: `${formatValue(monthlyGpuPayment)}` },
-              { label: 'Installation Cost', value: `${formatValue(installationCostPerGpu)} per GPU` },
+              { 
+                label: 'Installation Cost', 
+                value: (
+                  <span>
+                    <ClickableVariable title="Click to edit installation cost in settings" field="installationCost">{formatValue(installationCostPerGpu)}</ClickableVariable> per GPU
+                  </span>
+                )
+              },
               { label: 'Monthly Installation Cost', value: batch.phases.installation.duration === 1 ? `${formatValue(monthlyInstallationCost)}` : `${formatValue(totalInstallationCost)} ÷ ${batch.phases.installation.duration} months = ${formatValue(monthlyInstallationCost)}` },
               { label: 'Total Monthly Costs', value: `${formatValue(monthlyGpuPayment)} + ${formatValue(monthlyInstallationCost)} = ${formatValue(totalMonthlyCost)}` },
             ],
