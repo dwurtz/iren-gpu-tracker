@@ -336,6 +336,12 @@ function App() {
   };
 
   const handleOpenSettings = (field?: string) => {
+    // Close any open modals first
+    setIsModalOpen(false);
+    setIsEditModalOpen(false);
+    setIsARRModalOpen(false);
+    setIsSiteEditorOpen(false);
+    
     setHighlightField(field);
     setIsSettingsOpen(true);
   };
