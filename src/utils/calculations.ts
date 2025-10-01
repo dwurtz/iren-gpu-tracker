@@ -43,7 +43,7 @@ export const calculateMonthlyData = (batch: Batch, startMonth: number, startYear
     
     if (monthsSinceInstallation >= 0) {
       // Calculate GPU financing payment (applies to all phases for 36 months)
-      const gpuCostPerUnit = batch.chipType === 'B200' ? 54500 : 80000;
+      const gpuCostPerUnit = batch.chipType === 'B200' ? settings.upfrontGpuCost.b200 : settings.upfrontGpuCost.gb300;
       const totalGpuCost = gpuCostPerUnit * batch.quantity;
       const monthlyGpuPayment = calculateMonthlyPayment(totalGpuCost);
       

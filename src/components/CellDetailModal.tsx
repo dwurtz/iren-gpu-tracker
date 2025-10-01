@@ -99,7 +99,7 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
                (Math.pow(1 + monthlyInterestRate, loanTermMonths) - 1);
       };
       
-      const gpuCostPerUnit = batch.chipType === 'B200' ? 54500 : 80000;
+      const gpuCostPerUnit = batch.chipType === 'B200' ? settings.upfrontGpuCost.b200 : settings.upfrontGpuCost.gb300;
       const totalGpuCost = gpuCostPerUnit * batch.quantity;
       const monthlyGpuPayment = calculateMonthlyPayment(totalGpuCost);
       const installationCostPerGpu = batch.chipType === 'B200' ? settings.installationCost.b200 : settings.installationCost.gb300; // From settings - chip-specific
@@ -113,9 +113,20 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
           return {
             title: 'Installation Phase',
             details: [
-              { label: 'GPU Cost (Financed)', value: `${formatValue(gpuCostPerUnit)} per GPU` },
-              { label: 'Financing Terms', value: `36 months @ 9% APR` },
-              { label: 'Monthly GPU Payment', value: `${formatValue(monthlyGpuPayment)}` },
+              { label: 'GPU Cost (Financed)', value: `${batch.quantity.toLocaleString()} GPUs × ${formatValue(gpuCostPerUnit)} = ${formatValue(totalGpuCost)}` },
+              { label: 'Financing Terms', value: `36 months @ ${settings.interestRate}% APR` },
+              { 
+                label: 'Monthly GPU Payment', 
+                value: (
+                  <span>
+                    Amortized over 36 months = {formatValue(monthlyGpuPayment)}
+                    <div className="text-xs text-gray-500 mt-1">
+                      Formula: P × [r(1+r)^n] / [(1+r)^n - 1]<br/>
+                      P = {formatValue(totalGpuCost)}, r = {(settings.interestRate / 12).toFixed(3)}% monthly, n = 36 months
+                    </div>
+                  </span>
+                )
+              },
               { 
                 label: 'Installation Cost', 
                 value: (
