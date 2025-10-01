@@ -335,6 +335,11 @@ function App() {
     // Users can modify individual batches as needed
   };
 
+  const handleOpenSettings = (field?: string) => {
+    setHighlightField(field);
+    setIsSettingsOpen(true);
+  };
+
   // Calculate data for all batches
   const allBatchData = batches.map(batch => 
     calculateMonthlyData(batch, 8, 2025, 48, settings) // Sept 2025 to Aug 2029
@@ -507,10 +512,7 @@ function App() {
                         globalMinValue={globalMinValue}
                         globalMaxValue={globalMaxValue}
                         settings={settings}
-                        onOpenSettings={(field) => {
-                          setHighlightField(field);
-                          setIsSettingsOpen(true);
-                        }}
+                        onOpenSettings={handleOpenSettings}
                       />
                     );
                   });
