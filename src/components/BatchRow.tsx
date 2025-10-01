@@ -118,7 +118,7 @@ export const BatchRow: React.FC<BatchRowProps> = ({ batch, monthlyData, onEdit, 
       const blue = Math.floor(255 - (intensity * 255));  // Start white (255), fade to 0
       return { 
         backgroundColor: `rgb(${red}, ${green}, ${blue})`,
-        color: intensity > 0.3 ? 'white' : '#7f1d1d'  // Use white text when red gets darker
+        color: '#7f1d1d'  // Always use dark red text for readability
       };
     } else {
       // Green gradient for profits - from white (near zero) to dark green
@@ -128,7 +128,7 @@ export const BatchRow: React.FC<BatchRowProps> = ({ batch, monthlyData, onEdit, 
       const blue = Math.floor(255 - (intensity * 255));  // Start white (255), fade to 0
       return { 
         backgroundColor: `rgb(${red}, ${green}, ${blue})`,
-        color: intensity > 0.3 ? 'white' : '#15803d'  // Use white text when green gets darker
+        color: '#15803d'  // Always use dark green text for readability
       };
     }
   };
@@ -151,7 +151,7 @@ export const BatchRow: React.FC<BatchRowProps> = ({ batch, monthlyData, onEdit, 
 
   return (
     <tr className={`hover:bg-gray-50 ${isFirstOfYear ? 'border-t-2 border-gray-300' : ''}`}>
-      <td className="px-4 py-2 sticky left-0 bg-white z-30 border-r w-72">
+      <td className="px-4 py-2 sticky left-0 bg-white z-30 border-r" style={{ minWidth: '240px', width: '240px' }}>
         <div className="flex items-center justify-between">
           <div className="flex-1">
             {isFirstOfYear && (
@@ -162,8 +162,12 @@ export const BatchRow: React.FC<BatchRowProps> = ({ batch, monthlyData, onEdit, 
             <div className="text-xs text-gray-500 mb-1">
               {['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][batch.installationMonth]}
             </div>
-            <div className="font-medium text-gray-900 text-sm text-blue-600">
-              {batch.name}
+            <div className="font-medium text-sm">
+              {batch.name.split('\n').map((line, index) => (
+                <div key={index} className={index === 0 ? 'text-blue-600' : 'text-gray-600 text-xs'}>
+                  {line}
+                </div>
+              ))}
             </div>
           </div>
           <div className="flex space-x-1 ml-2">
@@ -286,7 +290,7 @@ export const BatchRow: React.FC<BatchRowProps> = ({ batch, monthlyData, onEdit, 
 export const YearHeaderRow: React.FC<YearHeaderRowProps> = ({ year }) => {
   return (
     <tr className="border-t-2 border-gray-300">
-      <td className="px-4 py-2 sticky left-0 bg-gray-100 z-30 border-r w-72">
+      <td className="px-4 py-2 sticky left-0 bg-gray-100 z-30 border-r" style={{ minWidth: '240px', width: '240px' }}>
         <div className="font-bold text-gray-900 text-sm">
           {year}
         </div>

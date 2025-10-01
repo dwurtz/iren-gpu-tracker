@@ -32,7 +32,7 @@ export const EditBatchModal: React.FC<EditBatchModalProps> = ({ isOpen, onClose,
     const updatedBatch: Batch = {
       ...batch,
       ...formData,
-      name: `${formData.quantity.toLocaleString()} ${formData.chipType}s (${mwEquivalent}MW${siteName ? ` • ${siteName}` : ''})`,
+      name: `${formData.quantity.toLocaleString()} ${formData.chipType}s\n(${mwEquivalent}MW${siteName ? ` • ${siteName}` : ''})`,
       quantity: formData.quantity,
       chipType: formData.chipType,
     };

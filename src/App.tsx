@@ -128,40 +128,36 @@ const loadSitesFromStorage = (): Site[] | null => {
 };
 
 // Create default batch configuration (only used for initial setup)
-const createDefaultBatches = (settings: ProfitabilitySettings): Batch[] => {
+const createDefaultBatches = (settings: ProfitabilitySettings, sites: Site[]): Batch[] => {
   const batches: Batch[] = [];
-  const profitability = calculateProfitability(settings, 'B200');
   
-  // Default batch sizes based on initial business requirements
-  // These will be saved to storage and can be modified by users
-  const defaultBatchSizes = [
-    // Sep-Oct 2025: Conservative start for ARR targets
-    4344, 4344,
-    // Nov-Jan 2026: Small additions
-    2896, 2896, 2896,
-    // Feb-Jun 2026: Ramp up to hit 500MW total
-    66500, 66500, 39900, 26600, 13300,
-    // Jul 2026+: Standard 50MW batches
-    ...Array(38).fill(26600) // Remaining months with standard size
+  // Default batches based on screenshot
+  const defaultBatchConfig = [
+    { month: 8, year: 2025, quantity: 4000, chipType: 'B200' as ChipType, siteId: 'site-prince-george' }, // Sep 2025
+    { month: 9, year: 2025, quantity: 4500, chipType: 'B200' as ChipType, siteId: 'site-prince-george' }, // Oct 2025
+    { month: 10, year: 2025, quantity: 5000, chipType: 'B200' as ChipType, siteId: 'site-prince-george' }, // Nov 2025
+    { month: 11, year: 2025, quantity: 5000, chipType: 'B200' as ChipType, siteId: 'site-prince-george' }, // Dec 2025
+    { month: 0, year: 2026, quantity: 5500, chipType: 'B200' as ChipType, siteId: 'site-prince-george' }, // Jan 2026
+    { month: 1, year: 2026, quantity: 5500, chipType: 'B200' as ChipType, siteId: 'site-childress' }, // Feb 2026
+    { month: 2, year: 2026, quantity: 5500, chipType: 'B200' as ChipType, siteId: 'site-childress' }, // Mar 2026
+    { month: 3, year: 2026, quantity: 5500, chipType: 'B200' as ChipType, siteId: 'site-childress' }, // Apr 2026
   ];
   
-  // Create batches for 48 months (Sep 2025 to Aug 2029)
-  for (let i = 0; i < 48; i++) {
-    const month = (8 + i) % 12; // Start from September (8)
-    const year = 2025 + Math.floor((8 + i) / 12);
-    
-    const quantity = defaultBatchSizes[i] || 26600;
-    const mwEquivalent = Math.round(quantity / settings.gpusPerMW.b200);
-    const batchName = `${quantity.toLocaleString()} B200s\n(${mwEquivalent}MW)`;
+  defaultBatchConfig.forEach((config, index) => {
+    const gpusPerMW = config.chipType === 'B200' ? settings.gpusPerMW.b200 : settings.gpusPerMW.gb300;
+    const mwEquivalent = (config.quantity / gpusPerMW).toFixed(2);
+    const site = sites.find(s => s.id === config.siteId);
+    const siteName = site ? site.name : '';
+    const profitability = calculateProfitability(settings, config.chipType);
     
     batches.push({
-      id: `batch-${i}`,
-      name: batchName,
-      chipType: 'B200',
-      quantity: quantity,
-      installationMonth: month,
-      installationYear: year,
-      siteId: 'site-canal-flats', // Default to Canal Flats
+      id: `batch-${index}`,
+      name: `${config.quantity.toLocaleString()} ${config.chipType}s\n(${mwEquivalent}MW${siteName ? ` • ${siteName}` : ''})`,
+      chipType: config.chipType,
+      quantity: config.quantity,
+      installationMonth: config.month,
+      installationYear: config.year,
+      siteId: config.siteId,
       phases: {
         installation: { 
           duration: 1, 
@@ -176,13 +172,13 @@ const createDefaultBatches = (settings: ProfitabilitySettings): Batch[] => {
         },
       },
     });
-  }
+  });
   
   return batches;
 };
 
 // Initialize batches from storage or create defaults
-const initializeBatches = (settings: ProfitabilitySettings): Batch[] => {
+const initializeBatches = (settings: ProfitabilitySettings, sites: Site[]): Batch[] => {
   const storedBatches = loadBatchesFromStorage();
   if (storedBatches && storedBatches.length > 0) {
     console.log('Loaded batches from storage:', storedBatches.length);
@@ -190,7 +186,7 @@ const initializeBatches = (settings: ProfitabilitySettings): Batch[] => {
   }
   
   console.log('Creating default batch configuration');
-  const defaultBatches = createDefaultBatches(settings);
+  const defaultBatches = createDefaultBatches(settings, sites);
   saveBatchesToStorage(defaultBatches);
   return defaultBatches;
 };
@@ -203,14 +199,12 @@ function App() {
   // Initialize sites and batches on component mount
   React.useEffect(() => {
     const storedSites = loadSitesFromStorage();
-    if (storedSites && storedSites.length > 0) {
-      setSites(storedSites);
-    } else {
-      const defaultSites = createDefaultSites();
-      setSites(defaultSites);
-      saveSitesToStorage(defaultSites);
+    const sitesToUse = storedSites && storedSites.length > 0 ? storedSites : createDefaultSites();
+    if (!storedSites || storedSites.length === 0) {
+      saveSitesToStorage(sitesToUse);
     }
-    setBatches(initializeBatches(defaultSettings));
+    setSites(sitesToUse);
+    setBatches(initializeBatches(defaultSettings, sitesToUse));
   }, []);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -298,6 +292,14 @@ function App() {
     const updatedBatches = batches.filter(batch => batch.id !== batchId);
     setBatches(updatedBatches);
     saveBatchesToStorage(updatedBatches);
+  };
+
+  const handleResetToDefaults = () => {
+    if (window.confirm('Are you sure you want to reset all batches to default values? This will delete all current batches.')) {
+      const defaultBatches = createDefaultBatches(settings, sites);
+      setBatches(defaultBatches);
+      saveBatchesToStorage(defaultBatches);
+    }
   };
 
   const handleEditSite = (siteId: string) => {
@@ -403,6 +405,12 @@ function App() {
         <h1 className="text-2xl font-bold text-gray-900">IREN GPU Matrix</h1>
         <div className="flex space-x-3">
           <button
+            onClick={handleResetToDefaults}
+            className="flex items-center space-x-2 bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600"
+          >
+            <span>RESET TO DEFAULTS</span>
+          </button>
+          <button
             onClick={() => setIsSettingsOpen(true)}
             className="flex items-center space-x-2 bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700"
           >
@@ -426,7 +434,7 @@ function App() {
               <thead className="sticky top-0 z-40">
                 {/* Year headers */}
                 <tr className="bg-gray-50 border-b border-gray-200">
-                  <th className="px-4 py-2 text-left text-sm font-medium text-gray-900 w-72 sticky left-0 bg-gray-50 z-50"></th>
+                  <th className="px-4 py-2 text-left text-sm font-medium text-gray-900 sticky left-0 bg-gray-50 z-50" style={{ minWidth: '240px', width: '240px' }}></th>
                   <th className="px-2 py-2 text-left text-sm font-bold text-gray-900 border-r" colSpan={4}>2025</th>
                   <th className="px-2 py-2 text-left text-sm font-bold text-gray-900 border-r" colSpan={12}>2026</th>
                   <th className="px-2 py-2 text-left text-sm font-bold text-gray-900 border-r" colSpan={12}>2027</th>
@@ -436,7 +444,7 @@ function App() {
                 </tr>
                 {/* Month headers */}
                 <tr className="bg-gray-50 border-b border-gray-200">
-                  <th className="px-4 py-3 text-left text-sm font-medium text-gray-900 w-72 sticky left-0 bg-gray-50 z-50"></th>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-gray-900 sticky left-0 bg-gray-50 z-50" style={{ minWidth: '240px', width: '240px' }}></th>
                   {MONTHS.map((month, index) => (
                     <th key={index} className="px-2 py-3 text-center text-sm font-medium text-gray-900 w-20 border-r border-gray-200">
                       {month}
