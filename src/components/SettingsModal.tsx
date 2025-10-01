@@ -72,7 +72,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, s
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 flex items-start justify-center pt-16 z-[9999]">
+    <div className="fixed inset-0 flex items-start justify-center pt-16 z-[10003]">
       <div className="bg-white rounded-lg w-full max-w-2xl h-[75vh] flex flex-col">
         <div className="flex justify-between items-center p-6 border-b border-gray-200">
           <h2 className="text-xl font-semibold flex items-center">
