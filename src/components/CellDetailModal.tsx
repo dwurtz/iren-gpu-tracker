@@ -97,15 +97,9 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
       const gpuFinancingSection = {
         label: 'GPU Cost (Financed)',
         value: (
-          <div className="text-right">
-            <div className="font-semibold text-base" title={`Formula: P × [r(1+r)^n] / [(1+r)^n - 1] where P = ${formatValue(totalGpuCost)}, r = ${(settings.interestRate / 12).toFixed(3)}% monthly, n = 36 months`}>
-              {formatValue(monthlyGpuPayment)}
-            </div>
-            <div className="text-xs text-gray-500">
-              {batch.quantity.toLocaleString()} GPUs × <ClickableVariable title="Click to edit upfront GPU cost in settings" field={`upfrontGpuCost.${batch.chipType.toLowerCase()}`} onOpenSettings={onOpenSettings}>{formatValue(gpuCostPerUnit)}</ClickableVariable> = {formatValue(totalGpuCost)}<br/>
-              36 months @ {settings.interestRate}% APR
-            </div>
-          </div>
+          <span title={`Formula: P × [r(1+r)^n] / [(1+r)^n - 1] where P = ${formatValue(totalGpuCost)}, r = ${(settings.interestRate / 12).toFixed(3)}% monthly, n = 36 months`}>
+            {batch.quantity.toLocaleString()} GPUs × <ClickableVariable title="Click to edit upfront GPU cost in settings" field={`upfrontGpuCost.${batch.chipType.toLowerCase()}`} onOpenSettings={onOpenSettings}>{formatValue(gpuCostPerUnit)}</ClickableVariable> ÷ 36 months @ {settings.interestRate}% = {formatValue(monthlyGpuPayment)}
+          </span>
         )
       };
 
@@ -121,13 +115,9 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
               { 
                 label: 'Installation Cost', 
                 value: (
-                  <div className="text-right">
-                    <div className="font-semibold text-base">{formatValue(monthlyInstallationCost)}</div>
-                    <div className="text-xs text-gray-500">
-                      {batch.quantity.toLocaleString()} × <ClickableVariable title="Click to edit installation cost in settings" field={`installationCost.${batch.chipType.toLowerCase()}`} onOpenSettings={onOpenSettings}>{formatValue(installationCostPerGpu)}</ClickableVariable>
-                      {batch.phases.installation.duration !== 1 && ` ÷ ${batch.phases.installation.duration} months`}
-                    </div>
-                  </div>
+                  <span>
+                    {batch.quantity.toLocaleString()} × <ClickableVariable title="Click to edit installation cost in settings" field={`installationCost.${batch.chipType.toLowerCase()}`} onOpenSettings={onOpenSettings}>{formatValue(installationCostPerGpu)}</ClickableVariable>{batch.phases.installation.duration !== 1 && ` ÷ ${batch.phases.installation.duration} months`} = {formatValue(monthlyInstallationCost)}
+                  </span>
                 )
               },
             ],
@@ -147,31 +137,17 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
               { 
                 label: 'Datacenter Overhead', 
                 value: (
-                  <div className="text-right">
-                    <div className="font-semibold text-base">{formatValue(datacenterOverhead * batch.quantity)}</div>
-                    <div className="text-xs text-gray-500">
-                      {batch.quantity.toLocaleString()} × <ClickableVariable title="Click to edit datacenter overhead in settings" field="datacenterOverhead" onOpenSettings={onOpenSettings}>{formatValue(datacenterOverhead)}</ClickableVariable>
-                    </div>
-                  </div>
+                  <span>
+                    {batch.quantity.toLocaleString()} × <ClickableVariable title="Click to edit datacenter overhead in settings" field="datacenterOverhead" onOpenSettings={onOpenSettings}>{formatValue(datacenterOverhead)}</ClickableVariable> = {formatValue(datacenterOverhead * batch.quantity)}
+                  </span>
                 )
               },
               { 
                 label: 'Electrical Cost', 
                 value: (
-                  <div className="text-right">
-                    <div className="font-semibold text-base">{formatValue(electricalCost)}</div>
-                    <div className="text-xs text-gray-500">
-                      {hoursGpusRun.toLocaleString()}h × <ClickableVariable title="Click to edit GPU power consumption in settings" field={`gpuPowerConsumption.${batch.chipType.toLowerCase()}`} onOpenSettings={onOpenSettings}>{totalPowerKw.toLocaleString()}kW</ClickableVariable> × <ClickableVariable title="Click to edit electricity cost in settings" field="electricityCost" onOpenSettings={onOpenSettings}>${settings.electricityCost}</ClickableVariable>/kWh × <ClickableVariable title="Click to edit PUE multiplier in settings" field="electricalOverhead" onOpenSettings={onOpenSettings}>{settings.electricalOverhead}</ClickableVariable> PUE
-                    </div>
-                  </div>
-                )
-              },
-              { 
-                label: 'Total Costs', 
-                value: (
-                  <div className="text-right font-bold text-lg">
-                    {formatValue(totalBurnInCost)}
-                  </div>
+                  <span>
+                    {hoursGpusRun.toLocaleString()}h × <ClickableVariable title="Click to edit GPU power consumption in settings" field={`gpuPowerConsumption.${batch.chipType.toLowerCase()}`} onOpenSettings={onOpenSettings}>{totalPowerKw.toLocaleString()}kW</ClickableVariable> × <ClickableVariable title="Click to edit electricity cost in settings" field="electricityCost" onOpenSettings={onOpenSettings}>${settings.electricityCost}</ClickableVariable>/kWh × <ClickableVariable title="Click to edit PUE multiplier in settings" field="electricalOverhead" onOpenSettings={onOpenSettings}>{settings.electricalOverhead}</ClickableVariable> PUE = {formatValue(electricalCost)}
+                  </span>
                 )
               },
             ],
@@ -210,31 +186,17 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
             { 
               label: 'Datacenter Overhead', 
               value: (
-                <div className="text-right">
-                  <div className="font-semibold text-base">{formatValue(datacenterOverhead * batch.quantity)}</div>
-                  <div className="text-xs text-gray-500">
-                    {batch.quantity.toLocaleString()} × <ClickableVariable title="Click to edit datacenter overhead in settings" field="datacenterOverhead" onOpenSettings={onOpenSettings}>{formatValue(datacenterOverhead)}</ClickableVariable>
-                  </div>
-                </div>
+                <span>
+                  {batch.quantity.toLocaleString()} × <ClickableVariable title="Click to edit datacenter overhead in settings" field="datacenterOverhead" onOpenSettings={onOpenSettings}>{formatValue(datacenterOverhead)}</ClickableVariable> = {formatValue(datacenterOverhead * batch.quantity)}
+                </span>
               )
             },
             { 
               label: 'Electrical Cost', 
               value: (
-                <div className="text-right">
-                  <div className="font-semibold text-base">{formatValue(electricalCost)}</div>
-                  <div className="text-xs text-gray-500">
-                    {hoursGpusRun.toLocaleString()}h × <ClickableVariable title="Click to edit GPU power consumption in settings" field={`gpuPowerConsumption.${batch.chipType.toLowerCase()}`} onOpenSettings={onOpenSettings}>{totalPowerKw.toLocaleString()}kW</ClickableVariable> × <ClickableVariable title="Click to edit electricity cost in settings" field="electricityCost" onOpenSettings={onOpenSettings}>${settings.electricityCost}</ClickableVariable>/kWh × <ClickableVariable title="Click to edit PUE multiplier in settings" field="electricalOverhead" onOpenSettings={onOpenSettings}>{settings.electricalOverhead}</ClickableVariable> PUE
-                  </div>
-                </div>
-              )
-            },
-            { 
-              label: 'Total Costs', 
-              value: (
-                <div className="text-right font-bold text-lg">
-                  {formatValue(totalMonthlyCosts)}
-                </div>
+                <span>
+                  {hoursGpusRun.toLocaleString()}h × <ClickableVariable title="Click to edit GPU power consumption in settings" field={`gpuPowerConsumption.${batch.chipType.toLowerCase()}`} onOpenSettings={onOpenSettings}>{totalPowerKw.toLocaleString()}kW</ClickableVariable> × <ClickableVariable title="Click to edit electricity cost in settings" field="electricityCost" onOpenSettings={onOpenSettings}>${settings.electricityCost}</ClickableVariable>/kWh × <ClickableVariable title="Click to edit PUE multiplier in settings" field="electricalOverhead" onOpenSettings={onOpenSettings}>{settings.electricalOverhead}</ClickableVariable> PUE = {formatValue(electricalCost)}
+                </span>
               )
             }
           );
