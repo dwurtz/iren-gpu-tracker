@@ -266,7 +266,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, s
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Datacenter Overhead (per GPU per month)
+                    Datacenter Overhead ($ per GPU per month)
                   </label>
                   <input
                     type="number"
