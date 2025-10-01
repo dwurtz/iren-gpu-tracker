@@ -43,13 +43,13 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
     
     if (absValue >= 1000000000) {
       const billions = absValue / 1000000000;
-      return `${sign}$${billions.toFixed(1)}B`;
+      return `${sign}$${billions.toFixed(2)}B`;
     } else if (absValue >= 1000000) {
       const millions = absValue / 1000000;
-      return `${sign}$${millions.toFixed(0)}M`;
+      return `${sign}$${millions.toFixed(1)}M`;
     } else if (absValue >= 1000) {
       const thousands = absValue / 1000;
-      return `${sign}$${thousands.toFixed(0)}K`;
+      return `${sign}$${thousands.toFixed(1)}K`;
     } else {
       return `${sign}$${absValue.toFixed(0)}`;
     }
