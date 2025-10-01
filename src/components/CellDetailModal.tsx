@@ -102,7 +102,7 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
               {formatValue(monthlyGpuPayment)}
             </div>
             <div className="text-xs text-gray-500">
-              {batch.quantity.toLocaleString()} GPUs × {formatValue(gpuCostPerUnit)} = {formatValue(totalGpuCost)}<br/>
+              {batch.quantity.toLocaleString()} GPUs × <ClickableVariable title="Click to edit upfront GPU cost in settings" field={`upfrontGpuCost.${batch.chipType.toLowerCase()}`} onOpenSettings={onOpenSettings}>{formatValue(gpuCostPerUnit)}</ClickableVariable> = {formatValue(totalGpuCost)}<br/>
               36 months @ {settings.interestRate}% APR
             </div>
           </div>
