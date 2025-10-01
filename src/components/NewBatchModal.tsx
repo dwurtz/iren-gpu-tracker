@@ -10,9 +10,10 @@ interface NewBatchModalProps {
   onSave: (batch: Omit<Batch, 'id'>) => void;
   sites: Site[];
   onEditSite: (siteId: string) => void;
+  onOpenSettings: (field?: string) => void;
 }
 
-export const NewBatchModal: React.FC<NewBatchModalProps> = ({ isOpen, onClose, onSave, sites, onEditSite }) => {
+export const NewBatchModal: React.FC<NewBatchModalProps> = ({ isOpen, onClose, onSave, sites, onEditSite, onOpenSettings }) => {
   useModalBackdrop(isOpen);
   const [formData, setFormData] = useState({
     chipType: 'B200' as ChipType,
@@ -120,7 +121,7 @@ export const NewBatchModal: React.FC<NewBatchModalProps> = ({ isOpen, onClose, o
             <p className="text-xs text-gray-500 mt-1">
               {formData.quantity && formData.chipType ? (
                 <span>
-                  ≈ {formData.quantity.toLocaleString()} ÷ <ClickableVariable title="Click to edit GPUs per MW in settings" field={`gpusPerMW.${formData.chipType.toLowerCase()}`}>{formData.chipType === 'B200' ? 532 : 432}</ClickableVariable> = {(formData.quantity / (formData.chipType === 'B200' ? 532 : 432)).toFixed(2)}MW
+                  ≈ {formData.quantity.toLocaleString()} ÷ <ClickableVariable title="Click to edit GPUs per MW in settings" field={`gpusPerMW.${formData.chipType.toLowerCase()}`} onOpenSettings={onOpenSettings}>{formData.chipType === 'B200' ? 532 : 432}</ClickableVariable> = {(formData.quantity / (formData.chipType === 'B200' ? 532 : 432)).toFixed(2)}MW
                 </span>
               ) : (
                 'Enter quantity to see MW equivalent'

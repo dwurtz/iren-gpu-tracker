@@ -41,8 +41,8 @@ const defaultSettings: ProfitabilitySettings = {
     gb300: 2.1, // 2100W per GB300 baseline rack power (before PUE)
   },
   installationCost: {
-    b200: 2000, // per GPU
-    gb300: 2000, // per GPU
+    b200: 20, // per GPU
+    gb300: 20, // per GPU
   },
   gpuHourRate: {
     b200: 3.65, // $3.65 per GPU hour
@@ -591,6 +591,7 @@ function App() {
         onSave={handleAddBatch}
         sites={sites}
         onEditSite={handleEditSite}
+        onOpenSettings={handleOpenSettings}
       />
       
       <SettingsModal
@@ -614,6 +615,7 @@ function App() {
         onSave={handleSaveEditBatch}
         sites={sites}
         onEditSite={handleEditSite}
+        onOpenSettings={handleOpenSettings}
       />
 
       <ARRModal
