@@ -119,7 +119,7 @@ export const NewBatchModal: React.FC<NewBatchModalProps> = ({ isOpen, onClose, o
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Quantity
+              Quantity (Number of GPUs)
             </label>
             <input
               type="number"
@@ -129,6 +129,11 @@ export const NewBatchModal: React.FC<NewBatchModalProps> = ({ isOpen, onClose, o
               min="1"
               required
             />
+            <p className="text-xs text-gray-500 mt-1">
+              {formData.quantity && formData.chipType ? 
+                `≈ ${(formData.quantity / (formData.chipType === 'B200' ? 532 : 432)).toFixed(2)}MW` : 
+                'Enter quantity to see MW equivalent'}
+            </p>
           </div>
 
           <div className="grid grid-cols-2 gap-4">

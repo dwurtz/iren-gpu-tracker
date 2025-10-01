@@ -89,7 +89,7 @@ export const EditBatchModal: React.FC<EditBatchModalProps> = ({ isOpen, onClose,
             />
             <p className="text-xs text-gray-500 mt-1">
               {formData.quantity && formData.chipType ? 
-                `≈ ${Math.round(formData.quantity / (formData.chipType === 'B200' ? 532 : 432))}MW` : 
+                `≈ ${(formData.quantity / (formData.chipType === 'B200' ? 532 : 432)).toFixed(2)}MW` : 
                 'Enter quantity to see MW equivalent'}
             </p>
           </div>
