@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Plus, Settings } from 'lucide-react';
-import { Batch, Site } from './types';
+import { Batch, Site, ChipType } from './types';
 import { NewBatchModal } from './components/NewBatchModal';
 import { BatchRow, YearHeaderRow } from './components/BatchRow';
 import { SettingsModal, ProfitabilitySettings } from './components/SettingsModal';
@@ -148,7 +148,7 @@ const createDefaultBatches = (settings: ProfitabilitySettings, sites: Site[]): B
     const mwEquivalent = (config.quantity / gpusPerMW).toFixed(2);
     const site = sites.find(s => s.id === config.siteId);
     const siteName = site ? site.name : '';
-    const profitability = calculateProfitability(settings, config.chipType);
+    const profitability = calculateProfitability(settings, config.chipType as 'B200' | 'GB300');
     
     batches.push({
       id: `batch-${index}`,
