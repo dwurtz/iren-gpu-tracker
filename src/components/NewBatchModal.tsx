@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { X } from 'lucide-react';
 import { ChipType, Batch, Site } from '../types';
 import { useModalBackdrop } from './ModalBackdrop';
-import { ClickableVariable } from './SettingsModal';
+import { ClickableVariable } from './ClickableVariable';
 
 interface NewBatchModalProps {
   isOpen: boolean;
