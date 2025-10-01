@@ -426,7 +426,7 @@ function App() {
               <thead className="sticky top-0 z-40">
                 {/* Year headers */}
                 <tr className="bg-gray-50 border-b border-gray-200">
-                  <th className="px-4 py-2 text-left text-sm font-medium text-gray-900 w-40 sticky left-0 bg-gray-50 z-50"></th>
+                  <th className="px-4 py-2 text-left text-sm font-medium text-gray-900 w-56 sticky left-0 bg-gray-50 z-50"></th>
                   <th className="px-2 py-2 text-left text-sm font-bold text-gray-900 border-r" colSpan={4}>2025</th>
                   <th className="px-2 py-2 text-left text-sm font-bold text-gray-900 border-r" colSpan={12}>2026</th>
                   <th className="px-2 py-2 text-left text-sm font-bold text-gray-900 border-r" colSpan={12}>2027</th>
@@ -436,7 +436,7 @@ function App() {
                 </tr>
                 {/* Month headers */}
                 <tr className="bg-gray-50 border-b border-gray-200">
-                  <th className="px-4 py-3 text-left text-sm font-medium text-gray-900 w-40 sticky left-0 bg-gray-50 z-50"></th>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-gray-900 w-56 sticky left-0 bg-gray-50 z-50"></th>
                   {MONTHS.map((month, index) => (
                     <th key={index} className="px-2 py-3 text-center text-sm font-medium text-gray-900 w-20 border-r border-gray-200">
                       {month}
