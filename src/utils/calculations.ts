@@ -5,10 +5,10 @@ export const calculateMonthlyData = (batch: Batch, startMonth: number, startYear
   const data: MonthData[] = [];
   let cumulativeProfit = 0;
   
-  // Use settings values
+  // Use settings values - chip-specific
   const hoursPerMonth = 730;
   const utilizationRate = settings.utilizationRate / 100;
-  const gpuHourRate = settings.gpuHourRate;
+  const gpuHourRate = batch.chipType === 'B200' ? settings.gpuHourRate.b200 : settings.gpuHourRate.gb300; // Chip-specific rate
   const datacenterOverheadPerGpu = settings.datacenterOverhead;
   // Calculate electrical cost based on actual GPU usage
   const hoursGpusRun = hoursPerMonth * utilizationRate; // Hours GPUs actually run
@@ -47,8 +47,8 @@ export const calculateMonthlyData = (batch: Batch, startMonth: number, startYear
       const totalGpuCost = gpuCostPerUnit * batch.quantity;
       const monthlyGpuPayment = calculateMonthlyPayment(totalGpuCost);
       
-      // Installation costs (one-time, spread over installation period)
-      const installationCostPerGpu = 2000;
+      // Installation costs (one-time, spread over installation period) - chip-specific
+      const installationCostPerGpu = batch.chipType === 'B200' ? settings.installationCost.b200 : settings.installationCost.gb300;
       const totalInstallationCost = installationCostPerGpu * batch.quantity;
       
       if (monthsSinceInstallation < batch.phases.installation.duration) {

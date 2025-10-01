@@ -77,7 +77,7 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
     try {
       const hoursPerMonth = 730; // Average hours per month
       const utilizationRate = settings.utilizationRate / 100; // From settings
-      const gpuHourRate = settings.gpuHourRate; // From settings
+      const gpuHourRate = batch.chipType === 'B200' ? settings.gpuHourRate.b200 : settings.gpuHourRate.gb300; // From settings - chip-specific
       const datacenterOverhead = settings.datacenterOverhead; // From settings
       // Calculate electrical cost based on actual GPU usage (same as calculations.ts)
       const hoursGpusRun = hoursPerMonth * utilizationRate; // Hours GPUs actually run
@@ -100,7 +100,7 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
       const gpuCostPerUnit = batch.chipType === 'B200' ? 54500 : 80000;
       const totalGpuCost = gpuCostPerUnit * batch.quantity;
       const monthlyGpuPayment = calculateMonthlyPayment(totalGpuCost);
-      const installationCostPerGpu = settings.installationCost; // From settings
+      const installationCostPerGpu = batch.chipType === 'B200' ? settings.installationCost.b200 : settings.installationCost.gb300; // From settings - chip-specific
       const totalInstallationCost = installationCostPerGpu * batch.quantity;
       
       switch (phase) {
@@ -118,7 +118,7 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
                 label: 'Installation Cost', 
                 value: (
                   <span>
-                    <ClickableVariable title="Click to edit installation cost in settings" field="installationCost">{formatValue(installationCostPerGpu)}</ClickableVariable> per GPU
+                    <ClickableVariable title="Click to edit installation cost in settings" field={`installationCost.${batch.chipType.toLowerCase()}`}>{formatValue(installationCostPerGpu)}</ClickableVariable> per GPU
                   </span>
                 )
               },
@@ -290,11 +290,11 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
                     </div>
                     <div className="flex justify-between">
                       <span>• GPU Hour Rate:</span>
-                      <span><ClickableVariable title="Click to edit GPU hour rate in settings" field="gpuHourRate">${settings.gpuHourRate}</ClickableVariable></span>
+                      <span><ClickableVariable title="Click to edit GPU hour rate in settings" field={`gpuHourRate.${batch.chipType.toLowerCase()}`}>${gpuHourRate}</ClickableVariable></span>
                     </div>
                     <div className="flex justify-between">
                       <span>• Revenue per GPU:</span>
-                      <span>730 × <ClickableVariable field="utilizationRate">{settings.utilizationRate}%</ClickableVariable> × <ClickableVariable field="gpuHourRate">${settings.gpuHourRate}</ClickableVariable> = {formatValue(730 * (settings.utilizationRate / 100) * settings.gpuHourRate)}</span>
+                      <span>730 × <ClickableVariable field="utilizationRate">{settings.utilizationRate}%</ClickableVariable> × <ClickableVariable field={`gpuHourRate.${batch.chipType.toLowerCase()}`}>${gpuHourRate}</ClickableVariable> = {formatValue(730 * (settings.utilizationRate / 100) * gpuHourRate)}</span>
                     </div>
                     <div className="flex justify-between">
                       <span>• Number of GPUs:</span>
@@ -302,7 +302,7 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
                     </div>
                     <div className="flex justify-between font-medium">
                       <span>• Total Revenue:</span>
-                      <span>{batch?.quantity?.toLocaleString()} × {formatValue(730 * (settings.utilizationRate / 100) * settings.gpuHourRate)} = {formatValue(phaseDetails.monthlyRevenue)}</span>
+                      <span>{batch?.quantity?.toLocaleString()} × {formatValue(730 * (settings.utilizationRate / 100) * gpuHourRate)} = {formatValue(phaseDetails.monthlyRevenue)}</span>
                     </div>
                   </div>
                 )}

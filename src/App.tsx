@@ -40,13 +40,19 @@ const defaultSettings: ProfitabilitySettings = {
     b200: 1.7, // 1700W per B200 baseline rack power (before PUE)
     gb300: 2.1, // 2100W per GB300 baseline rack power (before PUE)
   },
+  installationCost: {
+    b200: 2000, // per GPU
+    gb300: 2000, // per GPU
+  },
+  gpuHourRate: {
+    b200: 3.65, // $3.65 per GPU hour
+    gb300: 5.50, // $5.50 per GPU hour
+  },
   interestRate: 9, // 9% for first 3 years
   electricityCost: 0.0325, // per kWh
-  installationCost: 2000, // per GPU
   datacenterOverhead: 150, // per GPU per month
   electricalOverhead: 1.5, // PUE multiplier
   utilizationRate: 90, // 90% utilization
-  gpuHourRate: 3.65, // $3.65 per GPU hour
 };
 
 // Calculate costs and revenue for 36-month breakeven
@@ -54,11 +60,11 @@ const calculateProfitability = (settings: ProfitabilitySettings, chipType: 'B200
   // const gpuCount = chipType === 'B200' ? settings.gpusPerMW.b200 : settings.gpusPerMW.gb300;
   const upfrontCost = chipType === 'B200' ? settings.upfrontGpuCost.b200 : settings.upfrontGpuCost.gb300;
   
-  // Monthly costs
-  const installationCostPerGpu = settings.installationCost;
+  // Monthly costs - chip-specific
+  const installationCostPerGpu = chipType === 'B200' ? settings.installationCost.b200 : settings.installationCost.gb300;
   const monthlyDatacenterOverhead = settings.datacenterOverhead;
   
-  // Monthly revenue (assuming 730 hours per month)
+  // Monthly revenue (assuming 730 hours per month) - chip-specific
   // const monthlyRevenuePerGpu = settings.gpuHourRate * 730 * (settings.utilizationRate / 100);
   
   // For 36-month breakeven, total revenue should equal total costs
