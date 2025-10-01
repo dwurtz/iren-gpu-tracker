@@ -301,8 +301,12 @@ function App() {
   };
 
   const handleResetToDefaults = () => {
-    if (window.confirm('Are you sure you want to reset all batches to default values? This will delete all current batches.')) {
-      const defaultBatches = createDefaultBatches(settings, sites);
+    if (window.confirm('Are you sure you want to reset all batches and settings to default values? This will delete all current batches and reset all profitability settings.')) {
+      // Reset settings to defaults
+      setSettings(defaultSettings);
+      
+      // Reset batches to defaults
+      const defaultBatches = createDefaultBatches(defaultSettings, sites);
       setBatches(defaultBatches);
       saveBatchesToStorage(defaultBatches);
     }
