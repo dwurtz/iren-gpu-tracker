@@ -142,14 +142,6 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
                   </div>
                 )
               },
-              { 
-                label: 'Total Monthly Costs', 
-                value: (
-                  <div className="text-right font-bold text-lg">
-                    {formatValue(totalMonthlyCost)}
-                  </div>
-                )
-              },
             ],
             monthlyRevenue: 0,
             monthlyCosts: totalMonthlyCost,

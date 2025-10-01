@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { X } from 'lucide-react';
 import { Batch, ChipType, Site } from '../types';
 import { useModalBackdrop } from './ModalBackdrop';
+import { ClickableVariable } from './SettingsModal';
 
 interface EditBatchModalProps {
   isOpen: boolean;
@@ -90,9 +91,13 @@ export const EditBatchModal: React.FC<EditBatchModalProps> = ({ isOpen, onClose,
               min="1"
             />
             <p className="text-xs text-gray-500 mt-1">
-              {formData.quantity && formData.chipType ? 
-                `≈ ${(formData.quantity / (formData.chipType === 'B200' ? 532 : 432)).toFixed(2)}MW` : 
-                'Enter quantity to see MW equivalent'}
+              {formData.quantity && formData.chipType ? (
+                <span>
+                  ≈ {formData.quantity.toLocaleString()} ÷ <ClickableVariable title="Click to edit GPUs per MW in settings" field={`gpusPerMW.${formData.chipType.toLowerCase()}`}>{formData.chipType === 'B200' ? 532 : 432}</ClickableVariable> = {(formData.quantity / (formData.chipType === 'B200' ? 532 : 432)).toFixed(2)}MW
+                </span>
+              ) : (
+                'Enter quantity to see MW equivalent'
+              )}
             </p>
           </div>
 
