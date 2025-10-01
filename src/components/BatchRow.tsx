@@ -72,31 +72,31 @@ export const BatchRow: React.FC<BatchRowProps> = ({ batch, monthlyData, onEdit, 
     }
   };
 
-  const getProfitColor = (value: number, phase: string | null) => {
-    if (phase === null || value === 0) return 'bg-gray-50';
-    
-    // Normalize the value for color calculation
-    // Assume breakeven around $0, with max loss around -$1.5B and max profit around +$500M
-    const maxLoss = -1500000000; // -$1.5B
-    const maxProfit = 500000000;  // +$500M
-    
-    let intensity = 0;
-    let colorClass = '';
-    
-    if (value < 0) {
-      // Red for losses
-      intensity = Math.min(Math.abs(value) / Math.abs(maxLoss), 1);
-      const redValue = Math.floor(255 - (intensity * 100)); // From light red to dark red
-      colorClass = `text-red-800`;
-      return `${colorClass} bg-red-${Math.floor(intensity * 400) + 100}`;
-    } else {
-      // Green for profits
-      intensity = Math.min(value / maxProfit, 1);
-      const greenValue = Math.floor(255 - (intensity * 100));
-      colorClass = `text-green-800`;
-      return `${colorClass} bg-green-${Math.floor(intensity * 400) + 100}`;
-    }
-  };
+  // const getProfitColor = (value: number, phase: string | null) => {
+  //   if (phase === null || value === 0) return 'bg-gray-50';
+  //   
+  //   // Normalize the value for color calculation
+  //   // Assume breakeven around $0, with max loss around -$1.5B and max profit around +$500M
+  //   const maxLoss = -1500000000; // -$1.5B
+  //   const maxProfit = 500000000;  // +$500M
+  //   
+  //   let intensity = 0;
+  //   let colorClass = '';
+  //   
+  //   if (value < 0) {
+  //     // Red for losses
+  //     intensity = Math.min(Math.abs(value) / Math.abs(maxLoss), 1);
+  //     const redValue = Math.floor(255 - (intensity * 100)); // From light red to dark red
+  //     colorClass = `text-red-800`;
+  //     return `${colorClass} bg-red-${Math.floor(intensity * 400) + 100}`;
+  //   } else {
+  //     // Green for profits
+  //     intensity = Math.min(value / maxProfit, 1);
+  //     const greenValue = Math.floor(255 - (intensity * 100));
+  //     colorClass = `text-green-800`;
+  //     return `${colorClass} bg-green-${Math.floor(intensity * 400) + 100}`;
+  //   }
+  // };
 
   const getProfitColorStyle = (value: number, phase: string | null) => {
     if (phase === null) return { backgroundColor: '#f9fafb' };

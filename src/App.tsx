@@ -18,13 +18,13 @@ const MONTHS = [
   'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', // 2028 (12 months)
   'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug' // 2029 (8 months)
 ];
-const YEARS = [
-  2025, 2025, 2025, 2025, // 2025
-  2026, 2026, 2026, 2026, 2026, 2026, 2026, 2026, 2026, 2026, 2026, 2026, // 2026
-  2027, 2027, 2027, 2027, 2027, 2027, 2027, 2027, 2027, 2027, 2027, 2027, // 2027
-  2028, 2028, 2028, 2028, 2028, 2028, 2028, 2028, 2028, 2028, 2028, 2028, // 2028
-  2029, 2029, 2029, 2029, 2029, 2029, 2029, 2029 // 2029
-];
+// const YEARS = [
+//   2025, 2025, 2025, 2025, // 2025
+//   2026, 2026, 2026, 2026, 2026, 2026, 2026, 2026, 2026, 2026, 2026, 2026, // 2026
+//   2027, 2027, 2027, 2027, 2027, 2027, 2027, 2027, 2027, 2027, 2027, 2027, // 2027
+//   2028, 2028, 2028, 2028, 2028, 2028, 2028, 2028, 2028, 2028, 2028, 2028, // 2028
+//   2029, 2029, 2029, 2029, 2029, 2029, 2029, 2029 // 2029
+// ];
 
 // Default profitability settings
 const defaultSettings: ProfitabilitySettings = {
@@ -51,7 +51,7 @@ const defaultSettings: ProfitabilitySettings = {
 
 // Calculate costs and revenue for 36-month breakeven
 const calculateProfitability = (settings: ProfitabilitySettings, chipType: 'B200' | 'GB300') => {
-  const gpuCount = chipType === 'B200' ? settings.gpusPerMW.b200 : settings.gpusPerMW.gb300;
+  // const gpuCount = chipType === 'B200' ? settings.gpusPerMW.b200 : settings.gpusPerMW.gb300;
   const upfrontCost = chipType === 'B200' ? settings.upfrontGpuCost.b200 : settings.upfrontGpuCost.gb300;
   
   // Monthly costs
@@ -59,7 +59,7 @@ const calculateProfitability = (settings: ProfitabilitySettings, chipType: 'B200
   const monthlyDatacenterOverhead = settings.datacenterOverhead;
   
   // Monthly revenue (assuming 730 hours per month)
-  const monthlyRevenuePerGpu = settings.gpuHourRate * 730 * (settings.utilizationRate / 100);
+  // const monthlyRevenuePerGpu = settings.gpuHourRate * 730 * (settings.utilizationRate / 100);
   
   // For 36-month breakeven, total revenue should equal total costs
   // Total costs = upfront + installation + 36 months of overhead

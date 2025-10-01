@@ -25,7 +25,7 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
   monthIndex,
   phase,
   cumulativeProfit,
-  monthlyValue,
+  monthlyValue: _monthlyValue,
   previousCumulative = 0,
   settings,
   onOpenSettings,
@@ -69,7 +69,7 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
     </span>
   );
 
-  const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  // const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   const monthsSinceInstallation = monthIndex;
   
   // Calculate detailed breakdown based on phase

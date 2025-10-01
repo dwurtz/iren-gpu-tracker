@@ -62,6 +62,7 @@ export const NewBatchModal: React.FC<NewBatchModalProps> = ({ isOpen, onClose, o
       quantity: 100,
       installationMonth: new Date().getMonth(),
       installationYear: new Date().getFullYear(),
+      siteId: sites.length > 0 ? sites[0].id : 'site-canal-flats',
       installationDuration: 1,
       installationCost: 1523,
       burnInDuration: 1,
