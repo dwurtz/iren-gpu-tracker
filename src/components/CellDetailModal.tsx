@@ -118,13 +118,14 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
               { 
                 label: 'Monthly GPU Payment', 
                 value: (
-                  <span>
-                    Amortized over 36 months = {formatValue(monthlyGpuPayment)}
+                  <div>
+                    <div className="font-semibold text-base">{formatValue(monthlyGpuPayment)}</div>
                     <div className="text-xs text-gray-500 mt-1">
+                      Amortized over 36 months<br/>
                       Formula: P × [r(1+r)^n] / [(1+r)^n - 1]<br/>
                       P = {formatValue(totalGpuCost)}, r = {(settings.interestRate / 12).toFixed(3)}% monthly, n = 36 months
                     </div>
-                  </span>
+                  </div>
                 )
               },
               { 
@@ -135,8 +136,25 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
                   </span>
                 )
               },
-              { label: 'Monthly Installation Cost', value: batch.phases.installation.duration === 1 ? `${formatValue(monthlyInstallationCost)}` : `${formatValue(totalInstallationCost)} ÷ ${batch.phases.installation.duration} months = ${formatValue(monthlyInstallationCost)}` },
-              { label: 'Total Monthly Costs', value: `${formatValue(monthlyGpuPayment)} + ${formatValue(monthlyInstallationCost)} = ${formatValue(totalMonthlyCost)}` },
+              { 
+                label: 'Monthly Installation Cost', 
+                value: (
+                  <div>
+                    <div className="font-semibold text-base">{formatValue(monthlyInstallationCost)}</div>
+                    {batch.phases.installation.duration !== 1 && (
+                      <div className="text-xs text-gray-500">{formatValue(totalInstallationCost)} ÷ {batch.phases.installation.duration} months</div>
+                    )}
+                  </div>
+                )
+              },
+              { 
+                label: 'Total Monthly Costs', 
+                value: (
+                  <div className="font-bold text-lg">
+                    <span className="font-semibold">{formatValue(monthlyGpuPayment)}</span> + <span className="font-semibold">{formatValue(monthlyInstallationCost)}</span> = {formatValue(totalMonthlyCost)}
+                  </div>
+                )
+              },
             ],
             monthlyRevenue: 0,
             monthlyCosts: totalMonthlyCost,
