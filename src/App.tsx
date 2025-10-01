@@ -400,7 +400,7 @@ function App() {
       <div className="h-screen bg-gray-50 flex flex-col">
       {/* Fixed Header */}
       <div className="flex justify-between items-center p-4 bg-white shadow-sm border-b">
-        <h1 className="text-2xl font-bold text-gray-900">IREN Energization Matrix</h1>
+        <h1 className="text-2xl font-bold text-gray-900">IREN GPU Matrix</h1>
         <div className="flex space-x-3">
           <button
             onClick={() => setIsSettingsOpen(true)}
@@ -497,7 +497,7 @@ function App() {
                   <>
                     {/* TOTAL row */}
                     <tr className="border-t-2 border-gray-300 bg-gray-100 font-medium">
-                      <td className="px-4 py-3 text-gray-900 sticky left-0 bg-gray-100 z-50 border-r">TOTAL</td>
+                      <td className="px-4 py-3 text-gray-900 sticky left-0 bg-gray-100 z-50 border-r">PROFIT</td>
                       {totals.map((data, index) => (
                         <td key={index} className="px-2 py-3 text-center text-sm border-r border-gray-200 w-20">
                           {data.value !== 0 && (
