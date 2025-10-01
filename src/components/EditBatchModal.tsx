@@ -27,10 +27,12 @@ export const EditBatchModal: React.FC<EditBatchModalProps> = ({ isOpen, onClose,
     if (!batch || !formData.quantity || !formData.chipType) return;
 
     const mwEquivalent = (formData.quantity / (formData.chipType === 'B200' ? 532 : 432)).toFixed(2);
+    const site = sites.find(s => s.id === formData.siteId);
+    const siteName = site ? site.name : '';
     const updatedBatch: Batch = {
       ...batch,
       ...formData,
-      name: `${formData.quantity.toLocaleString()} ${formData.chipType}s\n(${mwEquivalent}MW)`,
+      name: `${formData.quantity.toLocaleString()} ${formData.chipType}s\n(${mwEquivalent}MW${siteName ? ` • ${siteName}` : ''})`,
       quantity: formData.quantity,
       chipType: formData.chipType,
     };
