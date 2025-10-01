@@ -452,7 +452,17 @@ function App() {
                   const rows: JSX.Element[] = [];
                   let currentYear: number | null = null;
                   
-                  batches.forEach((batch, batchIndex) => {
+                  // Sort batches by installation date (year, then month)
+                  const sortedBatches = [...batches].sort((a, b) => {
+                    if (a.installationYear !== b.installationYear) {
+                      return a.installationYear - b.installationYear;
+                    }
+                    return a.installationMonth - b.installationMonth;
+                  });
+                  
+                  sortedBatches.forEach((batch) => {
+                    // Find the original index for accessing allBatchData
+                    const batchIndex = batches.findIndex(b => b.id === batch.id);
                     // Add year header if this is a new year
                     if (currentYear !== batch.installationYear) {
                       currentYear = batch.installationYear;
