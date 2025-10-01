@@ -26,7 +26,7 @@ export const EditBatchModal: React.FC<EditBatchModalProps> = ({ isOpen, onClose,
     e.preventDefault();
     if (!batch || !formData.quantity || !formData.chipType) return;
 
-    const mwEquivalent = Math.round(formData.quantity / (formData.chipType === 'B200' ? 532 : 432));
+    const mwEquivalent = (formData.quantity / (formData.chipType === 'B200' ? 532 : 432)).toFixed(2);
     const updatedBatch: Batch = {
       ...batch,
       ...formData,

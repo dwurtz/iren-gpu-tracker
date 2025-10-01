@@ -29,8 +29,9 @@ export const NewBatchModal: React.FC<NewBatchModalProps> = ({ isOpen, onClose, o
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
+    const mwEquivalent = (formData.quantity / (formData.chipType === 'B200' ? 532 : 432)).toFixed(2);
     const batch: Omit<Batch, 'id'> = {
-      name: formData.name,
+      name: `${formData.quantity.toLocaleString()} ${formData.chipType}s\n(${mwEquivalent}MW)`,
       chipType: formData.chipType,
       quantity: formData.quantity,
       installationMonth: formData.installationMonth,
