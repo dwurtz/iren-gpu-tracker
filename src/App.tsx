@@ -446,8 +446,8 @@ function App() {
       {/* Matrix Table Container */}
       <div className="flex-1 bg-white overflow-hidden relative">
         <div className="h-full w-full overflow-auto">
-          <table className="w-full border-collapse">
-              <thead className="sticky top-0 z-40">
+          <table className="w-full border-collapse" style={{ minHeight: '100%', display: 'table' }}>
+              <thead className="sticky top-0 z-40" style={{ display: 'table-header-group' }}>
                 {/* Year headers */}
                 <tr className="bg-gray-50 border-b border-gray-200">
                   <th className="px-4 py-2 text-left text-sm font-medium text-gray-900 sticky left-0 bg-gray-50 z-50" style={{ minWidth: '240px', width: '240px' }}></th>
@@ -474,7 +474,7 @@ function App() {
                   </th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody style={{ display: 'table-row-group' }}>
                 {(() => {
                   const rows: JSX.Element[] = [];
                   
@@ -524,7 +524,7 @@ function App() {
               
               
               {/* Sticky bottom total rows */}
-              <tfoot className="sticky bottom-0 z-40">
+              <tfoot className="sticky bottom-0 z-40" style={{ display: 'table-footer-group' }}>
                 {batches.length > 0 && (
                   <>
                     {/* TOTAL row */}
