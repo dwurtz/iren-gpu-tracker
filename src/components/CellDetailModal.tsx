@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, Edit } from 'lucide-react';
+import { X } from 'lucide-react';
 import { Batch } from '../types';
 import { ProfitabilitySettings } from './SettingsModal';
 import { useModalBackdrop } from './ModalBackdrop';
