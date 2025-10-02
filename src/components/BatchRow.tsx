@@ -109,8 +109,9 @@ export const BatchRow: React.FC<BatchRowProps> = ({ batch, monthlyData, onEdit, 
     const maxProfit = globalMaxValue || 500000000;  // Use global max or fallback
     
     if (value < 0) {
-      // Red gradient for losses - from white (near zero) to dark red (steep loss)
-      const intensity = Math.min(Math.abs(value) / Math.abs(maxLoss), 1);
+      // Red gradient for losses - using square root scale for better visibility of differences
+      const linearIntensity = Math.min(Math.abs(value) / Math.abs(maxLoss), 1);
+      const intensity = Math.sqrt(linearIntensity); // Square root scale makes smaller differences more visible
       const red = 255;                                    // Keep red at maximum
       const green = Math.floor(255 - (intensity * 255)); // Start white (255), fade to 0
       const blue = Math.floor(255 - (intensity * 255));  // Start white (255), fade to 0
@@ -119,8 +120,9 @@ export const BatchRow: React.FC<BatchRowProps> = ({ batch, monthlyData, onEdit, 
         color: '#7f1d1d'  // Always use dark red text for readability
       };
     } else {
-      // Bright lime-green gradient for profits - matching IREN branding
-      const intensity = Math.min(value / maxProfit, 1);
+      // Bright lime-green gradient for profits - using square root scale
+      const linearIntensity = Math.min(value / maxProfit, 1);
+      const intensity = Math.sqrt(linearIntensity); // Square root scale makes smaller differences more visible
       // Using a bright lime green: rgb(74, 222, 128) as the target color (similar to Tailwind's green-400)
       const red = Math.floor(255 - (intensity * 181));   // 255 -> 74
       const green = Math.floor(255 - (intensity * 33));  // 255 -> 222

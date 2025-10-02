@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Plus, Settings, RotateCcw } from 'lucide-react';
 import { Batch, Site, ChipType } from './types';
 import { NewBatchModal } from './components/NewBatchModal';
@@ -227,6 +227,24 @@ function App() {
   const [selectedARRMonth, setSelectedARRMonth] = useState<number | null>(null);
   const [isSiteEditorOpen, setIsSiteEditorOpen] = useState(false);
   const [editingSite, setEditingSite] = useState<Site | null>(null);
+  const [isMobile, setIsMobile] = useState(() => {
+    // Initialize based on actual window width
+    return typeof window !== 'undefined' && window.innerWidth < 550;
+  });
+
+  // Check screen size for mobile detection
+  useEffect(() => {
+    const checkMobile = () => {
+      const width = window.innerWidth;
+      const shouldBeMobile = width < 550;
+      console.log('Window width:', width, 'isMobile:', shouldBeMobile);
+      setIsMobile(shouldBeMobile);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   // Handle arrow key navigation
   React.useEffect(() => {
@@ -420,6 +438,15 @@ function App() {
   return (
     <>
       <ModalBackdrop />
+      {/* Mobile/Small Screen Warning - Only for phones (< 550px) */}
+      {isMobile ? (
+        <div className="fixed inset-0 bg-white z-[10000] flex flex-col items-center justify-center p-8 text-center">
+          <img src="https://iren.com/icons/logo.svg" alt="IREN" className="h-16 mb-6" />
+          <h1 className="text-2xl font-semibold text-gray-800 mb-4">GPU Tracker</h1>
+          <p className="text-gray-600 text-lg mb-2">This app does not support mobile screen sizes.</p>
+          <p className="text-gray-600 text-lg">Please view on a larger screen.</p>
+        </div>
+      ) : (
       <div className="h-screen bg-gray-100 flex flex-col">
       {/* Fixed Header */}
       <div className="flex justify-between items-center px-6 py-3 bg-white shadow-sm border-b border-gray-200">
@@ -663,6 +690,7 @@ function App() {
         batches={batches}
       />
     </div>
+      )}
     </>
   );
 }
