@@ -156,7 +156,7 @@ export const BatchRow: React.FC<BatchRowProps> = ({ batch, monthlyData, onEdit, 
             </div>
             <div className="font-medium text-sm">
               {batch.name.split('\n').map((line, index) => (
-                <div key={index} className={index === 0 ? 'text-blue-600' : 'text-gray-600 text-xs'}>
+                <div key={index} className={index === 0 ? 'text-gray-800 font-semibold' : 'text-gray-500 text-xs'}>
                   {line}
                 </div>
               ))}
@@ -165,13 +165,13 @@ export const BatchRow: React.FC<BatchRowProps> = ({ batch, monthlyData, onEdit, 
           <div className="flex space-x-1 ml-2">
             <button
               onClick={() => onEdit(batch)}
-              className="text-gray-400 hover:text-blue-600"
+              className="text-gray-400 hover:text-emerald-600 transition-colors"
             >
               <Edit2 size={14} />
             </button>
             <button
               onClick={() => onDelete(batch.id)}
-              className="text-gray-400 hover:text-red-600"
+              className="text-gray-400 hover:text-red-500 transition-colors"
             >
               <Trash2 size={14} />
             </button>

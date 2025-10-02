@@ -415,30 +415,33 @@ function App() {
   return (
     <>
       <ModalBackdrop />
-      <div className="h-screen bg-gray-50 flex flex-col">
+      <div className="h-screen bg-gray-100 flex flex-col">
       {/* Fixed Header */}
-      <div className="flex justify-between items-center p-4 bg-white shadow-sm border-b">
-        <h1 className="text-2xl font-bold text-gray-900">IREN GPU Matrix</h1>
+      <div className="flex justify-between items-center px-6 py-3 bg-white shadow-sm border-b border-gray-200">
+        <div className="flex items-center space-x-3">
+          <img src="https://iren.com/icons/logo.svg" alt="IREN" className="h-8" />
+          <h1 className="text-xl font-semibold text-gray-700">GPU Matrix</h1>
+        </div>
         <div className="flex space-x-3">
           <button
             onClick={handleResetToDefaults}
-            className="flex items-center space-x-2 bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600"
+            className="flex items-center space-x-2 bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 border border-gray-300 transition-colors"
           >
-            <span>RESET TO DEFAULTS</span>
+            <span className="text-sm font-medium">RESET TO DEFAULTS</span>
           </button>
           <button
             onClick={() => setIsSettingsOpen(true)}
-            className="flex items-center space-x-2 bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700"
+            className="flex items-center space-x-2 bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 border border-gray-300 transition-colors"
           >
             <Settings size={16} />
-            <span>SETTINGS</span>
+            <span className="text-sm font-medium">SETTINGS</span>
           </button>
           <button
             onClick={() => setIsModalOpen(true)}
-            className="flex items-center space-x-2 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+            className="flex items-center space-x-2 bg-emerald-500 text-white px-4 py-2 rounded-lg hover:bg-emerald-600 transition-colors"
           >
             <Plus size={16} />
-            <span>NEW BATCH</span>
+            <span className="text-sm font-medium">NEW BATCH</span>
           </button>
         </div>
       </div>
@@ -450,27 +453,27 @@ function App() {
               <thead className="sticky top-0 z-40" style={{ display: 'table-header-group' }}>
                 {/* Year headers */}
                 <tr className="bg-gray-50 border-b border-gray-200">
-                  <th className="px-4 py-2 text-left text-sm font-medium text-gray-900 sticky left-0 bg-gray-50 z-50" style={{ minWidth: '240px', width: '240px' }}></th>
-                  <th className="px-2 py-2 text-left text-sm font-bold text-gray-900 border-r" colSpan={4}>2025</th>
-                  <th className="px-2 py-2 text-left text-sm font-bold text-gray-900 border-r" colSpan={12}>2026</th>
-                  <th className="px-2 py-2 text-left text-sm font-bold text-gray-900 border-r" colSpan={12}>2027</th>
-                  <th className="px-2 py-2 text-left text-sm font-bold text-gray-900 border-r" colSpan={12}>2028</th>
-                  <th className="px-2 py-2 text-left text-sm font-bold text-gray-900" colSpan={8}>2029</th>
-                  <th className="px-4 py-2 text-center text-sm font-medium text-gray-900 w-24 sticky right-0 bg-gray-50 z-50 border-l">TOTAL</th>
+                  <th className="px-4 py-2 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide sticky left-0 bg-gray-50 z-50" style={{ minWidth: '240px', width: '240px' }}></th>
+                  <th className="px-2 py-2 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide border-r" colSpan={4}>2025</th>
+                  <th className="px-2 py-2 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide border-r" colSpan={12}>2026</th>
+                  <th className="px-2 py-2 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide border-r" colSpan={12}>2027</th>
+                  <th className="px-2 py-2 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide border-r" colSpan={12}>2028</th>
+                  <th className="px-2 py-2 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide" colSpan={8}>2029</th>
+                  <th className="px-4 py-2 text-center text-xs font-semibold text-gray-500 uppercase tracking-wide w-24 sticky right-0 bg-gray-50 z-50 border-l">TOTAL</th>
                 </tr>
                 {/* Month headers */}
-                <tr className="bg-gray-50 border-b border-gray-200">
-                  <th className="px-4 py-3 text-left text-sm font-medium text-gray-900 sticky left-0 bg-gray-50 z-50" style={{ minWidth: '240px', width: '240px' }}></th>
+                <tr className="bg-white border-b border-gray-200">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-600 sticky left-0 bg-white z-50" style={{ minWidth: '240px', width: '240px' }}></th>
                   {MONTHS.map((month, index) => {
                     // Add heavier border at year boundaries (after Dec, which is at indices 3, 15, 27, 39)
                     const isYearBoundary = index === 3 || index === 15 || index === 27 || index === 39;
                     return (
-                      <th key={index} className={`px-2 py-3 text-center text-sm font-medium text-gray-900 ${isYearBoundary ? 'border-r-2 border-gray-300' : 'border-r border-gray-200'}`} style={{ minWidth: '80px' }}>
+                      <th key={index} className={`px-2 py-3 text-center text-xs font-medium text-gray-600 ${isYearBoundary ? 'border-r-2 border-gray-300' : 'border-r border-gray-200'}`} style={{ minWidth: '80px' }}>
                         {month}
                       </th>
                     );
                   })}
-                  <th className="px-4 py-3 text-center text-sm font-medium text-gray-900 w-24 sticky right-0 bg-gray-50 z-50 border-l">
+                  <th className="px-4 py-3 text-center text-xs font-semibold text-gray-600 uppercase tracking-wide w-24 sticky right-0 bg-white z-50 border-l">
                     TOTAL
                   </th>
                 </tr>
@@ -529,8 +532,8 @@ function App() {
                 {batches.length > 0 && (
                   <>
                     {/* TOTAL row */}
-                    <tr className="border-t border-gray-200 bg-gray-100 font-medium">
-                      <td className="px-4 py-3 text-gray-900 sticky left-0 bg-gray-100 z-50 border-r">PROFIT</td>
+                    <tr className="border-t-2 border-gray-300 bg-gray-50 font-medium">
+                      <td className="px-4 py-3 text-gray-700 text-xs font-semibold uppercase tracking-wide sticky left-0 bg-gray-50 z-50 border-r">PROFIT</td>
                       {totals.map((data, index) => {
                         const isYearBoundary = index === 3 || index === 15 || index === 27 || index === 39;
                         return (
@@ -543,22 +546,22 @@ function App() {
                           </td>
                         );
                       })}
-                      <td className="px-4 py-3 text-center font-bold sticky right-0 bg-gray-100 z-50 border-l">
-                        <div className={grandTotal < 0 ? 'text-red-600' : 'text-green-600'}>
+                      <td className="px-4 py-3 text-center font-bold sticky right-0 bg-gray-50 z-50 border-l">
+                        <div className={grandTotal < 0 ? 'text-red-600' : 'text-emerald-600'}>
                           {formatValue(grandTotal)}
                         </div>
                       </td>
                     </tr>
                     
                     {/* ARR row */}
-                    <tr className="border-t border-gray-200 bg-blue-50 font-medium">
-                      <td className="px-4 py-3 text-gray-900 sticky left-0 bg-blue-50 z-50 border-r">ARR</td>
+                    <tr className="border-t border-gray-200 bg-emerald-50 font-medium">
+                      <td className="px-4 py-3 text-emerald-700 text-xs font-semibold uppercase tracking-wide sticky left-0 bg-emerald-50 z-50 border-r">ARR</td>
                       {arrData.map((data, index) => {
                         const isYearBoundary = index === 3 || index === 15 || index === 27 || index === 39;
                         return (
                           <td 
                             key={index} 
-                            className={`px-2 py-3 text-center text-sm ${isYearBoundary ? 'border-r-2 border-gray-300' : 'border-r border-gray-200'} cursor-pointer hover:bg-blue-100`}
+                            className={`px-2 py-3 text-center text-sm ${isYearBoundary ? 'border-r-2 border-gray-300' : 'border-r border-gray-200'} cursor-pointer hover:bg-emerald-100`}
                             style={{ minWidth: '80px' }}
                           onClick={() => {
                             setSelectedARRMonth(index);
@@ -566,15 +569,15 @@ function App() {
                           }}
                         >
                           {data.value > 0 && (
-                            <div className="text-blue-600">
+                            <div className="text-emerald-600 font-medium">
                               {formatValue(data.value)}
                             </div>
                           )}
                         </td>
                         );
                       })}
-                      <td className="px-4 py-3 text-center font-bold sticky right-0 bg-blue-50 z-50 border-l">
-                        <div className="text-blue-600">
+                      <td className="px-4 py-3 text-center font-bold sticky right-0 bg-emerald-50 z-50 border-l">
+                        <div className="text-emerald-700">
                           {formatValue(arrData.length > 0 ? arrData[arrData.length - 1].value : 0)}
                         </div>
                       </td>
