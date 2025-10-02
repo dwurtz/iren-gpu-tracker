@@ -486,8 +486,8 @@ function App() {
               <thead className="sticky top-0 z-40" style={{ display: 'table-header-group' }}>
                 {/* Year headers */}
                 <tr className="bg-gray-50 border-b border-gray-200">
-                  <th className="px-4 py-2 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide sticky left-0 bg-gray-50 z-50" style={{ minWidth: '240px', width: '240px' }}></th>
-                  <th className="px-2 py-2 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide border-r" colSpan={4}>2025</th>
+                  <th className="px-4 py-2 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide sticky left-0 bg-gray-50 z-50 border-r border-gray-200" style={{ minWidth: '240px', width: '240px' }}></th>
+                  <th className="px-2 py-2 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200" colSpan={4}>2025</th>
                   <th className="px-2 py-2 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide border-r" colSpan={12}>2026</th>
                   <th className="px-2 py-2 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide border-r" colSpan={12}>2027</th>
                   <th className="px-2 py-2 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide border-r" colSpan={12}>2028</th>
