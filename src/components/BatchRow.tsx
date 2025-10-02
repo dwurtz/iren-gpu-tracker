@@ -8,7 +8,6 @@ interface BatchRowProps {
   monthlyData: MonthData[];
   onEdit: (batch: Batch) => void;
   onDelete: (batchId: string) => void;
-  isFirstOfYear?: boolean;
   selectedCell?: { batchId: string; monthIndex: number } | null;
   onCellSelect?: (batchId: string, monthIndex: number) => void;
   onClearSelection?: () => void;
@@ -18,11 +17,8 @@ interface BatchRowProps {
   onOpenSettings?: (field?: string) => void;
 }
 
-interface YearHeaderRowProps {
-  year: number;
-}
 
-export const BatchRow: React.FC<BatchRowProps> = ({ batch, monthlyData, onEdit, onDelete, isFirstOfYear = false, selectedCell, onCellSelect, onClearSelection, globalMinValue, globalMaxValue, settings, onOpenSettings }) => {
+export const BatchRow: React.FC<BatchRowProps> = ({ batch, monthlyData, onEdit, onDelete, selectedCell, onCellSelect, onClearSelection, globalMinValue, globalMaxValue, settings, onOpenSettings }) => {
   const [modalCell, setModalCell] = useState<{
     monthIndex: number;
     phase: 'INSTALL' | 'BURN_IN' | 'LIVE' | null;
@@ -150,15 +146,10 @@ export const BatchRow: React.FC<BatchRowProps> = ({ batch, monthlyData, onEdit, 
   const finalProfit = monthlyData.length > 0 ? monthlyData[monthlyData.length - 1].value : 0;
 
   return (
-    <tr className={`hover:bg-gray-50 ${isFirstOfYear ? 'border-t border-gray-200' : ''}`}>
+    <tr className="hover:bg-gray-50">
       <td className="px-4 py-2 sticky left-0 bg-white z-30 border-r" style={{ minWidth: '240px', width: '240px' }}>
         <div className="flex items-center justify-between">
           <div className="flex-1">
-            {isFirstOfYear && (
-              <div className="font-bold text-gray-900 text-sm mb-1 pb-1 border-b border-gray-200">
-                {batch.installationYear}
-              </div>
-            )}
             <div className="text-xs text-gray-500 mb-1">
               {['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][batch.installationMonth]}
             </div>
@@ -288,21 +279,3 @@ export const BatchRow: React.FC<BatchRowProps> = ({ batch, monthlyData, onEdit, 
   );
 };
 
-export const YearHeaderRow: React.FC<YearHeaderRowProps> = ({ year }) => {
-  return (
-    <tr className="border-t border-gray-200">
-      <td className="px-4 py-2 sticky left-0 bg-gray-100 z-30 border-r" style={{ minWidth: '240px', width: '240px' }}>
-        <div className="font-bold text-gray-900 text-sm">
-          {year}
-        </div>
-      </td>
-      {/* Empty cells for data columns - no background so they blend with data */}
-      {Array.from({ length: 48 }, (_, index) => {
-                return (
-                  <td key={index} className="p-0" style={{ minWidth: '80px' }}></td>
-                );
-      })}
-      <td className="sticky right-0 bg-white z-30 border-l w-24"></td>
-    </tr>
-  );
-};

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Plus, Settings } from 'lucide-react';
 import { Batch, Site, ChipType } from './types';
 import { NewBatchModal } from './components/NewBatchModal';
-import { BatchRow, YearHeaderRow } from './components/BatchRow';
+import { BatchRow } from './components/BatchRow';
 import { SettingsModal, ProfitabilitySettings } from './components/SettingsModal';
 import { EditBatchModal } from './components/EditBatchModal';
 import { SiteEditorModal } from './components/SiteEditorModal';
@@ -12,11 +12,11 @@ import { calculateMonthlyData, calculateTotals } from './utils/calculations';
 
 // Extended timeline: Sep 2025 to Aug 2029 (48 months for 36-month breakeven analysis)
 const MONTHS = [
-  'Sep', 'Oct', 'Nov', 'Dec', // 2025 (4 months)
-  'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', // 2026 (12 months)
-  'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', // 2027 (12 months)
-  'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', // 2028 (12 months)
-  'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug' // 2029 (8 months)
+  "Sep '25", "Oct '25", "Nov '25", "Dec '25", // 2025 (4 months)
+  "Jan '26", "Feb '26", "Mar '26", "Apr '26", "May '26", "Jun '26", "Jul '26", "Aug '26", "Sep '26", "Oct '26", "Nov '26", "Dec '26", // 2026 (12 months)
+  "Jan '27", "Feb '27", "Mar '27", "Apr '27", "May '27", "Jun '27", "Jul '27", "Aug '27", "Sep '27", "Oct '27", "Nov '27", "Dec '27", // 2027 (12 months)
+  "Jan '28", "Feb '28", "Mar '28", "Apr '28", "May '28", "Jun '28", "Jul '28", "Aug '28", "Sep '28", "Oct '28", "Nov '28", "Dec '28", // 2028 (12 months)
+  "Jan '29", "Feb '29", "Mar '29", "Apr '29", "May '29", "Jun '29", "Jul '29", "Aug '29" // 2029 (8 months)
 ];
 // const YEARS = [
 //   2025, 2025, 2025, 2025, // 2025
@@ -477,7 +477,6 @@ function App() {
               <tbody>
                 {(() => {
                   const rows: JSX.Element[] = [];
-                  let currentYear: number | null = null;
                   
                   // Sort batches by installation date (year, then month)
                   const sortedBatches = [...batches].sort((a, b) => {
@@ -490,16 +489,6 @@ function App() {
                   sortedBatches.forEach((batch) => {
                     // Find the original index for accessing allBatchData
                     const batchIndex = batches.findIndex(b => b.id === batch.id);
-                    // Add year header if this is a new year
-                    if (currentYear !== batch.installationYear) {
-                      currentYear = batch.installationYear;
-                      rows.push(
-                        <YearHeaderRow
-                          key={`year-${currentYear}`}
-                          year={currentYear}
-                        />
-                      );
-                    }
                     
                     // Add the batch row
                     rows.push(
