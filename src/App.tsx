@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, Settings } from 'lucide-react';
+import { Plus, Settings, RotateCcw } from 'lucide-react';
 import { Batch, Site, ChipType } from './types';
 import { NewBatchModal } from './components/NewBatchModal';
 import { BatchRow } from './components/BatchRow';
@@ -432,7 +432,8 @@ function App() {
             onClick={handleResetToDefaults}
             className="flex items-center space-x-2 bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 border border-gray-300 transition-colors"
           >
-            <span className="text-sm font-medium">RESET TO DEFAULTS</span>
+            <RotateCcw size={16} />
+            <span className="text-sm font-medium">RESET</span>
           </button>
           <button
             onClick={() => setIsSettingsOpen(true)}
@@ -538,8 +539,8 @@ function App() {
                 {batches.length > 0 && (
                   <>
                     {/* TOTAL row */}
-                    <tr className="border-t-2 border-gray-200 bg-gray-50 font-medium">
-                      <td className="px-4 py-3 text-gray-700 text-xs font-semibold uppercase tracking-wide sticky left-0 bg-gray-50 z-50 border-r">PROFIT</td>
+                    <tr className="border-t-2 border-gray-200 bg-white font-medium">
+                      <td className="px-4 py-3 text-gray-700 text-xs font-semibold uppercase tracking-wide sticky left-0 bg-white z-50 border-r">PROFIT</td>
                       {totals.map((data, index) => {
                         const isYearBoundary = index === 3 || index === 15 || index === 27 || index === 39;
                         return (
@@ -552,7 +553,7 @@ function App() {
                           </td>
                         );
                       })}
-                      <td className="px-4 py-3 text-center font-bold sticky right-0 bg-gray-50 z-50 border-l">
+                      <td className="px-4 py-3 text-center font-bold sticky right-0 bg-white z-50 border-l">
                         <div className={grandTotal < 0 ? 'text-red-600' : 'text-green-600'}>
                           {formatValue(grandTotal)}
                         </div>
@@ -560,14 +561,14 @@ function App() {
                     </tr>
                     
                     {/* ARR row */}
-                    <tr className="border-t border-gray-200 bg-green-50 font-medium">
-                      <td className="px-4 py-3 text-green-700 text-xs font-semibold uppercase tracking-wide sticky left-0 bg-green-50 z-50 border-r">ARR</td>
+                    <tr className="border-t border-gray-200 bg-white font-medium">
+                      <td className="px-4 py-3 text-gray-700 text-xs font-semibold uppercase tracking-wide sticky left-0 bg-white z-50 border-r">ARR</td>
                       {arrData.map((data, index) => {
                         const isYearBoundary = index === 3 || index === 15 || index === 27 || index === 39;
                         return (
                           <td 
                             key={index} 
-                            className={`px-2 py-3 text-center text-sm ${isYearBoundary ? 'border-r-2 border-gray-200' : 'border-r border-gray-200'} cursor-pointer hover:bg-green-100`}
+                            className={`px-2 py-3 text-center text-sm ${isYearBoundary ? 'border-r-2 border-gray-200' : 'border-r border-gray-200'} cursor-pointer hover:bg-gray-50`}
                             style={{ minWidth: '80px' }}
                           onClick={() => {
                             setSelectedARRMonth(index);
@@ -582,8 +583,8 @@ function App() {
                         </td>
                         );
                       })}
-                      <td className="px-4 py-3 text-center font-bold sticky right-0 bg-green-50 z-50 border-l">
-                        <div className="text-green-700">
+                      <td className="px-4 py-3 text-center font-bold sticky right-0 bg-white z-50 border-l">
+                        <div className="text-green-600">
                           {formatValue(arrData.length > 0 ? arrData[arrData.length - 1].value : 0)}
                         </div>
                       </td>
