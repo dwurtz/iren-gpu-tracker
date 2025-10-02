@@ -540,7 +540,7 @@ function App() {
                   <>
                     {/* TOTAL row */}
                     <tr className="border-t-2 border-gray-200 bg-white font-medium">
-                      <td className="px-4 py-3 text-gray-700 text-xs font-semibold uppercase tracking-wide sticky left-0 bg-white z-50 border-r">PROFIT</td>
+                      <td className="px-4 py-3 text-gray-700 text-xs font-semibold uppercase tracking-wide sticky left-0 bg-white z-50 border-r">CUMULATIVE PROFIT</td>
                       {totals.map((data, index) => {
                         const isYearBoundary = index === 3 || index === 15 || index === 27 || index === 39;
                         return (
