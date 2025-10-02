@@ -218,10 +218,11 @@ export const BatchRow: React.FC<BatchRowProps> = ({ batch, monthlyData, onEdit, 
         const isSelected = selectedCell?.batchId === batch.id && selectedCell?.monthIndex === index;
         // Add heavier border at year boundaries (after Dec, which is at indices 3, 15, 27, 39, 51)
         const isYearBoundary = index === 3 || index === 15 || index === 27 || index === 39 || index === 51;
+        const isFirstMonth = index === 0;
         return (
           <td 
             key={index}
-            className={`px-2 py-3 text-center text-sm ${isYearBoundary ? 'border-r-2 border-gray-200' : 'border-r border-gray-200'} cursor-pointer hover:opacity-80`}
+            className={`px-2 py-3 text-center text-sm ${isFirstMonth ? 'border-l border-gray-200' : ''} ${isYearBoundary ? 'border-r-2 border-gray-200' : 'border-r border-gray-200'} cursor-pointer hover:opacity-80`}
             style={{
               minWidth: '80px',
               ...getProfitColorStyle(data.value, data.phase),
