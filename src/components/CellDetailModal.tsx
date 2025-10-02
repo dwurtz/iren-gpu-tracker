@@ -58,7 +58,9 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
 
 
   // const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  const monthsSinceInstallation = monthIndex;
+  // Calculate the batch's installation month index (Sep 2025 = 0)
+  const batchInstallationIndex = (batch.installationYear - 2025) * 12 + (batch.installationMonth - 8);
+  const monthsSinceInstallation = monthIndex - batchInstallationIndex;
   
   // Calculate chip-specific rate (needed in JSX)
   const gpuHourRate = batch.chipType === 'B200' ? settings.gpuHourRate.b200 : settings.gpuHourRate.gb300;
