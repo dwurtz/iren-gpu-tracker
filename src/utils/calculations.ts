@@ -38,7 +38,7 @@ export const calculateMonthlyData = (batch: Batch, startMonth: number, startYear
       (batch.installationYear - startYear) * 12 + (batch.installationMonth - startMonth);
     const monthsSinceInstallation = i - installationStartIndex;
     
-    let phase: 'INSTALLATION' | 'BURN_IN' | 'LIVE' | null = null;
+    let phase: 'INSTALL' | 'BURN_IN' | 'LIVE' | null = null;
     let monthlyValue = 0;
     
     if (monthsSinceInstallation >= 0) {
@@ -53,7 +53,7 @@ export const calculateMonthlyData = (batch: Batch, startMonth: number, startYear
       
       if (monthsSinceInstallation < batch.phases.installation.duration) {
         // Installation phase - GPU payments + installation costs
-        phase = 'INSTALLATION';
+        phase = 'INSTALL';
         const monthlyInstallationCost = totalInstallationCost / batch.phases.installation.duration;
         monthlyValue = -(monthlyGpuPayment + monthlyInstallationCost);
       } else if (monthsSinceInstallation < batch.phases.installation.duration + batch.phases.burnIn.duration) {

@@ -461,11 +461,15 @@ function App() {
                 {/* Month headers */}
                 <tr className="bg-gray-50 border-b border-gray-200">
                   <th className="px-4 py-3 text-left text-sm font-medium text-gray-900 sticky left-0 bg-gray-50 z-50" style={{ minWidth: '240px', width: '240px' }}></th>
-                  {MONTHS.map((month, index) => (
-                    <th key={index} className="px-2 py-3 text-center text-sm font-medium text-gray-900 w-20 border-r border-gray-200">
-                      {month}
-                    </th>
-                  ))}
+                  {MONTHS.map((month, index) => {
+                    // Add heavier border at year boundaries (after Dec, which is at indices 3, 15, 27, 39)
+                    const isYearBoundary = index === 3 || index === 15 || index === 27 || index === 39;
+                    return (
+                      <th key={index} className={`px-2 py-3 text-center text-sm font-medium text-gray-900 ${isYearBoundary ? 'border-r-2 border-gray-400' : 'border-r border-gray-200'}`} style={{ minWidth: '80px' }}>
+                        {month}
+                      </th>
+                    );
+                  })}
                   <th className="px-4 py-3 text-center text-sm font-medium text-gray-900 w-24 sticky right-0 bg-gray-50 z-50 border-l">
                     TOTAL
                   </th>
@@ -529,15 +533,18 @@ function App() {
                     {/* TOTAL row */}
                     <tr className="border-t-2 border-gray-300 bg-gray-100 font-medium">
                       <td className="px-4 py-3 text-gray-900 sticky left-0 bg-gray-100 z-50 border-r">PROFIT</td>
-                      {totals.map((data, index) => (
-                        <td key={index} className="px-2 py-3 text-center text-sm border-r border-gray-200 w-20">
-                          {data.value !== 0 && (
-                            <div className={data.value < 0 ? 'text-red-600' : 'text-green-600'}>
-                              {formatValue(data.value)}
-                            </div>
-                          )}
-                        </td>
-                      ))}
+                      {totals.map((data, index) => {
+                        const isYearBoundary = index === 3 || index === 15 || index === 27 || index === 39;
+                        return (
+                          <td key={index} className={`px-2 py-3 text-center text-sm ${isYearBoundary ? 'border-r-2 border-gray-400' : 'border-r border-gray-200'}`} style={{ minWidth: '80px' }}>
+                            {data.value !== 0 && (
+                              <div className={data.value < 0 ? 'text-red-600' : 'text-green-600'}>
+                                {formatValue(data.value)}
+                              </div>
+                            )}
+                          </td>
+                        );
+                      })}
                       <td className="px-4 py-3 text-center font-bold sticky right-0 bg-gray-100 z-50 border-l">
                         <div className={grandTotal < 0 ? 'text-red-600' : 'text-green-600'}>
                           {formatValue(grandTotal)}
@@ -548,10 +555,13 @@ function App() {
                     {/* ARR row */}
                     <tr className="border-t border-gray-200 bg-blue-50 font-medium">
                       <td className="px-4 py-3 text-gray-900 sticky left-0 bg-blue-50 z-50 border-r">ARR</td>
-                      {arrData.map((data, index) => (
-                        <td 
-                          key={index} 
-                          className="px-2 py-3 text-center text-sm border-r border-gray-200 w-20 cursor-pointer hover:bg-blue-100"
+                      {arrData.map((data, index) => {
+                        const isYearBoundary = index === 3 || index === 15 || index === 27 || index === 39;
+                        return (
+                          <td 
+                            key={index} 
+                            className={`px-2 py-3 text-center text-sm ${isYearBoundary ? 'border-r-2 border-gray-400' : 'border-r border-gray-200'} cursor-pointer hover:bg-blue-100`}
+                            style={{ minWidth: '80px' }}
                           onClick={() => {
                             setSelectedARRMonth(index);
                             setIsARRModalOpen(true);
@@ -563,7 +573,8 @@ function App() {
                             </div>
                           )}
                         </td>
-                      ))}
+                        );
+                      })}
                       <td className="px-4 py-3 text-center font-bold sticky right-0 bg-blue-50 z-50 border-l">
                         <div className="text-blue-600">
                           {formatValue(arrData.length > 0 ? arrData[arrData.length - 1].value : 0)}

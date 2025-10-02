@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';i 
 import { Edit2, Trash2 } from 'lucide-react';
 import { Batch, MonthData } from '../types';
 import { CellDetailModal } from './CellDetailModal';
@@ -25,7 +25,7 @@ interface YearHeaderRowProps {
 export const BatchRow: React.FC<BatchRowProps> = ({ batch, monthlyData, onEdit, onDelete, isFirstOfYear = false, selectedCell, onCellSelect, onClearSelection, globalMinValue, globalMaxValue, settings, onOpenSettings }) => {
   const [modalCell, setModalCell] = useState<{
     monthIndex: number;
-    phase: 'INSTALLATION' | 'BURN_IN' | 'LIVE' | null;
+    phase: 'INSTALL' | 'BURN_IN' | 'LIVE' | null;
     cumulativeProfit: number;
     monthlyValue: number;
     previousCumulative?: number;
@@ -135,8 +135,8 @@ export const BatchRow: React.FC<BatchRowProps> = ({ batch, monthlyData, onEdit, 
 
   const getPhaseLabel = (phase: string | null) => {
     switch (phase) {
-      case 'INSTALLATION':
-        return 'INSTALLATION';
+      case 'INSTALL':
+        return 'INSTALL';
       case 'BURN_IN':
         return 'BURN IN';
       case 'LIVE':
@@ -189,12 +189,15 @@ export const BatchRow: React.FC<BatchRowProps> = ({ batch, monthlyData, onEdit, 
       
       {monthlyData.map((data, index) => {
         const isSelected = selectedCell?.batchId === batch.id && selectedCell?.monthIndex === index;
+        // Add heavier border at year boundaries (after Dec, which is at indices 3, 15, 27, 39)
+        const isYearBoundary = index === 3 || index === 15 || index === 27 || index === 39;
         
         return (
           <td 
             key={index}
-            className="px-2 py-3 text-center text-sm border-r border-gray-200 w-20 cursor-pointer hover:opacity-80"
+            className={`px-2 py-3 text-center text-sm ${isYearBoundary ? 'border-r-2 border-gray-400' : 'border-r border-gray-200'} cursor-pointer hover:opacity-80`}
             style={{
+              minWidth: '80px',
               ...getProfitColorStyle(data.value, data.phase),
               ...(isSelected ? { 
                 outline: '3px solid white',
@@ -296,9 +299,12 @@ export const YearHeaderRow: React.FC<YearHeaderRowProps> = ({ year }) => {
         </div>
       </td>
       {/* Empty cells for data columns - no background so they blend with data */}
-      {Array.from({ length: 48 }, (_, index) => (
-        <td key={index} className="p-0 w-20"></td>
-      ))}
+      {Array.from({ length: 48 }, (_, index) => {
+        const isYearBoundary = index === 3 || index === 15 || index === 27 || index === 39;
+        return (
+          <td key={index} className={`p-0 ${isYearBoundary ? 'border-r-2 border-gray-400' : ''}`} style={{ minWidth: '80px' }}></td>
+        );
+      })}
       <td className="sticky right-0 bg-white z-30 border-l w-24"></td>
     </tr>
   );

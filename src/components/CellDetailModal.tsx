@@ -10,7 +10,7 @@ interface CellDetailModalProps {
   onClose: () => void;
   batch: Batch | null;
   monthIndex: number;
-  phase: 'INSTALLATION' | 'BURN_IN' | 'LIVE' | null;
+  phase: 'INSTALL' | 'BURN_IN' | 'LIVE' | null;
   cumulativeProfit: number;
   monthlyValue: number;
   previousCumulative?: number;
@@ -104,7 +104,7 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
       };
 
       switch (phase) {
-        case 'INSTALLATION':
+        case 'INSTALL':
           const monthlyInstallationCost = totalInstallationCost / batch.phases.installation.duration;
           const totalMonthlyCost = monthlyGpuPayment + monthlyInstallationCost;
           
