@@ -246,19 +246,17 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex justify-between items-center p-6 border-b border-gray-200">
-          <h2 className="text-xl font-semibold">
-            {batch?.name || 'Unknown Batch'} - Month {monthsSinceInstallation + 1}
+          <h2 className="text-xl font-semibold flex items-center">
+            <span 
+              className="text-green-600 underline cursor-pointer hover:text-green-700"
+              onClick={onEditBatch}
+              title="Click to edit batch"
+            >
+              {batch?.name?.split('\n')[0] || 'Unknown Batch'}
+            </span>
+            <span className="ml-2">- Month {monthsSinceInstallation + 1}</span>
           </h2>
           <div className="flex items-center space-x-2">
-            {onEditBatch && (
-              <button 
-                onClick={onEditBatch} 
-                className="text-gray-500 hover:text-gray-700"
-                title="Edit batch details"
-              >
-                <Edit size={20} />
-              </button>
-            )}
             <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
               <X size={20} />
             </button>
