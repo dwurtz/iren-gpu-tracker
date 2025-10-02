@@ -190,8 +190,6 @@ export const BatchRow: React.FC<BatchRowProps> = ({ batch, monthlyData, onEdit, 
       {monthlyData.map((data, index) => {
         const isSelected = selectedCell?.batchId === batch.id && selectedCell?.monthIndex === index;
         // Add heavier border at year boundaries (after Dec, which is at indices 3, 15, 27, 39)
-        const isYearBoundary = index === 3 || index === 15 || index === 27 || index === 39;
-        
         return (
           <td 
             key={index}
@@ -300,7 +298,6 @@ export const YearHeaderRow: React.FC<YearHeaderRowProps> = ({ year }) => {
       </td>
       {/* Empty cells for data columns - no background so they blend with data */}
       {Array.from({ length: 48 }, (_, index) => {
-        const isYearBoundary = index === 3 || index === 15 || index === 27 || index === 39;
                 return (
                   <td key={index} className="p-0" style={{ minWidth: '80px' }}></td>
                 );
