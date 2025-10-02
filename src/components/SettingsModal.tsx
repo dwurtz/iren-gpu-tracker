@@ -98,7 +98,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, s
                   type="number"
                   value={formData.gpusPerMW.b200}
                   onChange={(e) => updateNestedField(['gpusPerMW', 'b200'], parseInt(e.target.value))}
-                  className={`w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 bg-green-50 ${getHighlightClass('gpusPerMW.b200')}`}
+                  className={`w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 ${getHighlightClass('gpusPerMW.b200')}`}
                   readOnly
                 />
               </div>
@@ -110,7 +110,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, s
                   type="number"
                   value={formData.gpusPerMW.gb300}
                   onChange={(e) => updateNestedField(['gpusPerMW', 'gb300'], parseInt(e.target.value))}
-                  className={`w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${getHighlightClass('gpusPerMW.gb300')}`}
+                  className={`w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 ${getHighlightClass('gpusPerMW.gb300')}`}
                 />
               </div>
             </div>
