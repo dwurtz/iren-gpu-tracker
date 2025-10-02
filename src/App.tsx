@@ -511,6 +511,7 @@ function App() {
                         isFirstOfYear={isFirstOfYear}
                         onEdit={handleEditBatch}
                         onDelete={handleDeleteBatch}
+                        onEditSite={handleEditSite}
                         selectedCell={selectedCell}
                         onCellSelect={(batchId, monthIndex) => setSelectedCell({ batchId, monthIndex })}
                         onClearSelection={() => setSelectedCell(null)}

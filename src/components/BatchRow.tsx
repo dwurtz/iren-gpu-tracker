@@ -8,6 +8,7 @@ interface BatchRowProps {
   monthlyData: MonthData[];
   onEdit: (batch: Batch) => void;
   onDelete: (batchId: string) => void;
+  onEditSite?: (siteId: string) => void;
   isFirstOfYear?: boolean;
   selectedCell?: { batchId: string; monthIndex: number } | null;
   onCellSelect?: (batchId: string, monthIndex: number) => void;
@@ -19,7 +20,7 @@ interface BatchRowProps {
 }
 
 
-export const BatchRow: React.FC<BatchRowProps> = ({ batch, monthlyData, onEdit, onDelete, isFirstOfYear = false, selectedCell, onCellSelect, onClearSelection, globalMinValue, globalMaxValue, settings, onOpenSettings }) => {
+export const BatchRow: React.FC<BatchRowProps> = ({ batch, monthlyData, onEdit, onDelete, onEditSite, isFirstOfYear = false, selectedCell, onCellSelect, onClearSelection, globalMinValue, globalMaxValue, settings, onOpenSettings }) => {
   const [modalCell, setModalCell] = useState<{
     monthIndex: number;
     phase: 'INSTALL' | 'BURN_IN' | 'LIVE' | null;
@@ -176,14 +177,11 @@ export const BatchRow: React.FC<BatchRowProps> = ({ batch, monthlyData, onEdit, 
                       <div key={index} className="text-gray-500 text-xs">
                         <span>{parts[0]}• </span>
                         <span 
-                          className="underline cursor-pointer hover:text-gray-700"
+                          className="cursor-pointer hover:text-gray-700"
                           onClick={(e) => {
                             e.stopPropagation();
-                            // Find the site by matching the name
-                            const siteName = parts[1].trim().replace(')', '');
-                            const site = (window as any).__sites?.find((s: any) => s.name === siteName);
-                            if (site && onOpenSettings) {
-                              onOpenSettings(`site-${site.id}`);
+                            if (onEditSite && batch.siteId) {
+                              onEditSite(batch.siteId);
                             }
                           }}
                         >
