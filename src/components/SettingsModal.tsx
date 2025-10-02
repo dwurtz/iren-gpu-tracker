@@ -6,22 +6,27 @@ export interface ProfitabilitySettings {
   gpusPerMW: {
     b200: number;
     gb300: number;
+    h100: number;
   };
   upfrontGpuCost: {
     b200: number;
     gb300: number;
+    h100: number;
   };
   gpuPowerConsumption: {
     b200: number; // kW per GPU
     gb300: number; // kW per GPU
+    h100: number; // kW per GPU
   };
   installationCost: {
     b200: number; // per GPU
     gb300: number; // per GPU
+    h100: number; // per GPU
   };
   gpuHourRate: {
     b200: number; // $ per GPU hour
     gb300: number; // $ per GPU hour
+    h100: number; // $ per GPU hour
   };
   interestRate: number; // 9% for first 3 years
   electricityCost: number; // per kWh
@@ -226,6 +231,77 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, s
                     value={formData.gpuPowerConsumption.gb300}
                     onChange={(e) => updateNestedField(['gpuPowerConsumption', 'gb300'], parseFloat(e.target.value))}
                     className={`w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${getHighlightClass('gpuPowerConsumption.gb300')}`}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* H100 Settings */}
+          <div className="border-b pb-4">
+            <h3 className="text-lg font-semibold mb-3 text-gray-800">H100 (Air Cooled)</h3>
+            <div className="space-y-3 pl-2">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Upfront GPU Cost
+                  </label>
+                  <input
+                    type="number"
+                    value={formData.upfrontGpuCost.h100}
+                    onChange={(e) => updateNestedField(['upfrontGpuCost', 'h100'], parseInt(e.target.value))}
+                    className={`w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 ${getHighlightClass('upfrontGpuCost.h100')}`}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    GPU Hour Rate ($)
+                  </label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    value={formData.gpuHourRate.h100}
+                    onChange={(e) => updateNestedField(['gpuHourRate', 'h100'], parseFloat(e.target.value))}
+                    className={`w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 ${getHighlightClass('gpuHourRate.h100')}`}
+                  />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Number of GPUs/MW (Mode)
+                  </label>
+                  <input
+                    type="number"
+                    value={formData.gpusPerMW.h100}
+                    onChange={(e) => updateNestedField(['gpusPerMW', 'h100'], parseInt(e.target.value))}
+                    className={`w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 ${getHighlightClass('gpusPerMW.h100')}`}
+                    readOnly
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Initial Installation Cost (per GPU)
+                  </label>
+                  <input
+                    type="number"
+                    value={formData.installationCost.h100}
+                    onChange={(e) => updateNestedField(['installationCost', 'h100'], parseInt(e.target.value))}
+                    className={`w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 ${getHighlightClass('installationCost.h100')}`}
+                  />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    GPU Power Consumption (kW/GPU)
+                  </label>
+                  <input
+                    type="number"
+                    step="0.1"
+                    value={formData.gpuPowerConsumption.h100}
+                    onChange={(e) => updateNestedField(['gpuPowerConsumption', 'h100'], parseFloat(e.target.value))}
+                    className={`w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${getHighlightClass('gpuPowerConsumption.h100')}`}
                   />
                 </div>
               </div>

@@ -31,22 +31,27 @@ const defaultSettings: ProfitabilitySettings = {
   gpusPerMW: {
     b200: 532, // air cooled (CONSTANT)
     gb300: 432, // liquid cooled
+    h100: 500, // air cooled
   },
   upfrontGpuCost: {
     b200: 46000, // air cooled
     gb300: 80000, // liquid cooled
+    h100: 35000, // air cooled
   },
   gpuPowerConsumption: {
     b200: 1.7, // 1700W per B200 baseline rack power (before PUE)
     gb300: 2.1, // 2100W per GB300 baseline rack power (before PUE)
+    h100: 1.4, // 1400W per H100 baseline rack power (before PUE)
   },
   installationCost: {
     b200: 20, // per GPU
     gb300: 20, // per GPU
+    h100: 20, // per GPU
   },
   gpuHourRate: {
     b200: 3.65, // $3.65 per GPU hour
     gb300: 5.50, // $5.50 per GPU hour
+    h100: 2.50, // $2.50 per GPU hour
   },
   interestRate: 9, // 9% for first 3 years
   electricityCost: 0.0325, // per kWh
