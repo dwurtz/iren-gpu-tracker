@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Settings, RotateCcw } from 'lucide-react';
+import { Plus, Settings, RotateCcw, Info } from 'lucide-react';
 import { Batch, Site, ChipType } from './types';
 import { NewBatchModal } from './components/NewBatchModal';
 import { BatchRow } from './components/BatchRow';
@@ -471,6 +471,13 @@ function App() {
           >
             <RotateCcw size={16} />
             <span className="text-sm font-medium">RESET</span>
+          </button>
+          <button
+            onClick={() => setIsWelcomeOpen(true)}
+            className="flex items-center space-x-2 bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 border border-gray-300 transition-colors"
+          >
+            <Info size={16} />
+            <span className="text-sm font-medium">ABOUT</span>
           </button>
           <button
             onClick={() => setIsSettingsOpen(true)}

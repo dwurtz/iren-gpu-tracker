@@ -12,6 +12,13 @@ export const WelcomeModal: React.FC<WelcomeModalProps> = ({ isOpen, onClose }) =
   
   useModalBackdrop(isOpen);
 
+  // Reset to step 1 when modal opens
+  React.useEffect(() => {
+    if (isOpen) {
+      setStep(1);
+    }
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   return (
