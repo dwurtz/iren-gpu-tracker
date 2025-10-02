@@ -118,14 +118,15 @@ export const BatchRow: React.FC<BatchRowProps> = ({ batch, monthlyData, onEdit, 
         color: '#7f1d1d'  // Always use dark red text for readability
       };
     } else {
-      // Green gradient for profits - from white (near zero) to dark green
+      // Bright lime-green gradient for profits - matching IREN branding
       const intensity = Math.min(value / maxProfit, 1);
-      const red = Math.floor(255 - (intensity * 255));   // Start white (255), fade to 0
-      const green = 255;                                  // Keep green at maximum
-      const blue = Math.floor(255 - (intensity * 255));  // Start white (255), fade to 0
+      // Using a bright lime green: rgb(74, 222, 128) as the target color (similar to Tailwind's green-400)
+      const red = Math.floor(255 - (intensity * 181));   // 255 -> 74
+      const green = Math.floor(255 - (intensity * 33));  // 255 -> 222
+      const blue = Math.floor(255 - (intensity * 127));  // 255 -> 128
       return { 
         backgroundColor: `rgb(${red}, ${green}, ${blue})`,
-        color: '#15803d'  // Always use dark green text for readability
+        color: '#166534'  // Dark green text for readability (green-800)
       };
     }
   };
@@ -156,7 +157,11 @@ export const BatchRow: React.FC<BatchRowProps> = ({ batch, monthlyData, onEdit, 
             </div>
             <div className="font-medium text-sm">
               {batch.name.split('\n').map((line, index) => (
-                <div key={index} className={index === 0 ? 'text-gray-800 font-semibold' : 'text-gray-500 text-xs'}>
+                <div 
+                  key={index} 
+                  className={index === 0 ? 'text-green-600 font-semibold underline cursor-pointer hover:text-green-700' : 'text-gray-500 text-xs'}
+                  onClick={index === 0 ? () => onEdit(batch) : undefined}
+                >
                   {line}
                 </div>
               ))}

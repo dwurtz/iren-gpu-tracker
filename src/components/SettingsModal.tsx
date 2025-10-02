@@ -98,7 +98,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, s
                   type="number"
                   value={formData.gpusPerMW.b200}
                   onChange={(e) => updateNestedField(['gpusPerMW', 'b200'], parseInt(e.target.value))}
-                  className={`w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-blue-50 ${getHighlightClass('gpusPerMW.b200')}`}
+                  className={`w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 bg-green-50 ${getHighlightClass('gpusPerMW.b200')}`}
                   readOnly
                 />
               </div>
@@ -318,7 +318,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, s
             </button>
             <button
               onClick={handleSubmit}
-              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+              className="px-4 py-2 bg-green-400 text-white rounded-md hover:bg-green-500"
             >
               Save Settings
             </button>

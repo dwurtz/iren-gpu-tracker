@@ -438,7 +438,7 @@ function App() {
           </button>
           <button
             onClick={() => setIsModalOpen(true)}
-            className="flex items-center space-x-2 bg-emerald-500 text-white px-4 py-2 rounded-lg hover:bg-emerald-600 transition-colors"
+            className="flex items-center space-x-2 bg-green-400 text-white px-4 py-2 rounded-lg hover:bg-green-500 transition-colors"
           >
             <Plus size={16} />
             <span className="text-sm font-medium">NEW BATCH</span>
@@ -547,21 +547,21 @@ function App() {
                         );
                       })}
                       <td className="px-4 py-3 text-center font-bold sticky right-0 bg-gray-50 z-50 border-l">
-                        <div className={grandTotal < 0 ? 'text-red-600' : 'text-emerald-600'}>
+                        <div className={grandTotal < 0 ? 'text-red-600' : 'text-green-600'}>
                           {formatValue(grandTotal)}
                         </div>
                       </td>
                     </tr>
                     
                     {/* ARR row */}
-                    <tr className="border-t border-gray-200 bg-emerald-50 font-medium">
-                      <td className="px-4 py-3 text-emerald-700 text-xs font-semibold uppercase tracking-wide sticky left-0 bg-emerald-50 z-50 border-r">ARR</td>
+                    <tr className="border-t border-gray-200 bg-green-50 font-medium">
+                      <td className="px-4 py-3 text-green-700 text-xs font-semibold uppercase tracking-wide sticky left-0 bg-green-50 z-50 border-r">ARR</td>
                       {arrData.map((data, index) => {
                         const isYearBoundary = index === 3 || index === 15 || index === 27 || index === 39;
                         return (
                           <td 
                             key={index} 
-                            className={`px-2 py-3 text-center text-sm ${isYearBoundary ? 'border-r-2 border-gray-300' : 'border-r border-gray-200'} cursor-pointer hover:bg-emerald-100`}
+                            className={`px-2 py-3 text-center text-sm ${isYearBoundary ? 'border-r-2 border-gray-300' : 'border-r border-gray-200'} cursor-pointer hover:bg-green-100`}
                             style={{ minWidth: '80px' }}
                           onClick={() => {
                             setSelectedARRMonth(index);
@@ -569,15 +569,15 @@ function App() {
                           }}
                         >
                           {data.value > 0 && (
-                            <div className="text-emerald-600 font-medium">
+                            <div className="text-green-600 font-medium">
                               {formatValue(data.value)}
                             </div>
                           )}
                         </td>
                         );
                       })}
-                      <td className="px-4 py-3 text-center font-bold sticky right-0 bg-emerald-50 z-50 border-l">
-                        <div className="text-emerald-700">
+                      <td className="px-4 py-3 text-center font-bold sticky right-0 bg-green-50 z-50 border-l">
+                        <div className="text-green-700">
                           {formatValue(arrData.length > 0 ? arrData[arrData.length - 1].value : 0)}
                         </div>
                       </td>

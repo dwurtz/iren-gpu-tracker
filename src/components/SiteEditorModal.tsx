@@ -63,7 +63,7 @@ export const SiteEditorModal: React.FC<SiteEditorModalProps> = ({ isOpen, onClos
         </div>
         <div className="flex-1 overflow-y-auto p-6">
           {/* Utilization Display */}
-          <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+          <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
             <div className="flex justify-between items-center mb-2">
               <span className="text-sm font-medium text-gray-700">Site Utilization</span>
               <span className="text-lg font-bold text-blue-600">{utilizationPercent.toFixed(1)}%</span>
@@ -137,7 +137,7 @@ export const SiteEditorModal: React.FC<SiteEditorModalProps> = ({ isOpen, onClos
             </button>
             <button
               onClick={handleSubmit}
-              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+              className="px-4 py-2 bg-green-400 text-white rounded-md hover:bg-green-500"
             >
               Save Changes
             </button>
