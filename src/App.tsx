@@ -10,13 +10,13 @@ import ARRModal from './components/ARRModal';
 import { ModalBackdrop } from './components/ModalBackdrop';
 import { calculateMonthlyData, calculateTotals } from './utils/calculations';
 
-// Extended timeline: Sep 2025 to Aug 2029 (48 months for 36-month breakeven analysis)
+// Extended timeline: Sep 2025 to Dec 2029 (52 months for 36-month breakeven analysis)
 const MONTHS = [
   "Sep '25", "Oct '25", "Nov '25", "Dec '25", // 2025 (4 months)
   "Jan '26", "Feb '26", "Mar '26", "Apr '26", "May '26", "Jun '26", "Jul '26", "Aug '26", "Sep '26", "Oct '26", "Nov '26", "Dec '26", // 2026 (12 months)
   "Jan '27", "Feb '27", "Mar '27", "Apr '27", "May '27", "Jun '27", "Jul '27", "Aug '27", "Sep '27", "Oct '27", "Nov '27", "Dec '27", // 2027 (12 months)
   "Jan '28", "Feb '28", "Mar '28", "Apr '28", "May '28", "Jun '28", "Jul '28", "Aug '28", "Sep '28", "Oct '28", "Nov '28", "Dec '28", // 2028 (12 months)
-  "Jan '29", "Feb '29", "Mar '29", "Apr '29", "May '29", "Jun '29", "Jul '29", "Aug '29" // 2029 (8 months)
+  "Jan '29", "Feb '29", "Mar '29", "Apr '29", "May '29", "Jun '29", "Jul '29", "Aug '29", "Sep '29", "Oct '29", "Nov '29", "Dec '29" // 2029 (12 months)
 ];
 // const YEARS = [
 //   2025, 2025, 2025, 2025, // 2025
@@ -240,7 +240,7 @@ function App() {
         if (currentBatchIndex === -1) return;
         
         const currentBatch = batches[currentBatchIndex];
-        const batchData = calculateMonthlyData(currentBatch, 8, 2025, 48, settings);
+        const batchData = calculateMonthlyData(currentBatch, 8, 2025, 52, settings);
         
         let newMonthIndex = selectedCell.monthIndex;
         
@@ -347,7 +347,7 @@ function App() {
 
   // Calculate data for all batches
   const allBatchData = batches.map(batch => 
-    calculateMonthlyData(batch, 8, 2025, 48, settings) // Sept 2025 to Aug 2029
+    calculateMonthlyData(batch, 8, 2025, 52, settings) // Sept 2025 to Dec 2029
   );
   
   const totals = calculateTotals(allBatchData);
@@ -365,7 +365,7 @@ function App() {
   const calculateARR = () => {
     try {
       const arrData: { value: number }[] = [];
-      const totalMonths = 48; // Sept 2025 to Aug 2029
+      const totalMonths = 52; // Sept 2025 to Dec 2029
       
       for (let monthIndex = 0; monthIndex < totalMonths; monthIndex++) {
         let liveGPUs = 0;
@@ -392,8 +392,8 @@ function App() {
       return arrData;
     } catch (error) {
       console.error('Error calculating ARR:', error);
-      // Return empty array with 48 zero values as fallback
-      return Array.from({ length: 48 }, () => ({ value: 0 }));
+      // Return empty array with 52 zero values as fallback
+      return Array.from({ length: 52 }, () => ({ value: 0 }));
     }
   };
 
@@ -472,7 +472,7 @@ function App() {
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-600 sticky left-0 bg-white z-50" style={{ minWidth: '240px', width: '240px' }}></th>
                   {MONTHS.map((month, index) => {
                     // Add heavier border at year boundaries (after Dec, which is at indices 3, 15, 27, 39)
-                    const isYearBoundary = index === 3 || index === 15 || index === 27 || index === 39;
+                    const isYearBoundary = index === 3 || index === 15 || index === 27 || index === 39 || index === 51;
                     return (
                       <th key={index} className={`px-2 py-3 text-center text-xs font-medium text-gray-600 ${isYearBoundary ? 'border-r-2 border-gray-200' : 'border-r border-gray-200'}`} style={{ minWidth: '80px' }}>
                         {month}
@@ -542,7 +542,7 @@ function App() {
                     <tr className="border-t-2 border-gray-200 bg-white font-medium">
                       <td className="px-4 py-3 text-gray-700 text-xs font-semibold uppercase tracking-wide sticky left-0 bg-white z-50 border-r">CUMULATIVE PROFIT</td>
                       {totals.map((data, index) => {
-                        const isYearBoundary = index === 3 || index === 15 || index === 27 || index === 39;
+                        const isYearBoundary = index === 3 || index === 15 || index === 27 || index === 39 || index === 51;
                         return (
                           <td key={index} className={`px-2 py-3 text-center text-sm ${isYearBoundary ? 'border-r-2 border-gray-200' : 'border-r border-gray-200'}`} style={{ minWidth: '80px' }}>
                             {data.value !== 0 && (
@@ -564,7 +564,7 @@ function App() {
                     <tr className="border-t border-gray-200 bg-white font-medium">
                       <td className="px-4 py-3 text-gray-700 text-xs font-semibold uppercase tracking-wide sticky left-0 bg-white z-50 border-r">ARR</td>
                       {arrData.map((data, index) => {
-                        const isYearBoundary = index === 3 || index === 15 || index === 27 || index === 39;
+                        const isYearBoundary = index === 3 || index === 15 || index === 27 || index === 39 || index === 51;
                         return (
                           <td 
                             key={index} 
