@@ -486,9 +486,17 @@ function App() {
                     return a.installationMonth - b.installationMonth;
                   });
                   
+                  let currentYear: number | null = null;
+                  
                   sortedBatches.forEach((batch) => {
                     // Find the original index for accessing allBatchData
                     const batchIndex = batches.findIndex(b => b.id === batch.id);
+                    
+                    // Check if this is the first batch of a new year
+                    const isFirstOfYear = currentYear !== batch.installationYear;
+                    if (isFirstOfYear) {
+                      currentYear = batch.installationYear;
+                    }
                     
                     // Add the batch row
                     rows.push(
@@ -496,6 +504,7 @@ function App() {
                         key={batch.id}
                         batch={batch}
                         monthlyData={allBatchData[batchIndex] || []}
+                        isFirstOfYear={isFirstOfYear}
                         onEdit={handleEditBatch}
                         onDelete={handleDeleteBatch}
                         selectedCell={selectedCell}

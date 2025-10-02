@@ -8,6 +8,7 @@ interface BatchRowProps {
   monthlyData: MonthData[];
   onEdit: (batch: Batch) => void;
   onDelete: (batchId: string) => void;
+  isFirstOfYear?: boolean;
   selectedCell?: { batchId: string; monthIndex: number } | null;
   onCellSelect?: (batchId: string, monthIndex: number) => void;
   onClearSelection?: () => void;
@@ -18,7 +19,7 @@ interface BatchRowProps {
 }
 
 
-export const BatchRow: React.FC<BatchRowProps> = ({ batch, monthlyData, onEdit, onDelete, selectedCell, onCellSelect, onClearSelection, globalMinValue, globalMaxValue, settings, onOpenSettings }) => {
+export const BatchRow: React.FC<BatchRowProps> = ({ batch, monthlyData, onEdit, onDelete, isFirstOfYear = false, selectedCell, onCellSelect, onClearSelection, globalMinValue, globalMaxValue, settings, onOpenSettings }) => {
   const [modalCell, setModalCell] = useState<{
     monthIndex: number;
     phase: 'INSTALL' | 'BURN_IN' | 'LIVE' | null;
@@ -146,7 +147,7 @@ export const BatchRow: React.FC<BatchRowProps> = ({ batch, monthlyData, onEdit, 
   const finalProfit = monthlyData.length > 0 ? monthlyData[monthlyData.length - 1].value : 0;
 
   return (
-    <tr className="hover:bg-gray-50">
+    <tr className={`hover:bg-gray-50 ${isFirstOfYear ? 'border-t border-gray-200' : ''}`}>
       <td className="px-4 py-2 sticky left-0 bg-white z-30 border-r" style={{ minWidth: '240px', width: '240px' }}>
         <div className="flex items-center justify-between">
           <div className="flex-1">
