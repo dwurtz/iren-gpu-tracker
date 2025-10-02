@@ -7,6 +7,7 @@ import { SettingsModal, ProfitabilitySettings } from './components/SettingsModal
 import { EditBatchModal } from './components/EditBatchModal';
 import { SiteEditorModal } from './components/SiteEditorModal';
 import ARRModal from './components/ARRModal';
+import { WelcomeModal } from './components/WelcomeModal';
 import { ModalBackdrop } from './components/ModalBackdrop';
 import { calculateMonthlyData, calculateTotals } from './utils/calculations';
 
@@ -231,6 +232,10 @@ function App() {
     // Initialize based on actual window width
     return typeof window !== 'undefined' && window.innerWidth < 550;
   });
+  const [isWelcomeOpen, setIsWelcomeOpen] = useState(() => {
+    // Check if user has seen the welcome modal before
+    return !localStorage.getItem('welcomeModalSeen');
+  });
 
   // Check screen size for mobile detection
   useEffect(() => {
@@ -321,6 +326,11 @@ function App() {
     const updatedBatches = batches.filter(batch => batch.id !== batchId);
     setBatches(updatedBatches);
     saveBatchesToStorage(updatedBatches);
+  };
+
+  const handleWelcomeClose = () => {
+    localStorage.setItem('welcomeModalSeen', 'true');
+    setIsWelcomeOpen(false);
   };
 
   const handleResetToDefaults = () => {
@@ -691,6 +701,11 @@ function App() {
         site={editingSite}
         onSave={handleSaveSite}
         batches={batches}
+      />
+
+      <WelcomeModal
+        isOpen={isWelcomeOpen}
+        onClose={handleWelcomeClose}
       />
     </div>
       )}
