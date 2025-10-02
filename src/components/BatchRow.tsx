@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';i 
+import React, { useState, useEffect } from 'react';
 import { Edit2, Trash2 } from 'lucide-react';
 import { Batch, MonthData } from '../types';
 import { CellDetailModal } from './CellDetailModal';

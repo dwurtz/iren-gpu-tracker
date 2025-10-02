@@ -1,6 +1,6 @@
 export type ChipType = 'B200' | 'GB300' | 'H100';
 
-export type Phase = 'INSTALLATION' | 'BURN_IN' | 'LIVE';
+export type Phase = 'INSTALL' | 'BURN_IN' | 'LIVE';
 
 export interface Site {
   id: string;
