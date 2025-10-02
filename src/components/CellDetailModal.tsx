@@ -98,7 +98,7 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
         label: 'GPU Cost (Financed)',
         value: (
           <span title={`Formula: P × [r(1+r)^n] / [(1+r)^n - 1] where P = ${formatValue(totalGpuCost)}, r = ${(settings.interestRate / 12).toFixed(3)}% monthly, n = 36 months`}>
-            {batch.quantity.toLocaleString()} GPUs × <ClickableVariable title="Click to edit upfront GPU cost in settings" field={`upfrontGpuCost.${batch.chipType.toLowerCase()}`} onOpenSettings={onOpenSettings}>{formatValue(gpuCostPerUnit)}</ClickableVariable> ÷ 36 months @ {settings.interestRate}% = {formatValue(monthlyGpuPayment)}
+            {batch.quantity.toLocaleString()} GPUs × <ClickableVariable title="Click to edit upfront GPU cost in settings" field={`upfrontGpuCost.${batch.chipType.toLowerCase()}`} onOpenSettings={onOpenSettings}>{formatValue(gpuCostPerUnit)}</ClickableVariable> ÷ 36 months @ <ClickableVariable title="Click to edit interest rate in settings" field="interestRate" onOpenSettings={onOpenSettings}>{settings.interestRate}%</ClickableVariable> = {formatValue(monthlyGpuPayment)}
           </span>
         )
       };
