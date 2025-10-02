@@ -465,7 +465,7 @@ function App() {
                   <th className="px-2 py-2 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide border-r" colSpan={12}>2027</th>
                   <th className="px-2 py-2 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide border-r" colSpan={12}>2028</th>
                   <th className="px-2 py-2 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide border-r" colSpan={12}>2029</th>
-                  <th className="px-4 py-2 text-center text-xs font-semibold text-gray-500 uppercase tracking-wide w-24 sticky right-0 bg-gray-50 z-50 border-l">TOTAL</th>
+                  <th className="px-4 py-2 text-center text-xs font-semibold text-gray-500 uppercase tracking-wide w-24 sticky right-0 bg-gray-50 z-50 border-l"></th>
                 </tr>
                 {/* Month headers */}
                 <tr className="bg-white border-b border-gray-200">
