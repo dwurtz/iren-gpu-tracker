@@ -147,7 +147,7 @@ export const BatchRow: React.FC<BatchRowProps> = ({ batch, monthlyData, onEdit, 
   const finalProfit = monthlyData.length > 0 ? monthlyData[monthlyData.length - 1].value : 0;
 
   return (
-    <tr className={`hover:bg-gray-50 ${isFirstOfYear ? 'border-t border-gray-200' : ''}`}>
+    <tr className={`hover:bg-gray-50 ${isFirstOfYear ? 'border-t-2 border-gray-300' : ''}`}>
       <td className="px-4 py-2 sticky left-0 bg-white z-30 border-r" style={{ minWidth: '240px', width: '240px' }}>
         <div className="flex items-center justify-between">
           <div className="flex-1">
@@ -182,10 +182,11 @@ export const BatchRow: React.FC<BatchRowProps> = ({ batch, monthlyData, onEdit, 
       {monthlyData.map((data, index) => {
         const isSelected = selectedCell?.batchId === batch.id && selectedCell?.monthIndex === index;
         // Add heavier border at year boundaries (after Dec, which is at indices 3, 15, 27, 39)
+        const isYearBoundary = index === 3 || index === 15 || index === 27 || index === 39;
         return (
           <td 
             key={index}
-            className={`px-2 py-3 text-center text-sm border-r border-gray-200 cursor-pointer hover:opacity-80`}
+            className={`px-2 py-3 text-center text-sm ${isYearBoundary ? 'border-r-2 border-gray-300' : 'border-r border-gray-200'} cursor-pointer hover:opacity-80`}
             style={{
               minWidth: '80px',
               ...getProfitColorStyle(data.value, data.phase),
