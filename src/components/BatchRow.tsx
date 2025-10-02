@@ -150,7 +150,7 @@ export const BatchRow: React.FC<BatchRowProps> = ({ batch, monthlyData, onEdit, 
   const finalProfit = monthlyData.length > 0 ? monthlyData[monthlyData.length - 1].value : 0;
 
   return (
-    <tr className={`hover:bg-gray-50 ${isFirstOfYear ? 'border-t-2 border-gray-300' : ''}`}>
+    <tr className={`hover:bg-gray-50 ${isFirstOfYear ? 'border-t border-gray-200' : ''}`}>
       <td className="px-4 py-2 sticky left-0 bg-white z-30 border-r" style={{ minWidth: '240px', width: '240px' }}>
         <div className="flex items-center justify-between">
           <div className="flex-1">
@@ -290,7 +290,7 @@ export const BatchRow: React.FC<BatchRowProps> = ({ batch, monthlyData, onEdit, 
 
 export const YearHeaderRow: React.FC<YearHeaderRowProps> = ({ year }) => {
   return (
-    <tr className="border-t-2 border-gray-300">
+    <tr className="border-t border-gray-200">
       <td className="px-4 py-2 sticky left-0 bg-gray-100 z-30 border-r" style={{ minWidth: '240px', width: '240px' }}>
         <div className="font-bold text-gray-900 text-sm">
           {year}

@@ -530,7 +530,7 @@ function App() {
                 {batches.length > 0 && (
                   <>
                     {/* TOTAL row */}
-                    <tr className="border-t-2 border-gray-300 bg-gray-100 font-medium">
+                    <tr className="border-t border-gray-200 bg-gray-100 font-medium">
                       <td className="px-4 py-3 text-gray-900 sticky left-0 bg-gray-100 z-50 border-r">PROFIT</td>
                       {totals.map((data, index) => {
                         return (
