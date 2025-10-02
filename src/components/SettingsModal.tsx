@@ -130,7 +130,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, s
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Upfront GPU Cost
+                    Upfront GPU Cost ($ per GPU)
                   </label>
                   <input
                     type="number"
@@ -141,7 +141,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, s
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Installation Cost (per GPU)
+                    Installation Cost ($ per GPU)
                   </label>
                   <input
                     type="number"
@@ -154,7 +154,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, s
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    GPU Hour Rate ($)
+                    GPU Hour Rate ($ per GPU per hour)
                   </label>
                   <input
                     type="number"
@@ -187,7 +187,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, s
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Upfront GPU Cost
+                    Upfront GPU Cost ($ per GPU)
                   </label>
                   <input
                     type="number"
@@ -198,7 +198,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, s
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Installation Cost (per GPU)
+                    Installation Cost ($ per GPU)
                   </label>
                   <input
                     type="number"
@@ -211,7 +211,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, s
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    GPU Hour Rate ($)
+                    GPU Hour Rate ($ per GPU per hour)
                   </label>
                   <input
                     type="number"
@@ -244,7 +244,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, s
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Upfront GPU Cost
+                    Upfront GPU Cost ($ per GPU)
                   </label>
                   <input
                     type="number"
@@ -255,7 +255,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, s
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    GPU Hour Rate ($)
+                    GPU Hour Rate ($ per GPU per hour)
                   </label>
                   <input
                     type="number"
@@ -281,7 +281,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, s
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Initial Installation Cost (per GPU)
+                    Installation Cost ($ per GPU)
                   </label>
                   <input
                     type="number"
