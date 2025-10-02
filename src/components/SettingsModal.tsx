@@ -120,7 +120,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, s
 
           {/* B200 Settings */}
           <div className="border-b pb-4">
-            <h3 className="text-lg font-semibold mb-3 text-blue-700">B200 (Air Cooled)</h3>
+            <h3 className="text-lg font-semibold mb-3 text-gray-800">B200 (Air Cooled)</h3>
             <div className="space-y-3 pl-2">
               <div className="grid grid-cols-2 gap-4">
                 <div>
@@ -177,7 +177,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, s
 
           {/* GB300 Settings */}
           <div className="border-b pb-4">
-            <h3 className="text-lg font-semibold mb-3 text-green-700">GB300 (Liquid Cooled)</h3>
+            <h3 className="text-lg font-semibold mb-3 text-gray-800">GB300 (Liquid Cooled)</h3>
             <div className="space-y-3 pl-2">
               <div className="grid grid-cols-2 gap-4">
                 <div>

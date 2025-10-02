@@ -156,15 +156,45 @@ export const BatchRow: React.FC<BatchRowProps> = ({ batch, monthlyData, onEdit, 
               {['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][batch.installationMonth]} {batch.installationYear}
             </div>
             <div className="font-medium text-sm">
-              {batch.name.split('\n').map((line, index) => (
-                <div 
-                  key={index} 
-                  className={index === 0 ? 'text-green-600 font-semibold underline cursor-pointer hover:text-green-700' : 'text-gray-500 text-xs'}
-                  onClick={index === 0 ? () => onEdit(batch) : undefined}
-                >
-                  {line}
-                </div>
-              ))}
+              {batch.name.split('\n').map((line, index) => {
+                if (index === 0) {
+                  // First line - batch name (green, clickable)
+                  return (
+                    <div 
+                      key={index} 
+                      className="text-green-600 font-semibold underline cursor-pointer hover:text-green-700"
+                      onClick={() => onEdit(batch)}
+                    >
+                      {line}
+                    </div>
+                  );
+                } else {
+                  // Second line - MW and site (parse and make site clickable)
+                  const parts = line.split('•');
+                  if (parts.length === 2) {
+                    return (
+                      <div key={index} className="text-gray-500 text-xs">
+                        <span>{parts[0]}• </span>
+                        <span 
+                          className="underline cursor-pointer hover:text-gray-700"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            // Find the site by matching the name
+                            const siteName = parts[1].trim().replace(')', '');
+                            const site = (window as any).__sites?.find((s: any) => s.name === siteName);
+                            if (site && onOpenSettings) {
+                              onOpenSettings(`site-${site.id}`);
+                            }
+                          }}
+                        >
+                          {parts[1]}
+                        </span>
+                      </div>
+                    );
+                  }
+                  return <div key={index} className="text-gray-500 text-xs">{line}</div>;
+                }
+              })}
             </div>
           </div>
           <div className="flex space-x-1 ml-2">
