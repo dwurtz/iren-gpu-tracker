@@ -195,7 +195,7 @@ export const BatchRow: React.FC<BatchRowProps> = ({ batch, monthlyData, onEdit, 
         return (
           <td 
             key={index}
-            className={`px-2 py-3 text-center text-sm ${isYearBoundary ? 'border-r-2 border-gray-400' : 'border-r border-gray-200'} cursor-pointer hover:opacity-80`}
+            className={`px-2 py-3 text-center text-sm border-r border-gray-200 cursor-pointer hover:opacity-80`}
             style={{
               minWidth: '80px',
               ...getProfitColorStyle(data.value, data.phase),
@@ -301,9 +301,9 @@ export const YearHeaderRow: React.FC<YearHeaderRowProps> = ({ year }) => {
       {/* Empty cells for data columns - no background so they blend with data */}
       {Array.from({ length: 48 }, (_, index) => {
         const isYearBoundary = index === 3 || index === 15 || index === 27 || index === 39;
-        return (
-          <td key={index} className={`p-0 ${isYearBoundary ? 'border-r-2 border-gray-400' : ''}`} style={{ minWidth: '80px' }}></td>
-        );
+                return (
+                  <td key={index} className="p-0" style={{ minWidth: '80px' }}></td>
+                );
       })}
       <td className="sticky right-0 bg-white z-30 border-l w-24"></td>
     </tr>
