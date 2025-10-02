@@ -425,7 +425,7 @@ function App() {
       <div className="flex justify-between items-center px-6 py-3 bg-white shadow-sm border-b border-gray-200">
         <div className="flex items-center space-x-3">
           <img src="https://iren.com/icons/logo.svg" alt="IREN" className="h-8" />
-          <h1 className="text-xl font-semibold text-gray-700">GPU Matrix</h1>
+          <h1 className="text-xl font-semibold text-gray-700">GPU Tracker</h1>
         </div>
         <div className="flex space-x-3">
           <button
