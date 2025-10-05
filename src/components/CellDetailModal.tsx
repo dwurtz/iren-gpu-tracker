@@ -346,8 +346,8 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
                 <div className="ml-4 space-y-1 text-sm text-gray-600">
                   {phaseDetails.details.filter(Boolean).map((detail, index) => (
                     <div key={index} className="flex justify-between">
-                      <span>• {detail.label}:</span>
-                      <span>{detail.value}</span>
+                      <span>• {detail!.label}:</span>
+                      <span>{detail!.value}</span>
                     </div>
                   ))}
                 </div>
