@@ -101,12 +101,10 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
       const installationCostPerGpu = settings.installationCost[chipKey];
       const totalInstallationCost = installationCostPerGpu * batch.quantity;
       
-      // GPU Financing section (shown in all phases)
-      const gpuFinancingSection = {
-        label: isCashPurchase ? 'GPU Cost (Cash)' : 'GPU Cost (Financed)',
-        value: isCashPurchase ? (
-          <span>Cash Purchase: ${formatValue(0)} per month</span>
-        ) : (
+      // GPU Financing section (only shown for financed purchases)
+      const gpuFinancingSection = isCashPurchase ? null : {
+        label: 'GPU Cost (Financed)',
+        value: (
           <span title={`Formula: P × [r(1+r)^n] / [(1+r)^n - 1] where P = ${formatValue(totalGpuCost)}, r = ${((batch.apr || 0) / 12).toFixed(3)}% monthly, n = ${loanTermMonths} months`}>
             {batch.quantity.toLocaleString()} GPUs × <ClickableVariable title="Click to edit upfront GPU cost in settings" field={`upfrontGpuCost.${batch.chipType.toLowerCase()}`} onOpenSettings={onOpenSettings}>{formatValue(gpuCostPerUnit)}</ClickableVariable> ÷ {loanTermMonths} months @ {batch.apr || 0}% = {formatValue(monthlyGpuPayment)}
           </span>
@@ -130,7 +128,7 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
                 </span>
               )
             },
-          ];
+          ].filter(Boolean);
           
           // Add upfront GPU cost line for cash purchases in first month
           if (isCashPurchase && monthsSinceInstallation === 0) {
@@ -176,7 +174,7 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
                   </span>
                 )
               },
-            ],
+            ].filter(Boolean),
             monthlyRevenue: 0,
             monthlyCosts: totalBurnInCost,
             netMonthly: -totalBurnInCost
@@ -194,9 +192,9 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
           const details = [];
           
           // Add GPU financing section (show even if paid off)
-          if (gpuPaymentActive) {
+          if (gpuPaymentActive && gpuFinancingSection) {
             details.push(gpuFinancingSection);
-          } else {
+          } else if (!isCashPurchase) {
             details.push({ 
               label: 'GPU Cost (Financed)', 
               value: (
