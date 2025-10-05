@@ -30,12 +30,12 @@ const MONTHS = [
 // Default profitability settings
 const defaultSettings: ProfitabilitySettings = {
   gpusPerMW: {
-    b200: 532, // air cooled (CONSTANT)
-    b300: 520, // air cooled
-    gb300: 432, // liquid cooled
-    h100: 500, // air cooled
-    h200: 490, // air cooled
-    mi350x: 480, // air cooled
+    b200: 532, // air cooled
+    b300: 520, // air cooled (estimated: similar to B200 but slightly less efficient)
+    gb300: 432, // liquid cooled (higher power density)
+    h100: 500, // air cooled (estimated based on 700W TDP)
+    h200: 485, // air cooled (estimated: ~3% more power than H100)
+    mi350x: 475, // air cooled (estimated: similar power envelope to high-end GPUs)
   },
   upfrontGpuCost: {
     b200: 46233, // from table

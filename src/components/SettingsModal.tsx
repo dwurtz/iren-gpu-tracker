@@ -111,19 +111,18 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, s
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  B200s
+                  B200
                 </label>
                 <input
                   type="number"
                   value={formData.gpusPerMW.b200}
                   onChange={(e) => updateNestedField(['gpusPerMW', 'b200'], parseInt(e.target.value))}
                   className={`w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 ${getHighlightClass('gpusPerMW.b200')}`}
-                  readOnly
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  GB300s
+                  GB300
                 </label>
                 <input
                   type="number"
@@ -283,14 +282,13 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, s
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Number of GPUs/MW (Mode)
+                    Number of GPUs/MW
                   </label>
                   <input
                     type="number"
                     value={formData.gpusPerMW.h100}
                     onChange={(e) => updateNestedField(['gpusPerMW', 'h100'], parseInt(e.target.value))}
                     className={`w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 ${getHighlightClass('gpusPerMW.h100')}`}
-                    readOnly
                   />
                 </div>
                 <div>
