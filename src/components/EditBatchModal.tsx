@@ -148,6 +148,107 @@ export const EditBatchModal: React.FC<EditBatchModalProps> = ({ isOpen, onClose,
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
+              Date Announced
+            </label>
+            <input
+              type="date"
+              value={formData.dateAnnounced || ''}
+              onChange={(e) => setFormData({ ...formData, dateAnnounced: e.target.value })}
+              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Funding Type
+              </label>
+              <select
+                value={formData.fundingType || 'Lease'}
+                onChange={(e) => {
+                  const fundingType = e.target.value as 'Cash' | 'Lease';
+                  setFormData({ 
+                    ...formData, 
+                    fundingType,
+                    leaseType: fundingType === 'Lease' ? 'FMV' : null,
+                    residualCap: fundingType === 'Lease' ? (formData.residualCap || 20) : undefined,
+                    leaseTerm: fundingType === 'Lease' ? (formData.leaseTerm || 36) : undefined,
+                    apr: fundingType === 'Lease' ? (formData.apr || 9) : undefined
+                  });
+                }}
+                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              >
+                <option value="Cash">Cash</option>
+                <option value="Lease">Lease</option>
+              </select>
+            </div>
+            {formData.fundingType === 'Lease' && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Lease Type
+                </label>
+                <select
+                  value={formData.leaseType || 'FMV'}
+                  onChange={(e) => setFormData({ ...formData, leaseType: e.target.value as 'FMV' })}
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                >
+                  <option value="FMV">FMV</option>
+                </select>
+              </div>
+            )}
+          </div>
+
+          {formData.fundingType === 'Lease' && (
+            <div className="grid grid-cols-3 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Residual Cap (%)
+                </label>
+                <input
+                  type="number"
+                  value={formData.residualCap || 20}
+                  onChange={(e) => setFormData({ ...formData, residualCap: parseFloat(e.target.value) })}
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  min="0"
+                  max="100"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Term (months)
+                </label>
+                <input
+                  type="number"
+                  value={formData.leaseTerm || 36}
+                  onChange={(e) => setFormData({ ...formData, leaseTerm: parseInt(e.target.value) })}
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  min="1"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  APR (%)
+                </label>
+                <input
+                  type="number"
+                  step="0.1"
+                  value={formData.apr || 9}
+                  onChange={(e) => setFormData({ ...formData, apr: parseFloat(e.target.value) })}
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  min="0"
+                  required
+                />
+              </div>
+            </div>
+          )}
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
               Site
             </label>
             <div className="flex items-center gap-2">

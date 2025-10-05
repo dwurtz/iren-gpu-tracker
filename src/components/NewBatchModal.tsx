@@ -29,10 +29,6 @@ export const NewBatchModal: React.FC<NewBatchModalProps> = ({ isOpen, onClose, o
     residualCap: 20,
     leaseTerm: 36,
     apr: 9,
-    installationDuration: 1,
-    installationCost: 1523,
-    burnInDuration: 1,
-    burnInCost: 1723,
   });
 
   const getGpusPerMW = () => {
@@ -62,15 +58,15 @@ export const NewBatchModal: React.FC<NewBatchModalProps> = ({ isOpen, onClose, o
       apr: formData.fundingType === 'Lease' ? formData.apr : undefined,
       phases: {
         installation: {
-          duration: formData.installationDuration,
-          costPerUnit: formData.installationCost,
+          duration: 1, // Default 1 month
+          costPerUnit: 0, // Not used - costs come from global settings
         },
         burnIn: {
-          duration: formData.burnInDuration,
-          costPerUnit: formData.burnInCost,
+          duration: 1, // Default 1 month
+          costPerUnit: 0, // Not used
         },
         live: {
-          revenuePerUnit: 400, // This will be calculated from settings, not stored per batch
+          revenuePerUnit: 0, // Calculated from settings, not stored per batch
         },
       },
     };
@@ -178,35 +174,6 @@ export const NewBatchModal: React.FC<NewBatchModalProps> = ({ isOpen, onClose, o
                 className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 min="2024"
                 max="2030"
-                required
-              />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Installation Cost per Unit
-              </label>
-              <input
-                type="number"
-                value={formData.installationCost}
-                onChange={(e) => setFormData({ ...formData, installationCost: parseInt(e.target.value) })}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                min="0"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Burn-in Cost per Unit
-              </label>
-              <input
-                type="number"
-                value={formData.burnInCost}
-                onChange={(e) => setFormData({ ...formData, burnInCost: parseInt(e.target.value) })}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                min="0"
                 required
               />
             </div>

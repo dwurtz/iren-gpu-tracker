@@ -82,12 +82,14 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
       const baseElectricalCost = hoursGpusRun * totalPowerKw * settings.electricityCost;
       const electricalCost = baseElectricalCost * settings.electricalOverhead; // Apply PUE multiplier
       
-      // GPU financing calculations (same as main calculations)
-      const annualInterestRate = settings.interestRate / 100; // From settings
+      // GPU financing calculations - now from batch level
+      const isCashPurchase = batch.fundingType === 'Cash';
+      const annualInterestRate = isCashPurchase ? 0 : (batch.apr || 0) / 100;
       const monthlyInterestRate = annualInterestRate / 12;
-      const loanTermMonths = 36;
+      const loanTermMonths = batch.leaseTerm || 36;
       
       const calculateMonthlyPayment = (principal: number) => {
+        if (isCashPurchase) return 0;
         if (monthlyInterestRate === 0) return principal / loanTermMonths;
         return principal * (monthlyInterestRate * Math.pow(1 + monthlyInterestRate, loanTermMonths)) / 
                (Math.pow(1 + monthlyInterestRate, loanTermMonths) - 1);
