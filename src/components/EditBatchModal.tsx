@@ -3,6 +3,7 @@ import { X } from 'lucide-react';
 import { Batch, ChipType, Site } from '../types';
 import { useModalBackdrop } from './ModalBackdrop';
 import { ClickableVariable } from './ClickableVariable';
+import { ProfitabilitySettings } from './SettingsModal';
 
 interface EditBatchModalProps {
   isOpen: boolean;
@@ -12,9 +13,10 @@ interface EditBatchModalProps {
   sites: Site[];
   onEditSite: (siteId: string) => void;
   onOpenSettings: (field?: string) => void;
+  settings: ProfitabilitySettings;
 }
 
-export const EditBatchModal: React.FC<EditBatchModalProps> = ({ isOpen, onClose, batch, onSave, sites, onEditSite, onOpenSettings }) => {
+export const EditBatchModal: React.FC<EditBatchModalProps> = ({ isOpen, onClose, batch, onSave, sites, onEditSite, onOpenSettings, settings }) => {
   useModalBackdrop(isOpen);
   const [formData, setFormData] = useState<Partial<Batch>>(batch || {});
 
@@ -24,11 +26,18 @@ export const EditBatchModal: React.FC<EditBatchModalProps> = ({ isOpen, onClose,
     }
   }, [batch]);
 
+  const getGpusPerMW = () => {
+    if (!formData.chipType) return 532;
+    const chipKey = formData.chipType.toLowerCase() as 'b200' | 'b300' | 'gb300' | 'h100' | 'h200' | 'mi350x';
+    return settings.gpusPerMW[chipKey];
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!batch || !formData.quantity || !formData.chipType) return;
 
-    const mwEquivalent = (formData.quantity / (formData.chipType === 'B200' ? 532 : 432)).toFixed(2);
+    const gpusPerMW = getGpusPerMW();
+    const mwEquivalent = (formData.quantity / gpusPerMW).toFixed(2);
     const site = sites.find(s => s.id === formData.siteId);
     const siteName = site ? site.name : '';
     const updatedBatch: Batch = {
@@ -97,7 +106,7 @@ export const EditBatchModal: React.FC<EditBatchModalProps> = ({ isOpen, onClose,
             <p className="text-xs text-gray-500 mt-1">
               {formData.quantity && formData.chipType ? (
                 <span>
-                  ≈ {formData.quantity.toLocaleString()} ÷ <ClickableVariable title="Click to edit GPUs per MW in settings" field={`gpusPerMW.${formData.chipType.toLowerCase()}`} onOpenSettings={onOpenSettings}>{formData.chipType === 'B200' ? 532 : 432}</ClickableVariable> = {(formData.quantity / (formData.chipType === 'B200' ? 532 : 432)).toFixed(2)}MW
+                  ≈ {formData.quantity.toLocaleString()} ÷ <ClickableVariable title="Click to edit GPUs per MW in settings" field={`gpusPerMW.${formData.chipType.toLowerCase()}`} onOpenSettings={onOpenSettings}>{getGpusPerMW()}</ClickableVariable> = {(formData.quantity / getGpusPerMW()).toFixed(2)}MW
                 </span>
               ) : (
                 'Enter quantity to see MW equivalent'

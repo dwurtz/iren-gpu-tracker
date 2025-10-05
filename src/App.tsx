@@ -675,6 +675,7 @@ function App() {
         sites={sites}
         onEditSite={handleEditSite}
         onOpenSettings={handleOpenSettings}
+        settings={settings}
       />
       
       <SettingsModal
@@ -699,6 +700,7 @@ function App() {
         sites={sites}
         onEditSite={handleEditSite}
         onOpenSettings={handleOpenSettings}
+        settings={settings}
       />
 
       <ARRModal
