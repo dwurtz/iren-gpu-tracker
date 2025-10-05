@@ -11,9 +11,11 @@ import { WelcomeModal } from './components/WelcomeModal';
 import { ModalBackdrop } from './components/ModalBackdrop';
 import { calculateMonthlyData, calculateTotals } from './utils/calculations';
 
-// Extended timeline: Sep 2025 to Dec 2029 (52 months for 36-month breakeven analysis)
+// Extended timeline: Aug 2023 to Dec 2029 (77 months total)
 const MONTHS = [
-  "Sep '25", "Oct '25", "Nov '25", "Dec '25", // 2025 (4 months)
+  "Aug '23", "Sep '23", "Oct '23", "Nov '23", "Dec '23", // 2023 (5 months)
+  "Jan '24", "Feb '24", "Mar '24", "Apr '24", "May '24", "Jun '24", "Jul '24", "Aug '24", "Sep '24", "Oct '24", "Nov '24", "Dec '24", // 2024 (12 months)
+  "Jan '25", "Feb '25", "Mar '25", "Apr '25", "May '25", "Jun '25", "Jul '25", "Aug '25", "Sep '25", "Oct '25", "Nov '25", "Dec '25", // 2025 (12 months)
   "Jan '26", "Feb '26", "Mar '26", "Apr '26", "May '26", "Jun '26", "Jul '26", "Aug '26", "Sep '26", "Oct '26", "Nov '26", "Dec '26", // 2026 (12 months)
   "Jan '27", "Feb '27", "Mar '27", "Apr '27", "May '27", "Jun '27", "Jul '27", "Aug '27", "Sep '27", "Oct '27", "Nov '27", "Dec '27", // 2027 (12 months)
   "Jan '28", "Feb '28", "Mar '28", "Apr '28", "May '28", "Jun '28", "Jul '28", "Aug '28", "Sep '28", "Oct '28", "Nov '28", "Dec '28", // 2028 (12 months)
@@ -287,7 +289,7 @@ function App() {
         if (currentBatchIndex === -1) return;
         
         const currentBatch = batches[currentBatchIndex];
-        const batchData = calculateMonthlyData(currentBatch, 8, 2025, 52, settings);
+        const batchData = calculateMonthlyData(currentBatch, 7, 2023, 77, settings);
         
         let newMonthIndex = selectedCell.monthIndex;
         
@@ -399,7 +401,7 @@ function App() {
 
   // Calculate data for all batches
   const allBatchData = batches.map(batch => 
-    calculateMonthlyData(batch, 8, 2025, 52, settings) // Sept 2025 to Dec 2029
+    calculateMonthlyData(batch, 7, 2023, 77, settings) // Aug 2023 to Dec 2029
   );
   
   const totals = calculateTotals(allBatchData);
@@ -417,7 +419,7 @@ function App() {
   const calculateARR = () => {
     try {
       const arrData: { value: number }[] = [];
-      const totalMonths = 52; // Sept 2025 to Dec 2029
+      const totalMonths = 77; // Aug 2023 to Dec 2029
       
       for (let monthIndex = 0; monthIndex < totalMonths; monthIndex++) {
         let liveGPUs = 0;
@@ -445,7 +447,7 @@ function App() {
     } catch (error) {
       console.error('Error calculating ARR:', error);
       // Return empty array with 52 zero values as fallback
-      return Array.from({ length: 52 }, () => ({ value: 0 }));
+      return Array.from({ length: 77 }, () => ({ value: 0 }));
     }
   };
 
@@ -528,7 +530,9 @@ function App() {
                 {/* Year headers */}
                 <tr className="bg-gray-50 border-b border-gray-200">
                   <th className="px-4 py-2 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide sticky left-0 bg-gray-50 z-50 border-r border-gray-200" style={{ minWidth: '240px', width: '240px' }}></th>
-                  <th className="px-2 py-2 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200" colSpan={4}>2025</th>
+                  <th className="px-2 py-2 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200" colSpan={5}>2023</th>
+                  <th className="px-2 py-2 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide border-r" colSpan={12}>2024</th>
+                  <th className="px-2 py-2 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide border-r" colSpan={12}>2025</th>
                   <th className="px-2 py-2 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide border-r" colSpan={12}>2026</th>
                   <th className="px-2 py-2 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide border-r" colSpan={12}>2027</th>
                   <th className="px-2 py-2 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide border-r" colSpan={12}>2028</th>

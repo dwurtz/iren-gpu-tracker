@@ -59,7 +59,7 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
 
   // const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   // Calculate the batch's installation month index (Sep 2025 = 0)
-  const batchInstallationIndex = (batch.installationYear - 2025) * 12 + (batch.installationMonth - 8);
+  const batchInstallationIndex = (batch.installationYear - 2023) * 12 + (batch.installationMonth - 7);
   const monthsSinceInstallation = monthIndex - batchInstallationIndex;
   
   // Helper function to get chip-specific settings
