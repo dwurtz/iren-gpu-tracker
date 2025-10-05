@@ -77,7 +77,7 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
       const datacenterOverhead = settings.datacenterOverhead; // From settings
       // Calculate electrical cost based on actual GPU usage (same as calculations.ts)
       const hoursGpusRun = hoursPerMonth * utilizationRate; // Hours GPUs actually run
-      const powerPerGpuKw = settings.gpuPowerConsumption[chipKey];
+      const powerPerGpuKw = 1000 / settings.gpusPerMW[chipKey]; // Derive from GPUs/MW
       const totalPowerKw = batch.quantity * powerPerGpuKw;
       const baseElectricalCost = hoursGpusRun * totalPowerKw * settings.electricityCost;
       const electricalCost = baseElectricalCost * settings.electricalOverhead; // Apply PUE multiplier
@@ -170,7 +170,7 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
                 label: 'Electrical Cost', 
                 value: (
                   <span>
-                    {hoursGpusRun.toLocaleString()}h × <ClickableVariable title="Click to edit GPU power consumption in settings" field={`gpuPowerConsumption.${batch.chipType.toLowerCase()}`} onOpenSettings={onOpenSettings}>{totalPowerKw.toLocaleString()}kW</ClickableVariable> × <ClickableVariable title="Click to edit electricity cost in settings" field="electricityCost" onOpenSettings={onOpenSettings}>${settings.electricityCost}</ClickableVariable>/kWh × <ClickableVariable title="Click to edit PUE multiplier in settings" field="electricalOverhead" onOpenSettings={onOpenSettings}>{settings.electricalOverhead}</ClickableVariable> PUE = {formatValue(electricalCost)}
+                    {hoursGpusRun.toLocaleString()}h × <ClickableVariable title="Click to edit GPUs per MW in settings" field={`gpusPerMW.${batch.chipType.toLowerCase()}`} onOpenSettings={onOpenSettings}>{totalPowerKw.toLocaleString()}kW</ClickableVariable> × <ClickableVariable title="Click to edit electricity cost in settings" field="electricityCost" onOpenSettings={onOpenSettings}>${settings.electricityCost}</ClickableVariable>/kWh × <ClickableVariable title="Click to edit PUE multiplier in settings" field="electricalOverhead" onOpenSettings={onOpenSettings}>{settings.electricalOverhead}</ClickableVariable> PUE = {formatValue(electricalCost)}
                   </span>
                 )
               },
@@ -219,7 +219,7 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
               label: 'Electrical Cost', 
               value: (
                 <span>
-                  {hoursGpusRun.toLocaleString()}h × <ClickableVariable title="Click to edit GPU power consumption in settings" field={`gpuPowerConsumption.${batch.chipType.toLowerCase()}`} onOpenSettings={onOpenSettings}>{totalPowerKw.toLocaleString()}kW</ClickableVariable> × <ClickableVariable title="Click to edit electricity cost in settings" field="electricityCost" onOpenSettings={onOpenSettings}>${settings.electricityCost}</ClickableVariable>/kWh × <ClickableVariable title="Click to edit PUE multiplier in settings" field="electricalOverhead" onOpenSettings={onOpenSettings}>{settings.electricalOverhead}</ClickableVariable> PUE = {formatValue(electricalCost)}
+                    {hoursGpusRun.toLocaleString()}h × <ClickableVariable title="Click to edit GPUs per MW in settings" field={`gpusPerMW.${batch.chipType.toLowerCase()}`} onOpenSettings={onOpenSettings}>{totalPowerKw.toLocaleString()}kW</ClickableVariable> × <ClickableVariable title="Click to edit electricity cost in settings" field="electricityCost" onOpenSettings={onOpenSettings}>${settings.electricityCost}</ClickableVariable>/kWh × <ClickableVariable title="Click to edit PUE multiplier in settings" field="electricalOverhead" onOpenSettings={onOpenSettings}>{settings.electricalOverhead}</ClickableVariable> PUE = {formatValue(electricalCost)}
                 </span>
               )
             }

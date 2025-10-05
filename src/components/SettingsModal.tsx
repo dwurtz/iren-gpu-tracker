@@ -19,14 +19,6 @@ export interface ProfitabilitySettings {
     h200: number;
     mi350x: number;
   };
-  gpuPowerConsumption: {
-    b200: number; // kW per GPU
-    b300: number; // kW per GPU
-    gb300: number; // kW per GPU
-    h100: number; // kW per GPU
-    h200: number; // kW per GPU
-    mi350x: number; // kW per GPU
-  };
   installationCost: {
     b200: number; // per GPU
     b300: number; // per GPU
@@ -120,7 +112,6 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, s
                     <th className="border border-gray-300 px-3 py-2 text-left font-medium text-gray-700">Upfront Cost ($/GPU)</th>
                     <th className="border border-gray-300 px-3 py-2 text-left font-medium text-gray-700">Installation ($/GPU)</th>
                     <th className="border border-gray-300 px-3 py-2 text-left font-medium text-gray-700">Hour Rate ($/hr)</th>
-                    <th className="border border-gray-300 px-3 py-2 text-left font-medium text-gray-700">Power (kW/GPU)</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -159,15 +150,6 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, s
                         className={`w-full border-0 px-2 py-1 focus:outline-none focus:ring-2 focus:ring-green-500 ${getHighlightClass('gpuHourRate.b200')}`}
                       />
                     </td>
-                    <td className="border border-gray-300 px-3 py-2">
-                      <input
-                        type="number"
-                        step="0.1"
-                        value={formData.gpuPowerConsumption.b200}
-                        onChange={(e) => updateNestedField(['gpuPowerConsumption', 'b200'], parseFloat(e.target.value))}
-                        className={`w-full border-0 px-2 py-1 focus:outline-none focus:ring-2 focus:ring-green-500 ${getHighlightClass('gpuPowerConsumption.b200')}`}
-                      />
-                    </td>
                   </tr>
                   <tr>
                     <td className="border border-gray-300 px-3 py-2 font-medium">B300</td>
@@ -202,15 +184,6 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, s
                         value={formData.gpuHourRate.b300}
                         onChange={(e) => updateNestedField(['gpuHourRate', 'b300'], parseFloat(e.target.value))}
                         className={`w-full border-0 px-2 py-1 focus:outline-none focus:ring-2 focus:ring-green-500 ${getHighlightClass('gpuHourRate.b300')}`}
-                      />
-                    </td>
-                    <td className="border border-gray-300 px-3 py-2">
-                      <input
-                        type="number"
-                        step="0.1"
-                        value={formData.gpuPowerConsumption.b300}
-                        onChange={(e) => updateNestedField(['gpuPowerConsumption', 'b300'], parseFloat(e.target.value))}
-                        className={`w-full border-0 px-2 py-1 focus:outline-none focus:ring-2 focus:ring-green-500 ${getHighlightClass('gpuPowerConsumption.b300')}`}
                       />
                     </td>
                   </tr>
@@ -249,15 +222,6 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, s
                         className={`w-full border-0 px-2 py-1 focus:outline-none focus:ring-2 focus:ring-green-500 ${getHighlightClass('gpuHourRate.gb300')}`}
                       />
                     </td>
-                    <td className="border border-gray-300 px-3 py-2">
-                      <input
-                        type="number"
-                        step="0.1"
-                        value={formData.gpuPowerConsumption.gb300}
-                        onChange={(e) => updateNestedField(['gpuPowerConsumption', 'gb300'], parseFloat(e.target.value))}
-                        className={`w-full border-0 px-2 py-1 focus:outline-none focus:ring-2 focus:ring-green-500 ${getHighlightClass('gpuPowerConsumption.gb300')}`}
-                      />
-                    </td>
                   </tr>
                   <tr>
                     <td className="border border-gray-300 px-3 py-2 font-medium">H100</td>
@@ -292,15 +256,6 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, s
                         value={formData.gpuHourRate.h100}
                         onChange={(e) => updateNestedField(['gpuHourRate', 'h100'], parseFloat(e.target.value))}
                         className={`w-full border-0 px-2 py-1 focus:outline-none focus:ring-2 focus:ring-green-500 ${getHighlightClass('gpuHourRate.h100')}`}
-                      />
-                    </td>
-                    <td className="border border-gray-300 px-3 py-2">
-                      <input
-                        type="number"
-                        step="0.1"
-                        value={formData.gpuPowerConsumption.h100}
-                        onChange={(e) => updateNestedField(['gpuPowerConsumption', 'h100'], parseFloat(e.target.value))}
-                        className={`w-full border-0 px-2 py-1 focus:outline-none focus:ring-2 focus:ring-green-500 ${getHighlightClass('gpuPowerConsumption.h100')}`}
                       />
                     </td>
                   </tr>
@@ -339,15 +294,6 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, s
                         className={`w-full border-0 px-2 py-1 focus:outline-none focus:ring-2 focus:ring-green-500 ${getHighlightClass('gpuHourRate.h200')}`}
                       />
                     </td>
-                    <td className="border border-gray-300 px-3 py-2">
-                      <input
-                        type="number"
-                        step="0.1"
-                        value={formData.gpuPowerConsumption.h200}
-                        onChange={(e) => updateNestedField(['gpuPowerConsumption', 'h200'], parseFloat(e.target.value))}
-                        className={`w-full border-0 px-2 py-1 focus:outline-none focus:ring-2 focus:ring-green-500 ${getHighlightClass('gpuPowerConsumption.h200')}`}
-                      />
-                    </td>
                   </tr>
                   <tr>
                     <td className="border border-gray-300 px-3 py-2 font-medium">MI350X</td>
@@ -382,15 +328,6 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, s
                         value={formData.gpuHourRate.mi350x}
                         onChange={(e) => updateNestedField(['gpuHourRate', 'mi350x'], parseFloat(e.target.value))}
                         className={`w-full border-0 px-2 py-1 focus:outline-none focus:ring-2 focus:ring-green-500 ${getHighlightClass('gpuHourRate.mi350x')}`}
-                      />
-                    </td>
-                    <td className="border border-gray-300 px-3 py-2">
-                      <input
-                        type="number"
-                        step="0.1"
-                        value={formData.gpuPowerConsumption.mi350x}
-                        onChange={(e) => updateNestedField(['gpuPowerConsumption', 'mi350x'], parseFloat(e.target.value))}
-                        className={`w-full border-0 px-2 py-1 focus:outline-none focus:ring-2 focus:ring-green-500 ${getHighlightClass('gpuPowerConsumption.mi350x')}`}
                       />
                     </td>
                   </tr>

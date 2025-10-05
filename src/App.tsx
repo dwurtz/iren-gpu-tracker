@@ -47,14 +47,6 @@ const defaultSettings: ProfitabilitySettings = {
     h200: 40648, // from table
     mi350x: 43637, // from table
   },
-  gpuPowerConsumption: {
-    b200: 1.7, // 1700W per B200 baseline rack power (before PUE)
-    b300: 1.8, // 1800W per B300 baseline rack power (before PUE)
-    gb300: 2.1, // 2100W per GB300 baseline rack power (before PUE)
-    h100: 1.4, // 1400W per H100 baseline rack power (before PUE)
-    h200: 1.5, // 1500W per H200 baseline rack power (before PUE)
-    mi350x: 1.6, // 1600W per MI350X baseline rack power (before PUE)
-  },
   installationCost: {
     b200: 20, // per GPU
     b300: 20, // per GPU

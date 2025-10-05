@@ -6,7 +6,7 @@ const getChipSettings = (chipType: ChipType, settings: ProfitabilitySettings) =>
   const key = chipType.toLowerCase() as 'b200' | 'b300' | 'gb300' | 'h100' | 'h200' | 'mi350x';
   return {
     gpuHourRate: settings.gpuHourRate[key],
-    powerConsumption: settings.gpuPowerConsumption[key],
+    powerConsumption: 1000 / settings.gpusPerMW[key], // Derive from GPUs/MW (1000 kW / GPUs per MW)
     upfrontCost: settings.upfrontGpuCost[key],
     installationCost: settings.installationCost[key],
   };
