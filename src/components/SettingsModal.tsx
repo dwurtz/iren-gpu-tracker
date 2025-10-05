@@ -180,347 +180,245 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, s
 
 
 
-          {/* B200 Settings */}
+          {/* GPU Settings Table */}
           <div className="border-b pb-4">
-            <h3 className="text-lg font-semibold mb-3 text-gray-800">B200 (Air Cooled)</h3>
-            <div className="space-y-3 pl-2">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Upfront GPU Cost ($ per GPU)
-                  </label>
-                  <input
-                    type="number"
-                    value={formData.upfrontGpuCost.b200}
-                    onChange={(e) => updateNestedField(['upfrontGpuCost', 'b200'], parseInt(e.target.value))}
-                    className={`w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${getHighlightClass('upfrontGpuCost.b200')}`}
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Installation Cost ($ per GPU)
-                  </label>
-                  <input
-                    type="number"
-                    value={formData.installationCost.b200}
-                    onChange={(e) => updateNestedField(['installationCost', 'b200'], parseInt(e.target.value))}
-                    className={`w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${getHighlightClass('installationCost.b200')}`}
-                  />
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    GPU Hour Rate ($ per GPU per hour)
-                  </label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    value={formData.gpuHourRate.b200}
-                    onChange={(e) => updateNestedField(['gpuHourRate', 'b200'], parseFloat(e.target.value))}
-                    className={`w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${getHighlightClass('gpuHourRate.b200')}`}
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Power Consumption (kW/GPU)
-                  </label>
-                  <input
-                    type="number"
-                    step="0.1"
-                    value={formData.gpuPowerConsumption.b200}
-                    onChange={(e) => updateNestedField(['gpuPowerConsumption', 'b200'], parseFloat(e.target.value))}
-                    className={`w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${getHighlightClass('gpuPowerConsumption.b200')}`}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* GB300 Settings */}
-          <div className="border-b pb-4">
-            <h3 className="text-lg font-semibold mb-3 text-gray-800">GB300 (Liquid Cooled)</h3>
-            <div className="space-y-3 pl-2">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Upfront GPU Cost ($ per GPU)
-                  </label>
-                  <input
-                    type="number"
-                    value={formData.upfrontGpuCost.gb300}
-                    onChange={(e) => updateNestedField(['upfrontGpuCost', 'gb300'], parseInt(e.target.value))}
-                    className={`w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${getHighlightClass('upfrontGpuCost.gb300')}`}
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Installation Cost ($ per GPU)
-                  </label>
-                  <input
-                    type="number"
-                    value={formData.installationCost.gb300}
-                    onChange={(e) => updateNestedField(['installationCost', 'gb300'], parseInt(e.target.value))}
-                    className={`w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${getHighlightClass('installationCost.gb300')}`}
-                  />
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    GPU Hour Rate ($ per GPU per hour)
-                  </label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    value={formData.gpuHourRate.gb300}
-                    onChange={(e) => updateNestedField(['gpuHourRate', 'gb300'], parseFloat(e.target.value))}
-                    className={`w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${getHighlightClass('gpuHourRate.gb300')}`}
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Power Consumption (kW/GPU)
-                  </label>
-                  <input
-                    type="number"
-                    step="0.1"
-                    value={formData.gpuPowerConsumption.gb300}
-                    onChange={(e) => updateNestedField(['gpuPowerConsumption', 'gb300'], parseFloat(e.target.value))}
-                    className={`w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${getHighlightClass('gpuPowerConsumption.gb300')}`}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* H100 Settings */}
-          <div className="border-b pb-4">
-            <h3 className="text-lg font-semibold mb-3 text-gray-800">H100 (Air Cooled)</h3>
-            <div className="space-y-3 pl-2">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Upfront GPU Cost ($ per GPU)
-                  </label>
-                  <input
-                    type="number"
-                    value={formData.upfrontGpuCost.h100}
-                    onChange={(e) => updateNestedField(['upfrontGpuCost', 'h100'], parseInt(e.target.value))}
-                    className={`w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 ${getHighlightClass('upfrontGpuCost.h100')}`}
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    GPU Hour Rate ($ per GPU per hour)
-                  </label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    value={formData.gpuHourRate.h100}
-                    onChange={(e) => updateNestedField(['gpuHourRate', 'h100'], parseFloat(e.target.value))}
-                    className={`w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 ${getHighlightClass('gpuHourRate.h100')}`}
-                  />
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Installation Cost ($ per GPU)
-                  </label>
-                  <input
-                    type="number"
-                    value={formData.installationCost.h100}
-                    onChange={(e) => updateNestedField(['installationCost', 'h100'], parseInt(e.target.value))}
-                    className={`w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 ${getHighlightClass('installationCost.h100')}`}
-                  />
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    GPU Power Consumption (kW/GPU)
-                  </label>
-                  <input
-                    type="number"
-                    step="0.1"
-                    value={formData.gpuPowerConsumption.h100}
-                    onChange={(e) => updateNestedField(['gpuPowerConsumption', 'h100'], parseFloat(e.target.value))}
-                    className={`w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${getHighlightClass('gpuPowerConsumption.h100')}`}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* B300 Settings */}
-          <div className="border-b pb-4">
-            <h3 className="text-lg font-semibold mb-3 text-gray-800">B300 (Air Cooled)</h3>
-            <div className="space-y-3 pl-2">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Upfront GPU Cost ($ per GPU)
-                  </label>
-                  <input
-                    type="number"
-                    value={formData.upfrontGpuCost.b300}
-                    onChange={(e) => updateNestedField(['upfrontGpuCost', 'b300'], parseInt(e.target.value))}
-                    className={`w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 ${getHighlightClass('upfrontGpuCost.b300')}`}
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Installation Cost ($ per GPU)
-                  </label>
-                  <input
-                    type="number"
-                    value={formData.installationCost.b300}
-                    onChange={(e) => updateNestedField(['installationCost', 'b300'], parseInt(e.target.value))}
-                    className={`w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 ${getHighlightClass('installationCost.b300')}`}
-                  />
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    GPU Hour Rate ($ per GPU per hour)
-                  </label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    value={formData.gpuHourRate.b300}
-                    onChange={(e) => updateNestedField(['gpuHourRate', 'b300'], parseFloat(e.target.value))}
-                    className={`w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 ${getHighlightClass('gpuHourRate.b300')}`}
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Power Consumption (kW/GPU)
-                  </label>
-                  <input
-                    type="number"
-                    step="0.1"
-                    value={formData.gpuPowerConsumption.b300}
-                    onChange={(e) => updateNestedField(['gpuPowerConsumption', 'b300'], parseFloat(e.target.value))}
-                    className={`w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 ${getHighlightClass('gpuPowerConsumption.b300')}`}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* H200 Settings */}
-          <div className="border-b pb-4">
-            <h3 className="text-lg font-semibold mb-3 text-gray-800">H200 (Air Cooled)</h3>
-            <div className="space-y-3 pl-2">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Upfront GPU Cost ($ per GPU)
-                  </label>
-                  <input
-                    type="number"
-                    value={formData.upfrontGpuCost.h200}
-                    onChange={(e) => updateNestedField(['upfrontGpuCost', 'h200'], parseInt(e.target.value))}
-                    className={`w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 ${getHighlightClass('upfrontGpuCost.h200')}`}
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Installation Cost ($ per GPU)
-                  </label>
-                  <input
-                    type="number"
-                    value={formData.installationCost.h200}
-                    onChange={(e) => updateNestedField(['installationCost', 'h200'], parseInt(e.target.value))}
-                    className={`w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 ${getHighlightClass('installationCost.h200')}`}
-                  />
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    GPU Hour Rate ($ per GPU per hour)
-                  </label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    value={formData.gpuHourRate.h200}
-                    onChange={(e) => updateNestedField(['gpuHourRate', 'h200'], parseFloat(e.target.value))}
-                    className={`w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 ${getHighlightClass('gpuHourRate.h200')}`}
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Power Consumption (kW/GPU)
-                  </label>
-                  <input
-                    type="number"
-                    step="0.1"
-                    value={formData.gpuPowerConsumption.h200}
-                    onChange={(e) => updateNestedField(['gpuPowerConsumption', 'h200'], parseFloat(e.target.value))}
-                    className={`w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 ${getHighlightClass('gpuPowerConsumption.h200')}`}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* MI350X Settings */}
-          <div className="border-b pb-4">
-            <h3 className="text-lg font-semibold mb-3 text-gray-800">MI350X (Air Cooled)</h3>
-            <div className="space-y-3 pl-2">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Upfront GPU Cost ($ per GPU)
-                  </label>
-                  <input
-                    type="number"
-                    value={formData.upfrontGpuCost.mi350x}
-                    onChange={(e) => updateNestedField(['upfrontGpuCost', 'mi350x'], parseInt(e.target.value))}
-                    className={`w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 ${getHighlightClass('upfrontGpuCost.mi350x')}`}
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Installation Cost ($ per GPU)
-                  </label>
-                  <input
-                    type="number"
-                    value={formData.installationCost.mi350x}
-                    onChange={(e) => updateNestedField(['installationCost', 'mi350x'], parseInt(e.target.value))}
-                    className={`w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 ${getHighlightClass('installationCost.mi350x')}`}
-                  />
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    GPU Hour Rate ($ per GPU per hour)
-                  </label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    value={formData.gpuHourRate.mi350x}
-                    onChange={(e) => updateNestedField(['gpuHourRate', 'mi350x'], parseFloat(e.target.value))}
-                    className={`w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 ${getHighlightClass('gpuHourRate.mi350x')}`}
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Power Consumption (kW/GPU)
-                  </label>
-                  <input
-                    type="number"
-                    step="0.1"
-                    value={formData.gpuPowerConsumption.mi350x}
-                    onChange={(e) => updateNestedField(['gpuPowerConsumption', 'mi350x'], parseFloat(e.target.value))}
-                    className={`w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 ${getHighlightClass('gpuPowerConsumption.mi350x')}`}
-                  />
-                </div>
-              </div>
+            <h3 className="text-lg font-medium mb-3">GPU Settings</h3>
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse">
+                <thead>
+                  <tr className="bg-gray-50">
+                    <th className="border border-gray-300 px-3 py-2 text-left font-medium text-gray-700">Chip Type</th>
+                    <th className="border border-gray-300 px-3 py-2 text-left font-medium text-gray-700">Upfront Cost ($/GPU)</th>
+                    <th className="border border-gray-300 px-3 py-2 text-left font-medium text-gray-700">Installation ($/GPU)</th>
+                    <th className="border border-gray-300 px-3 py-2 text-left font-medium text-gray-700">Hour Rate ($/hr)</th>
+                    <th className="border border-gray-300 px-3 py-2 text-left font-medium text-gray-700">Power (kW/GPU)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td className="border border-gray-300 px-3 py-2 font-medium">B200</td>
+                    <td className="border border-gray-300 px-3 py-2">
+                      <input
+                        type="number"
+                        value={formData.upfrontGpuCost.b200}
+                        onChange={(e) => updateNestedField(['upfrontGpuCost', 'b200'], parseInt(e.target.value))}
+                        className={`w-full border-0 px-2 py-1 focus:outline-none focus:ring-2 focus:ring-green-500 ${getHighlightClass('upfrontGpuCost.b200')}`}
+                      />
+                    </td>
+                    <td className="border border-gray-300 px-3 py-2">
+                      <input
+                        type="number"
+                        value={formData.installationCost.b200}
+                        onChange={(e) => updateNestedField(['installationCost', 'b200'], parseInt(e.target.value))}
+                        className={`w-full border-0 px-2 py-1 focus:outline-none focus:ring-2 focus:ring-green-500 ${getHighlightClass('installationCost.b200')}`}
+                      />
+                    </td>
+                    <td className="border border-gray-300 px-3 py-2">
+                      <input
+                        type="number"
+                        step="0.01"
+                        value={formData.gpuHourRate.b200}
+                        onChange={(e) => updateNestedField(['gpuHourRate', 'b200'], parseFloat(e.target.value))}
+                        className={`w-full border-0 px-2 py-1 focus:outline-none focus:ring-2 focus:ring-green-500 ${getHighlightClass('gpuHourRate.b200')}`}
+                      />
+                    </td>
+                    <td className="border border-gray-300 px-3 py-2">
+                      <input
+                        type="number"
+                        step="0.1"
+                        value={formData.gpuPowerConsumption.b200}
+                        onChange={(e) => updateNestedField(['gpuPowerConsumption', 'b200'], parseFloat(e.target.value))}
+                        className={`w-full border-0 px-2 py-1 focus:outline-none focus:ring-2 focus:ring-green-500 ${getHighlightClass('gpuPowerConsumption.b200')}`}
+                      />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="border border-gray-300 px-3 py-2 font-medium">B300</td>
+                    <td className="border border-gray-300 px-3 py-2">
+                      <input
+                        type="number"
+                        value={formData.upfrontGpuCost.b300}
+                        onChange={(e) => updateNestedField(['upfrontGpuCost', 'b300'], parseInt(e.target.value))}
+                        className={`w-full border-0 px-2 py-1 focus:outline-none focus:ring-2 focus:ring-green-500 ${getHighlightClass('upfrontGpuCost.b300')}`}
+                      />
+                    </td>
+                    <td className="border border-gray-300 px-3 py-2">
+                      <input
+                        type="number"
+                        value={formData.installationCost.b300}
+                        onChange={(e) => updateNestedField(['installationCost', 'b300'], parseInt(e.target.value))}
+                        className={`w-full border-0 px-2 py-1 focus:outline-none focus:ring-2 focus:ring-green-500 ${getHighlightClass('installationCost.b300')}`}
+                      />
+                    </td>
+                    <td className="border border-gray-300 px-3 py-2">
+                      <input
+                        type="number"
+                        step="0.01"
+                        value={formData.gpuHourRate.b300}
+                        onChange={(e) => updateNestedField(['gpuHourRate', 'b300'], parseFloat(e.target.value))}
+                        className={`w-full border-0 px-2 py-1 focus:outline-none focus:ring-2 focus:ring-green-500 ${getHighlightClass('gpuHourRate.b300')}`}
+                      />
+                    </td>
+                    <td className="border border-gray-300 px-3 py-2">
+                      <input
+                        type="number"
+                        step="0.1"
+                        value={formData.gpuPowerConsumption.b300}
+                        onChange={(e) => updateNestedField(['gpuPowerConsumption', 'b300'], parseFloat(e.target.value))}
+                        className={`w-full border-0 px-2 py-1 focus:outline-none focus:ring-2 focus:ring-green-500 ${getHighlightClass('gpuPowerConsumption.b300')}`}
+                      />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="border border-gray-300 px-3 py-2 font-medium">GB300</td>
+                    <td className="border border-gray-300 px-3 py-2">
+                      <input
+                        type="number"
+                        value={formData.upfrontGpuCost.gb300}
+                        onChange={(e) => updateNestedField(['upfrontGpuCost', 'gb300'], parseInt(e.target.value))}
+                        className={`w-full border-0 px-2 py-1 focus:outline-none focus:ring-2 focus:ring-green-500 ${getHighlightClass('upfrontGpuCost.gb300')}`}
+                      />
+                    </td>
+                    <td className="border border-gray-300 px-3 py-2">
+                      <input
+                        type="number"
+                        value={formData.installationCost.gb300}
+                        onChange={(e) => updateNestedField(['installationCost', 'gb300'], parseInt(e.target.value))}
+                        className={`w-full border-0 px-2 py-1 focus:outline-none focus:ring-2 focus:ring-green-500 ${getHighlightClass('installationCost.gb300')}`}
+                      />
+                    </td>
+                    <td className="border border-gray-300 px-3 py-2">
+                      <input
+                        type="number"
+                        step="0.01"
+                        value={formData.gpuHourRate.gb300}
+                        onChange={(e) => updateNestedField(['gpuHourRate', 'gb300'], parseFloat(e.target.value))}
+                        className={`w-full border-0 px-2 py-1 focus:outline-none focus:ring-2 focus:ring-green-500 ${getHighlightClass('gpuHourRate.gb300')}`}
+                      />
+                    </td>
+                    <td className="border border-gray-300 px-3 py-2">
+                      <input
+                        type="number"
+                        step="0.1"
+                        value={formData.gpuPowerConsumption.gb300}
+                        onChange={(e) => updateNestedField(['gpuPowerConsumption', 'gb300'], parseFloat(e.target.value))}
+                        className={`w-full border-0 px-2 py-1 focus:outline-none focus:ring-2 focus:ring-green-500 ${getHighlightClass('gpuPowerConsumption.gb300')}`}
+                      />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="border border-gray-300 px-3 py-2 font-medium">H100</td>
+                    <td className="border border-gray-300 px-3 py-2">
+                      <input
+                        type="number"
+                        value={formData.upfrontGpuCost.h100}
+                        onChange={(e) => updateNestedField(['upfrontGpuCost', 'h100'], parseInt(e.target.value))}
+                        className={`w-full border-0 px-2 py-1 focus:outline-none focus:ring-2 focus:ring-green-500 ${getHighlightClass('upfrontGpuCost.h100')}`}
+                      />
+                    </td>
+                    <td className="border border-gray-300 px-3 py-2">
+                      <input
+                        type="number"
+                        value={formData.installationCost.h100}
+                        onChange={(e) => updateNestedField(['installationCost', 'h100'], parseInt(e.target.value))}
+                        className={`w-full border-0 px-2 py-1 focus:outline-none focus:ring-2 focus:ring-green-500 ${getHighlightClass('installationCost.h100')}`}
+                      />
+                    </td>
+                    <td className="border border-gray-300 px-3 py-2">
+                      <input
+                        type="number"
+                        step="0.01"
+                        value={formData.gpuHourRate.h100}
+                        onChange={(e) => updateNestedField(['gpuHourRate', 'h100'], parseFloat(e.target.value))}
+                        className={`w-full border-0 px-2 py-1 focus:outline-none focus:ring-2 focus:ring-green-500 ${getHighlightClass('gpuHourRate.h100')}`}
+                      />
+                    </td>
+                    <td className="border border-gray-300 px-3 py-2">
+                      <input
+                        type="number"
+                        step="0.1"
+                        value={formData.gpuPowerConsumption.h100}
+                        onChange={(e) => updateNestedField(['gpuPowerConsumption', 'h100'], parseFloat(e.target.value))}
+                        className={`w-full border-0 px-2 py-1 focus:outline-none focus:ring-2 focus:ring-green-500 ${getHighlightClass('gpuPowerConsumption.h100')}`}
+                      />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="border border-gray-300 px-3 py-2 font-medium">H200</td>
+                    <td className="border border-gray-300 px-3 py-2">
+                      <input
+                        type="number"
+                        value={formData.upfrontGpuCost.h200}
+                        onChange={(e) => updateNestedField(['upfrontGpuCost', 'h200'], parseInt(e.target.value))}
+                        className={`w-full border-0 px-2 py-1 focus:outline-none focus:ring-2 focus:ring-green-500 ${getHighlightClass('upfrontGpuCost.h200')}`}
+                      />
+                    </td>
+                    <td className="border border-gray-300 px-3 py-2">
+                      <input
+                        type="number"
+                        value={formData.installationCost.h200}
+                        onChange={(e) => updateNestedField(['installationCost', 'h200'], parseInt(e.target.value))}
+                        className={`w-full border-0 px-2 py-1 focus:outline-none focus:ring-2 focus:ring-green-500 ${getHighlightClass('installationCost.h200')}`}
+                      />
+                    </td>
+                    <td className="border border-gray-300 px-3 py-2">
+                      <input
+                        type="number"
+                        step="0.01"
+                        value={formData.gpuHourRate.h200}
+                        onChange={(e) => updateNestedField(['gpuHourRate', 'h200'], parseFloat(e.target.value))}
+                        className={`w-full border-0 px-2 py-1 focus:outline-none focus:ring-2 focus:ring-green-500 ${getHighlightClass('gpuHourRate.h200')}`}
+                      />
+                    </td>
+                    <td className="border border-gray-300 px-3 py-2">
+                      <input
+                        type="number"
+                        step="0.1"
+                        value={formData.gpuPowerConsumption.h200}
+                        onChange={(e) => updateNestedField(['gpuPowerConsumption', 'h200'], parseFloat(e.target.value))}
+                        className={`w-full border-0 px-2 py-1 focus:outline-none focus:ring-2 focus:ring-green-500 ${getHighlightClass('gpuPowerConsumption.h200')}`}
+                      />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="border border-gray-300 px-3 py-2 font-medium">MI350X</td>
+                    <td className="border border-gray-300 px-3 py-2">
+                      <input
+                        type="number"
+                        value={formData.upfrontGpuCost.mi350x}
+                        onChange={(e) => updateNestedField(['upfrontGpuCost', 'mi350x'], parseInt(e.target.value))}
+                        className={`w-full border-0 px-2 py-1 focus:outline-none focus:ring-2 focus:ring-green-500 ${getHighlightClass('upfrontGpuCost.mi350x')}`}
+                      />
+                    </td>
+                    <td className="border border-gray-300 px-3 py-2">
+                      <input
+                        type="number"
+                        value={formData.installationCost.mi350x}
+                        onChange={(e) => updateNestedField(['installationCost', 'mi350x'], parseInt(e.target.value))}
+                        className={`w-full border-0 px-2 py-1 focus:outline-none focus:ring-2 focus:ring-green-500 ${getHighlightClass('installationCost.mi350x')}`}
+                      />
+                    </td>
+                    <td className="border border-gray-300 px-3 py-2">
+                      <input
+                        type="number"
+                        step="0.01"
+                        value={formData.gpuHourRate.mi350x}
+                        onChange={(e) => updateNestedField(['gpuHourRate', 'mi350x'], parseFloat(e.target.value))}
+                        className={`w-full border-0 px-2 py-1 focus:outline-none focus:ring-2 focus:ring-green-500 ${getHighlightClass('gpuHourRate.mi350x')}`}
+                      />
+                    </td>
+                    <td className="border border-gray-300 px-3 py-2">
+                      <input
+                        type="number"
+                        step="0.1"
+                        value={formData.gpuPowerConsumption.mi350x}
+                        onChange={(e) => updateNestedField(['gpuPowerConsumption', 'mi350x'], parseFloat(e.target.value))}
+                        className={`w-full border-0 px-2 py-1 focus:outline-none focus:ring-2 focus:ring-green-500 ${getHighlightClass('gpuPowerConsumption.mi350x')}`}
+                      />
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
 
