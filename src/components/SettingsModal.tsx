@@ -105,78 +105,6 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, s
         <div className="flex-1 overflow-y-auto p-6">
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* GPU Density */}
-          <div className="border-b pb-4">
-            <h3 className="text-lg font-medium mb-3">Number of GPUs/MW</h3>
-            <div className="grid grid-cols-3 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  B200
-                </label>
-                <input
-                  type="number"
-                  value={formData.gpusPerMW.b200}
-                  onChange={(e) => updateNestedField(['gpusPerMW', 'b200'], parseInt(e.target.value))}
-                  className={`w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 ${getHighlightClass('gpusPerMW.b200')}`}
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  B300
-                </label>
-                <input
-                  type="number"
-                  value={formData.gpusPerMW.b300}
-                  onChange={(e) => updateNestedField(['gpusPerMW', 'b300'], parseInt(e.target.value))}
-                  className={`w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 ${getHighlightClass('gpusPerMW.b300')}`}
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  GB300
-                </label>
-                <input
-                  type="number"
-                  value={formData.gpusPerMW.gb300}
-                  onChange={(e) => updateNestedField(['gpusPerMW', 'gb300'], parseInt(e.target.value))}
-                  className={`w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 ${getHighlightClass('gpusPerMW.gb300')}`}
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  H100
-                </label>
-                <input
-                  type="number"
-                  value={formData.gpusPerMW.h100}
-                  onChange={(e) => updateNestedField(['gpusPerMW', 'h100'], parseInt(e.target.value))}
-                  className={`w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 ${getHighlightClass('gpusPerMW.h100')}`}
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  H200
-                </label>
-                <input
-                  type="number"
-                  value={formData.gpusPerMW.h200}
-                  onChange={(e) => updateNestedField(['gpusPerMW', 'h200'], parseInt(e.target.value))}
-                  className={`w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 ${getHighlightClass('gpusPerMW.h200')}`}
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  MI350X
-                </label>
-                <input
-                  type="number"
-                  value={formData.gpusPerMW.mi350x}
-                  onChange={(e) => updateNestedField(['gpusPerMW', 'mi350x'], parseInt(e.target.value))}
-                  className={`w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 ${getHighlightClass('gpusPerMW.mi350x')}`}
-                />
-              </div>
-            </div>
-          </div>
 
 
 
@@ -188,6 +116,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, s
                 <thead>
                   <tr className="bg-gray-50">
                     <th className="border border-gray-300 px-3 py-2 text-left font-medium text-gray-700">Chip Type</th>
+                    <th className="border border-gray-300 px-3 py-2 text-left font-medium text-gray-700">GPUs/MW</th>
                     <th className="border border-gray-300 px-3 py-2 text-left font-medium text-gray-700">Upfront Cost ($/GPU)</th>
                     <th className="border border-gray-300 px-3 py-2 text-left font-medium text-gray-700">Installation ($/GPU)</th>
                     <th className="border border-gray-300 px-3 py-2 text-left font-medium text-gray-700">Hour Rate ($/hr)</th>
@@ -197,6 +126,14 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, s
                 <tbody>
                   <tr>
                     <td className="border border-gray-300 px-3 py-2 font-medium">B200</td>
+                    <td className="border border-gray-300 px-3 py-2">
+                      <input
+                        type="number"
+                        value={formData.gpusPerMW.b200}
+                        onChange={(e) => updateNestedField(['gpusPerMW', 'b200'], parseInt(e.target.value))}
+                        className={`w-full border-0 px-2 py-1 focus:outline-none focus:ring-2 focus:ring-green-500 ${getHighlightClass('gpusPerMW.b200')}`}
+                      />
+                    </td>
                     <td className="border border-gray-300 px-3 py-2">
                       <input
                         type="number"
@@ -237,6 +174,14 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, s
                     <td className="border border-gray-300 px-3 py-2">
                       <input
                         type="number"
+                        value={formData.gpusPerMW.b300}
+                        onChange={(e) => updateNestedField(['gpusPerMW', 'b300'], parseInt(e.target.value))}
+                        className={`w-full border-0 px-2 py-1 focus:outline-none focus:ring-2 focus:ring-green-500 ${getHighlightClass('gpusPerMW.b300')}`}
+                      />
+                    </td>
+                    <td className="border border-gray-300 px-3 py-2">
+                      <input
+                        type="number"
                         value={formData.upfrontGpuCost.b300}
                         onChange={(e) => updateNestedField(['upfrontGpuCost', 'b300'], parseInt(e.target.value))}
                         className={`w-full border-0 px-2 py-1 focus:outline-none focus:ring-2 focus:ring-green-500 ${getHighlightClass('upfrontGpuCost.b300')}`}
@@ -271,6 +216,14 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, s
                   </tr>
                   <tr>
                     <td className="border border-gray-300 px-3 py-2 font-medium">GB300</td>
+                    <td className="border border-gray-300 px-3 py-2">
+                      <input
+                        type="number"
+                        value={formData.gpusPerMW.gb300}
+                        onChange={(e) => updateNestedField(['gpusPerMW', 'gb300'], parseInt(e.target.value))}
+                        className={`w-full border-0 px-2 py-1 focus:outline-none focus:ring-2 focus:ring-green-500 ${getHighlightClass('gpusPerMW.gb300')}`}
+                      />
+                    </td>
                     <td className="border border-gray-300 px-3 py-2">
                       <input
                         type="number"
@@ -311,6 +264,14 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, s
                     <td className="border border-gray-300 px-3 py-2">
                       <input
                         type="number"
+                        value={formData.gpusPerMW.h100}
+                        onChange={(e) => updateNestedField(['gpusPerMW', 'h100'], parseInt(e.target.value))}
+                        className={`w-full border-0 px-2 py-1 focus:outline-none focus:ring-2 focus:ring-green-500 ${getHighlightClass('gpusPerMW.h100')}`}
+                      />
+                    </td>
+                    <td className="border border-gray-300 px-3 py-2">
+                      <input
+                        type="number"
                         value={formData.upfrontGpuCost.h100}
                         onChange={(e) => updateNestedField(['upfrontGpuCost', 'h100'], parseInt(e.target.value))}
                         className={`w-full border-0 px-2 py-1 focus:outline-none focus:ring-2 focus:ring-green-500 ${getHighlightClass('upfrontGpuCost.h100')}`}
@@ -348,6 +309,14 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, s
                     <td className="border border-gray-300 px-3 py-2">
                       <input
                         type="number"
+                        value={formData.gpusPerMW.h200}
+                        onChange={(e) => updateNestedField(['gpusPerMW', 'h200'], parseInt(e.target.value))}
+                        className={`w-full border-0 px-2 py-1 focus:outline-none focus:ring-2 focus:ring-green-500 ${getHighlightClass('gpusPerMW.h200')}`}
+                      />
+                    </td>
+                    <td className="border border-gray-300 px-3 py-2">
+                      <input
+                        type="number"
                         value={formData.upfrontGpuCost.h200}
                         onChange={(e) => updateNestedField(['upfrontGpuCost', 'h200'], parseInt(e.target.value))}
                         className={`w-full border-0 px-2 py-1 focus:outline-none focus:ring-2 focus:ring-green-500 ${getHighlightClass('upfrontGpuCost.h200')}`}
@@ -382,6 +351,14 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, s
                   </tr>
                   <tr>
                     <td className="border border-gray-300 px-3 py-2 font-medium">MI350X</td>
+                    <td className="border border-gray-300 px-3 py-2">
+                      <input
+                        type="number"
+                        value={formData.gpusPerMW.mi350x}
+                        onChange={(e) => updateNestedField(['gpusPerMW', 'mi350x'], parseInt(e.target.value))}
+                        className={`w-full border-0 px-2 py-1 focus:outline-none focus:ring-2 focus:ring-green-500 ${getHighlightClass('gpusPerMW.mi350x')}`}
+                      />
+                    </td>
                     <td className="border border-gray-300 px-3 py-2">
                       <input
                         type="number"
