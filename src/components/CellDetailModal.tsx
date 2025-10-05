@@ -116,21 +116,37 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
       switch (phase) {
         case 'INSTALL':
           const monthlyInstallationCost = totalInstallationCost / batch.phases.installation.duration;
-          const totalMonthlyCost = monthlyGpuPayment + monthlyInstallationCost;
+          // For cash purchases, add upfront GPU cost in first month only
+          const upfrontGpuCost = (isCashPurchase && monthsSinceInstallation === 0) ? totalGpuCost : 0;
+          const totalMonthlyCost = monthlyGpuPayment + monthlyInstallationCost + upfrontGpuCost;
+          
+          const installDetails = [
+            gpuFinancingSection,
+            { 
+              label: 'Installation Cost', 
+              value: (
+                <span>
+                  {batch.quantity.toLocaleString()} × <ClickableVariable title="Click to edit installation cost in settings" field={`installationCost.${batch.chipType.toLowerCase()}`} onOpenSettings={onOpenSettings}>{formatValue(installationCostPerGpu)}</ClickableVariable>{batch.phases.installation.duration !== 1 && ` ÷ ${batch.phases.installation.duration} months`} = {formatValue(monthlyInstallationCost)}
+                </span>
+              )
+            },
+          ];
+          
+          // Add upfront GPU cost line for cash purchases in first month
+          if (isCashPurchase && monthsSinceInstallation === 0) {
+            installDetails.push({
+              label: 'Upfront GPU Cost (Cash)',
+              value: (
+                <span>
+                  {batch.quantity.toLocaleString()} × <ClickableVariable title="Click to edit upfront GPU cost in settings" field={`upfrontGpuCost.${batch.chipType.toLowerCase()}`} onOpenSettings={onOpenSettings}>{formatValue(gpuCostPerUnit)}</ClickableVariable> = {formatValue(totalGpuCost)}
+                </span>
+              )
+            });
+          }
           
           return {
             title: 'Installation Phase',
-            details: [
-              gpuFinancingSection,
-              { 
-                label: 'Installation Cost', 
-                value: (
-                  <span>
-                    {batch.quantity.toLocaleString()} × <ClickableVariable title="Click to edit installation cost in settings" field={`installationCost.${batch.chipType.toLowerCase()}`} onOpenSettings={onOpenSettings}>{formatValue(installationCostPerGpu)}</ClickableVariable>{batch.phases.installation.duration !== 1 && ` ÷ ${batch.phases.installation.duration} months`} = {formatValue(monthlyInstallationCost)}
-                  </span>
-                )
-              },
-            ],
+            details: installDetails,
             monthlyRevenue: 0,
             monthlyCosts: totalMonthlyCost,
             netMonthly: -totalMonthlyCost
