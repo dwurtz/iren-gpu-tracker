@@ -32,12 +32,12 @@ const MONTHS = [
 // Default profitability settings
 const defaultSettings: ProfitabilitySettings = {
   gpusPerMW: {
-    b200: 532, // air cooled
-    b300: 520, // air cooled (estimated: similar to B200 but slightly less efficient)
-    gb300: 432, // liquid cooled (higher power density)
-    h100: 500, // air cooled (estimated based on 700W TDP)
-    h200: 485, // air cooled (estimated: ~3% more power than H100)
-    mi350x: 475, // air cooled (estimated: similar power envelope to high-end GPUs)
+    b200: 532, // 500-550 GPUs/MW (~1.8-2.0 kW/GPU) - good
+    b300: 520, // 500-540 GPUs/MW (~1.85-2.0 kW/GPU) - good for planning
+    gb300: 432, // 420-460 GPUs/MW (~2.17-2.38 kW/GPU) - right in the pocket
+    h100: 620, // 600-650 GPUs/MW (~1.5-1.65 kW/GPU) - bumped from 500
+    h200: 580, // 560-610 GPUs/MW (~1.64-1.8 kW/GPU) - bumped from 485
+    mi350x: 475, // 460-500 GPUs/MW (~2.0-2.17 kW/GPU) - fine
   },
   upfrontGpuCost: {
     b200: 46233, // from table
