@@ -43,7 +43,6 @@ export interface ProfitabilitySettings {
     h200: number; // $ per GPU hour
     mi350x: number; // $ per GPU hour
   };
-  interestRate: number; // 9% for first 3 years
   electricityCost: number; // per kWh
   datacenterOverhead: number; // per GPU per month
   electricalOverhead: number; // PUE multiplier
@@ -538,18 +537,6 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, s
             <h3 className="text-lg font-semibold mb-3">Shared Settings</h3>
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Interest Rate (%) - First 3 Years
-                  </label>
-                  <input
-                    type="number"
-                    step="0.1"
-                    value={formData.interestRate}
-                    onChange={(e) => setFormData({...formData, interestRate: parseFloat(e.target.value)})}
-                    className={`w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${getHighlightClass('interestRate')}`}
-                  />
-                </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Electricity Cost ($/kWh)

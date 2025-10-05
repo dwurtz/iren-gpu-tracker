@@ -69,7 +69,6 @@ const defaultSettings: ProfitabilitySettings = {
     h200: 3.00, // $3.00 per GPU hour
     mi350x: 3.25, // $3.25 per GPU hour
   },
-  interestRate: 9, // 9% for first 3 years
   electricityCost: 0.0325, // per kWh
   datacenterOverhead: 150, // per GPU per month
   electricalOverhead: 1.5, // PUE multiplier
@@ -158,20 +157,24 @@ const loadSitesFromStorage = (): Site[] | null => {
 const createDefaultBatches = (settings: ProfitabilitySettings, sites: Site[]): Batch[] => {
   const batches: Batch[] = [];
   
-  // Default batches based on screenshot
+  // Default batches based on provided data
   const defaultBatchConfig = [
-    { month: 8, year: 2025, quantity: 4000, chipType: 'B200' as ChipType, siteId: 'site-prince-george' }, // Sep 2025
-    { month: 9, year: 2025, quantity: 4500, chipType: 'B200' as ChipType, siteId: 'site-prince-george' }, // Oct 2025
-    { month: 10, year: 2025, quantity: 5000, chipType: 'B200' as ChipType, siteId: 'site-prince-george' }, // Nov 2025
-    { month: 11, year: 2025, quantity: 5000, chipType: 'B200' as ChipType, siteId: 'site-prince-george' }, // Dec 2025
-    { month: 0, year: 2026, quantity: 5500, chipType: 'B200' as ChipType, siteId: 'site-prince-george' }, // Jan 2026
-    { month: 1, year: 2026, quantity: 5500, chipType: 'B200' as ChipType, siteId: 'site-childress' }, // Feb 2026
-    { month: 2, year: 2026, quantity: 5500, chipType: 'B200' as ChipType, siteId: 'site-childress' }, // Mar 2026
-    { month: 3, year: 2026, quantity: 5500, chipType: 'B200' as ChipType, siteId: 'site-childress' }, // Apr 2026
+    { dateAnnounced: '2023-08-29', month: 7, year: 2023, quantity: 248, chipType: 'H100' as ChipType, siteId: 'site-prince-george', fundingType: 'Cash' as const, leaseType: null, residualCap: undefined, leaseTerm: undefined, apr: undefined },
+    { dateAnnounced: '2024-02-14', month: 1, year: 2024, quantity: 568, chipType: 'H100' as ChipType, siteId: 'site-prince-george', fundingType: 'Cash' as const, leaseType: null, residualCap: undefined, leaseTerm: undefined, apr: undefined },
+    { dateAnnounced: '2024-09-16', month: 8, year: 2024, quantity: 1080, chipType: 'H200' as ChipType, siteId: 'site-prince-george', fundingType: 'Cash' as const, leaseType: null, residualCap: undefined, leaseTerm: undefined, apr: undefined },
+    { dateAnnounced: '2025-07-03', month: 6, year: 2025, quantity: 1300, chipType: 'B200' as ChipType, siteId: 'site-prince-george', fundingType: 'Lease' as const, leaseType: 'FMV', residualCap: 20, leaseTerm: 36, apr: 9 },
+    { dateAnnounced: '2025-07-03', month: 6, year: 2025, quantity: 1100, chipType: 'B300' as ChipType, siteId: 'site-prince-george', fundingType: 'Lease' as const, leaseType: 'FMV', residualCap: 20, leaseTerm: 36, apr: 9 },
+    { dateAnnounced: '2025-08-25', month: 7, year: 2025, quantity: 4200, chipType: 'B200' as ChipType, siteId: 'site-prince-george', fundingType: 'Lease' as const, leaseType: 'FMV', residualCap: 20, leaseTerm: 36, apr: 9 },
+    { dateAnnounced: '2025-08-28', month: 7, year: 2025, quantity: 1200, chipType: 'B300' as ChipType, siteId: 'site-prince-george', fundingType: 'Cash' as const, leaseType: null, residualCap: undefined, leaseTerm: undefined, apr: undefined },
+    { dateAnnounced: '2025-08-28', month: 7, year: 2025, quantity: 1200, chipType: 'GB300' as ChipType, siteId: 'site-prince-george', fundingType: 'Lease' as const, leaseType: 'FMV', residualCap: 20, leaseTerm: 24, apr: 9 },
+    { dateAnnounced: '2025-09-22', month: 8, year: 2025, quantity: 7100, chipType: 'B300' as ChipType, siteId: 'site-childress', fundingType: 'Lease' as const, leaseType: 'FMV', residualCap: 20, leaseTerm: 36, apr: 9 },
+    { dateAnnounced: '2025-09-22', month: 8, year: 2025, quantity: 4200, chipType: 'B200' as ChipType, siteId: 'site-childress', fundingType: 'Lease' as const, leaseType: 'FMV', residualCap: 20, leaseTerm: 36, apr: 9 },
+    { dateAnnounced: '2025-09-22', month: 8, year: 2025, quantity: 1100, chipType: 'MI350X' as ChipType, siteId: 'site-childress', fundingType: 'Lease' as const, leaseType: 'FMV', residualCap: 20, leaseTerm: 36, apr: 9 },
   ];
   
   defaultBatchConfig.forEach((config, index) => {
-    const gpusPerMW = config.chipType === 'B200' ? settings.gpusPerMW.b200 : settings.gpusPerMW.gb300;
+    const chipKey = config.chipType.toLowerCase() as 'b200' | 'b300' | 'gb300' | 'h100' | 'h200' | 'mi350x';
+    const gpusPerMW = settings.gpusPerMW[chipKey];
     const mwEquivalent = (config.quantity / gpusPerMW).toFixed(2);
     const site = sites.find(s => s.id === config.siteId);
     const siteName = site ? site.name : '';
@@ -185,6 +188,12 @@ const createDefaultBatches = (settings: ProfitabilitySettings, sites: Site[]): B
       installationMonth: config.month,
       installationYear: config.year,
       siteId: config.siteId,
+      dateAnnounced: config.dateAnnounced,
+      fundingType: config.fundingType,
+      leaseType: config.leaseType,
+      residualCap: config.residualCap,
+      leaseTerm: config.leaseTerm,
+      apr: config.apr,
       phases: {
         installation: { 
           duration: 1, 

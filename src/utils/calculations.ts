@@ -29,13 +29,16 @@ export const calculateMonthlyData = (batch: Batch, startMonth: number, startYear
   const baseElectricalCost = hoursGpusRun * totalPowerKw * settings.electricityCost;
   const electricalCost = baseElectricalCost * settings.electricalOverhead; // Apply PUE multiplier
   
-  // GPU financing terms from settings
-  const annualInterestRate = settings.interestRate / 100;
+  // GPU financing terms - now from batch level
+  const isCashPurchase = batch.fundingType === 'Cash';
+  const annualInterestRate = isCashPurchase ? 0 : (batch.apr || 0) / 100;
   const monthlyInterestRate = annualInterestRate / 12;
-  const loanTermMonths = 36;
+  const loanTermMonths = batch.leaseTerm || 36;
   
   // Calculate monthly payment for GPU financing (like a mortgage)
+  // For cash purchases, this will be 0
   const calculateMonthlyPayment = (principal: number) => {
+    if (isCashPurchase) return 0;
     if (monthlyInterestRate === 0) return principal / loanTermMonths;
     return principal * (monthlyInterestRate * Math.pow(1 + monthlyInterestRate, loanTermMonths)) / 
            (Math.pow(1 + monthlyInterestRate, loanTermMonths) - 1);
@@ -65,7 +68,11 @@ export const calculateMonthlyData = (batch: Batch, startMonth: number, startYear
         // Installation phase - GPU payments + installation costs
         phase = 'INSTALL';
         const monthlyInstallationCost = totalInstallationCost / batch.phases.installation.duration;
-        monthlyValue = -(monthlyGpuPayment + monthlyInstallationCost);
+        
+        // For cash purchases, include upfront GPU cost in first month only
+        const upfrontGpuCost = (isCashPurchase && monthsSinceInstallation === 0) ? totalGpuCost : 0;
+        
+        monthlyValue = -(monthlyGpuPayment + monthlyInstallationCost + upfrontGpuCost);
       } else if (monthsSinceInstallation < batch.phases.installation.duration + batch.phases.burnIn.duration) {
         // Burn-in phase - GPU payments + overhead costs
         phase = 'BURN_IN';

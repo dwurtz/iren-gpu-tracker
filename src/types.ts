@@ -10,6 +10,9 @@ export interface Site {
   status: 'operating' | 'under-construction' | 'secured';
 }
 
+export type FundingType = 'Cash' | 'Lease';
+export type LeaseType = 'FMV' | null;
+
 export interface Batch {
   id: string;
   name: string;
@@ -18,6 +21,12 @@ export interface Batch {
   installationMonth: number; // 0-based month index
   installationYear: number;
   siteId: string;
+  dateAnnounced: string; // ISO date string
+  fundingType: FundingType;
+  leaseType: LeaseType;
+  residualCap?: number; // percentage, only for leases
+  leaseTerm?: number; // months, only for leases
+  apr?: number; // percentage, only for leases
   phases: {
     installation: {
       duration: number; // months
