@@ -64,12 +64,12 @@ const defaultSettings: ProfitabilitySettings = {
     mi350x: 20, // per GPU
   },
   gpuHourRate: {
-    b200: 3.65, // $3.65 per GPU hour
-    b300: 4.50, // $4.50 per GPU hour
-    gb300: 5.50, // $5.50 per GPU hour
-    h100: 2.50, // $2.50 per GPU hour
-    h200: 3.00, // $3.00 per GPU hour
-    mi350x: 3.25, // $3.25 per GPU hour
+    b200: 3.08, // $3.08 per GPU hour (2yr-payback rate)
+    b300: 3.85, // $3.85 per GPU hour (2yr-payback rate)
+    gb300: 5.11, // $5.11 per GPU hour (2yr-payback rate)
+    h100: 2.28, // $2.28 per GPU hour (2yr-payback rate)
+    h200: 2.37, // $2.37 per GPU hour (2yr-payback rate)
+    mi350x: 2.91, // $2.91 per GPU hour (2yr-payback rate)
   },
   electricityCost: 0.0325, // per kWh
   datacenterOverhead: 150, // per GPU per month
