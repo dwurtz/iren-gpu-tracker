@@ -103,10 +103,12 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
       
       // GPU Financing section (shown in all phases)
       const gpuFinancingSection = {
-        label: 'GPU Cost (Financed)',
-        value: (
-          <span title={`Formula: P × [r(1+r)^n] / [(1+r)^n - 1] where P = ${formatValue(totalGpuCost)}, r = ${(settings.interestRate / 12).toFixed(3)}% monthly, n = 36 months`}>
-            {batch.quantity.toLocaleString()} GPUs × <ClickableVariable title="Click to edit upfront GPU cost in settings" field={`upfrontGpuCost.${batch.chipType.toLowerCase()}`} onOpenSettings={onOpenSettings}>{formatValue(gpuCostPerUnit)}</ClickableVariable> ÷ 36 months @ <ClickableVariable title="Click to edit interest rate in settings" field="interestRate" onOpenSettings={onOpenSettings}>{settings.interestRate}%</ClickableVariable> = {formatValue(monthlyGpuPayment)}
+        label: isCashPurchase ? 'GPU Cost (Cash)' : 'GPU Cost (Financed)',
+        value: isCashPurchase ? (
+          <span>Cash Purchase: ${formatValue(0)} per month</span>
+        ) : (
+          <span title={`Formula: P × [r(1+r)^n] / [(1+r)^n - 1] where P = ${formatValue(totalGpuCost)}, r = ${((batch.apr || 0) / 12).toFixed(3)}% monthly, n = ${loanTermMonths} months`}>
+            {batch.quantity.toLocaleString()} GPUs × <ClickableVariable title="Click to edit upfront GPU cost in settings" field={`upfrontGpuCost.${batch.chipType.toLowerCase()}`} onOpenSettings={onOpenSettings}>{formatValue(gpuCostPerUnit)}</ClickableVariable> ÷ {loanTermMonths} months @ {batch.apr || 0}% = {formatValue(monthlyGpuPayment)}
           </span>
         )
       };

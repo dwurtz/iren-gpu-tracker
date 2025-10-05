@@ -17,15 +17,27 @@ interface NewBatchModalProps {
 
 export const NewBatchModal: React.FC<NewBatchModalProps> = ({ isOpen, onClose, onSave, sites, onEditSite, onOpenSettings, settings }) => {
   useModalBackdrop(isOpen);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<{
+    chipType: ChipType;
+    quantity: number;
+    installationMonth: number;
+    installationYear: number;
+    siteId: string;
+    dateAnnounced: string;
+    fundingType: 'Cash' | 'Lease';
+    leaseType: 'FMV' | null;
+    residualCap?: number;
+    leaseTerm?: number;
+    apr?: number;
+  }>({
     chipType: 'B200' as ChipType,
     quantity: 100,
     installationMonth: new Date().getMonth(),
     installationYear: new Date().getFullYear(),
     siteId: sites.length > 0 ? sites[0].id : 'site-canal-flats',
     dateAnnounced: new Date().toISOString().split('T')[0],
-    fundingType: 'Lease' as 'Cash' | 'Lease',
-    leaseType: 'FMV' as 'FMV' | null,
+    fundingType: 'Lease',
+    leaseType: 'FMV',
     residualCap: 20,
     leaseTerm: 36,
     apr: 9,
@@ -81,10 +93,12 @@ export const NewBatchModal: React.FC<NewBatchModalProps> = ({ isOpen, onClose, o
       installationMonth: new Date().getMonth(),
       installationYear: new Date().getFullYear(),
       siteId: sites.length > 0 ? sites[0].id : 'site-canal-flats',
-      installationDuration: 1,
-      installationCost: 1523,
-      burnInDuration: 1,
-      burnInCost: 1723,
+      dateAnnounced: new Date().toISOString().split('T')[0],
+      fundingType: 'Lease',
+      leaseType: 'FMV',
+      residualCap: 20,
+      leaseTerm: 36,
+      apr: 9,
     });
   };
 

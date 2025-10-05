@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Settings, RotateCcw, Info } from 'lucide-react';
-import { Batch, Site, ChipType } from './types';
+import { Batch, Site, ChipType, LeaseType } from './types';
 import { NewBatchModal } from './components/NewBatchModal';
 import { BatchRow } from './components/BatchRow';
 import { SettingsModal, ProfitabilitySettings } from './components/SettingsModal';
@@ -157,7 +157,7 @@ const loadSitesFromStorage = (): Site[] | null => {
 const createDefaultBatches = (settings: ProfitabilitySettings, sites: Site[]): Batch[] => {
   const batches: Batch[] = [];
   
-  // Default batches based on provided data
+  // Default batches based on provided data - PR Date is used as announcement date
   const defaultBatchConfig = [
     { dateAnnounced: '2023-08-29', month: 7, year: 2023, quantity: 248, chipType: 'H100' as ChipType, siteId: 'site-prince-george', fundingType: 'Cash' as const, leaseType: null, residualCap: undefined, leaseTerm: undefined, apr: undefined },
     { dateAnnounced: '2024-02-14', month: 1, year: 2024, quantity: 568, chipType: 'H100' as ChipType, siteId: 'site-prince-george', fundingType: 'Cash' as const, leaseType: null, residualCap: undefined, leaseTerm: undefined, apr: undefined },
@@ -190,7 +190,7 @@ const createDefaultBatches = (settings: ProfitabilitySettings, sites: Site[]): B
       siteId: config.siteId,
       dateAnnounced: config.dateAnnounced,
       fundingType: config.fundingType,
-      leaseType: config.leaseType,
+      leaseType: config.leaseType as LeaseType,
       residualCap: config.residualCap,
       leaseTerm: config.leaseTerm,
       apr: config.apr,
