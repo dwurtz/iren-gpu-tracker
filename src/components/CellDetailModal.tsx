@@ -62,8 +62,12 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
   const batchInstallationIndex = (batch.installationYear - 2025) * 12 + (batch.installationMonth - 8);
   const monthsSinceInstallation = monthIndex - batchInstallationIndex;
   
+  // Helper function to get chip-specific settings
+  const getChipKey = () => batch.chipType.toLowerCase() as 'b200' | 'b300' | 'gb300' | 'h100' | 'h200' | 'mi350x';
+  const chipKey = getChipKey();
+  
   // Calculate chip-specific rate (needed in JSX)
-  const gpuHourRate = batch.chipType === 'B200' ? settings.gpuHourRate.b200 : settings.gpuHourRate.gb300;
+  const gpuHourRate = settings.gpuHourRate[chipKey];
   
   // Calculate detailed breakdown based on phase
   const getPhaseDetails = () => {
@@ -73,7 +77,7 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
       const datacenterOverhead = settings.datacenterOverhead; // From settings
       // Calculate electrical cost based on actual GPU usage (same as calculations.ts)
       const hoursGpusRun = hoursPerMonth * utilizationRate; // Hours GPUs actually run
-      const powerPerGpuKw = batch.chipType === 'B200' ? settings.gpuPowerConsumption.b200 : settings.gpuPowerConsumption.gb300; // kW per GPU from settings
+      const powerPerGpuKw = settings.gpuPowerConsumption[chipKey];
       const totalPowerKw = batch.quantity * powerPerGpuKw;
       const baseElectricalCost = hoursGpusRun * totalPowerKw * settings.electricityCost;
       const electricalCost = baseElectricalCost * settings.electricalOverhead; // Apply PUE multiplier
@@ -89,10 +93,10 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
                (Math.pow(1 + monthlyInterestRate, loanTermMonths) - 1);
       };
       
-      const gpuCostPerUnit = batch.chipType === 'B200' ? settings.upfrontGpuCost.b200 : settings.upfrontGpuCost.gb300;
+      const gpuCostPerUnit = settings.upfrontGpuCost[chipKey];
       const totalGpuCost = gpuCostPerUnit * batch.quantity;
       const monthlyGpuPayment = calculateMonthlyPayment(totalGpuCost);
-      const installationCostPerGpu = batch.chipType === 'B200' ? settings.installationCost.b200 : settings.installationCost.gb300; // From settings - chip-specific
+      const installationCostPerGpu = settings.installationCost[chipKey];
       const totalInstallationCost = installationCostPerGpu * batch.quantity;
       
       // GPU Financing section (shown in all phases)

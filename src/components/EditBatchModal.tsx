@@ -74,8 +74,11 @@ export const EditBatchModal: React.FC<EditBatchModalProps> = ({ isOpen, onClose,
             >
               <option value="">Select chip type</option>
               <option value="B200">B200</option>
+              <option value="B300">B300</option>
               <option value="GB300">GB300</option>
               <option value="H100">H100</option>
+              <option value="H200">H200</option>
+              <option value="MI350X">MI350X</option>
             </select>
           </div>
 

@@ -1,18 +1,30 @@
-import { Batch, MonthData } from '../types';
+import { Batch, MonthData, ChipType } from '../types';
 import { ProfitabilitySettings } from '../components/SettingsModal';
+
+// Helper function to get chip-specific settings
+const getChipSettings = (chipType: ChipType, settings: ProfitabilitySettings) => {
+  const key = chipType.toLowerCase() as 'b200' | 'b300' | 'gb300' | 'h100' | 'h200' | 'mi350x';
+  return {
+    gpuHourRate: settings.gpuHourRate[key],
+    powerConsumption: settings.gpuPowerConsumption[key],
+    upfrontCost: settings.upfrontGpuCost[key],
+    installationCost: settings.installationCost[key],
+  };
+};
 
 export const calculateMonthlyData = (batch: Batch, startMonth: number, startYear: number, totalMonths: number, settings: ProfitabilitySettings): MonthData[] => {
   const data: MonthData[] = [];
   let cumulativeProfit = 0;
   
   // Use settings values - chip-specific
+  const chipSettings = getChipSettings(batch.chipType, settings);
   const hoursPerMonth = 730;
   const utilizationRate = settings.utilizationRate / 100;
-  const gpuHourRate = batch.chipType === 'B200' ? settings.gpuHourRate.b200 : settings.gpuHourRate.gb300; // Chip-specific rate
+  const gpuHourRate = chipSettings.gpuHourRate;
   const datacenterOverheadPerGpu = settings.datacenterOverhead;
   // Calculate electrical cost based on actual GPU usage
   const hoursGpusRun = hoursPerMonth * utilizationRate; // Hours GPUs actually run
-  const powerPerGpuKw = batch.chipType === 'B200' ? settings.gpuPowerConsumption.b200 : settings.gpuPowerConsumption.gb300; // kW per GPU from settings
+  const powerPerGpuKw = chipSettings.powerConsumption;
   const totalPowerKw = batch.quantity * powerPerGpuKw;
   const baseElectricalCost = hoursGpusRun * totalPowerKw * settings.electricityCost;
   const electricalCost = baseElectricalCost * settings.electricalOverhead; // Apply PUE multiplier
@@ -43,13 +55,11 @@ export const calculateMonthlyData = (batch: Batch, startMonth: number, startYear
     
     if (monthsSinceInstallation >= 0) {
       // Calculate GPU financing payment (applies to all phases for 36 months)
-      const gpuCostPerUnit = batch.chipType === 'B200' ? settings.upfrontGpuCost.b200 : settings.upfrontGpuCost.gb300;
-      const totalGpuCost = gpuCostPerUnit * batch.quantity;
+      const totalGpuCost = chipSettings.upfrontCost * batch.quantity;
       const monthlyGpuPayment = calculateMonthlyPayment(totalGpuCost);
       
       // Installation costs (one-time, spread over installation period) - chip-specific
-      const installationCostPerGpu = batch.chipType === 'B200' ? settings.installationCost.b200 : settings.installationCost.gb300;
-      const totalInstallationCost = installationCostPerGpu * batch.quantity;
+      const totalInstallationCost = chipSettings.installationCost * batch.quantity;
       
       if (monthsSinceInstallation < batch.phases.installation.duration) {
         // Installation phase - GPU payments + installation costs

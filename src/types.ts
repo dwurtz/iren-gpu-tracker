@@ -1,4 +1,4 @@
-export type ChipType = 'B200' | 'GB300' | 'H100';
+export type ChipType = 'B200' | 'B300' | 'GB300' | 'H100' | 'H200' | 'MI350X';
 
 export type Phase = 'INSTALL' | 'BURN_IN' | 'LIVE';
 

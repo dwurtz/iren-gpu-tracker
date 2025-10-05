@@ -5,28 +5,43 @@ import { useModalBackdrop } from './ModalBackdrop';
 export interface ProfitabilitySettings {
   gpusPerMW: {
     b200: number;
+    b300: number;
     gb300: number;
     h100: number;
+    h200: number;
+    mi350x: number;
   };
   upfrontGpuCost: {
     b200: number;
+    b300: number;
     gb300: number;
     h100: number;
+    h200: number;
+    mi350x: number;
   };
   gpuPowerConsumption: {
     b200: number; // kW per GPU
+    b300: number; // kW per GPU
     gb300: number; // kW per GPU
     h100: number; // kW per GPU
+    h200: number; // kW per GPU
+    mi350x: number; // kW per GPU
   };
   installationCost: {
     b200: number; // per GPU
+    b300: number; // per GPU
     gb300: number; // per GPU
     h100: number; // per GPU
+    h200: number; // per GPU
+    mi350x: number; // per GPU
   };
   gpuHourRate: {
     b200: number; // $ per GPU hour
+    b300: number; // $ per GPU hour
     gb300: number; // $ per GPU hour
     h100: number; // $ per GPU hour
+    h200: number; // $ per GPU hour
+    mi350x: number; // $ per GPU hour
   };
   interestRate: number; // 9% for first 3 years
   electricityCost: number; // per kWh

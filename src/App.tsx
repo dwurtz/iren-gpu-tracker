@@ -31,28 +31,43 @@ const MONTHS = [
 const defaultSettings: ProfitabilitySettings = {
   gpusPerMW: {
     b200: 532, // air cooled (CONSTANT)
+    b300: 520, // air cooled
     gb300: 432, // liquid cooled
     h100: 500, // air cooled
+    h200: 490, // air cooled
+    mi350x: 480, // air cooled
   },
   upfrontGpuCost: {
-    b200: 46000, // air cooled
-    gb300: 80000, // liquid cooled
-    h100: 35000, // air cooled
+    b200: 46233, // from table
+    b300: 58674, // from table
+    gb300: 80000, // from table
+    h100: 39216, // from table
+    h200: 40648, // from table
+    mi350x: 43637, // from table
   },
   gpuPowerConsumption: {
     b200: 1.7, // 1700W per B200 baseline rack power (before PUE)
+    b300: 1.8, // 1800W per B300 baseline rack power (before PUE)
     gb300: 2.1, // 2100W per GB300 baseline rack power (before PUE)
     h100: 1.4, // 1400W per H100 baseline rack power (before PUE)
+    h200: 1.5, // 1500W per H200 baseline rack power (before PUE)
+    mi350x: 1.6, // 1600W per MI350X baseline rack power (before PUE)
   },
   installationCost: {
     b200: 20, // per GPU
+    b300: 20, // per GPU
     gb300: 20, // per GPU
     h100: 20, // per GPU
+    h200: 20, // per GPU
+    mi350x: 20, // per GPU
   },
   gpuHourRate: {
     b200: 3.65, // $3.65 per GPU hour
+    b300: 4.50, // $4.50 per GPU hour
     gb300: 5.50, // $5.50 per GPU hour
     h100: 2.50, // $2.50 per GPU hour
+    h200: 3.00, // $3.00 per GPU hour
+    mi350x: 3.25, // $3.25 per GPU hour
   },
   interestRate: 9, // 9% for first 3 years
   electricityCost: 0.0325, // per kWh

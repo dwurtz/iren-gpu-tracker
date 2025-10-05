@@ -3,6 +3,7 @@ import { X } from 'lucide-react';
 import { ChipType, Batch, Site } from '../types';
 import { useModalBackdrop } from './ModalBackdrop';
 import { ClickableVariable } from './ClickableVariable';
+import { ProfitabilitySettings } from './SettingsModal';
 
 interface NewBatchModalProps {
   isOpen: boolean;
@@ -11,9 +12,10 @@ interface NewBatchModalProps {
   sites: Site[];
   onEditSite: (siteId: string) => void;
   onOpenSettings: (field?: string) => void;
+  settings: ProfitabilitySettings;
 }
 
-export const NewBatchModal: React.FC<NewBatchModalProps> = ({ isOpen, onClose, onSave, sites, onEditSite, onOpenSettings }) => {
+export const NewBatchModal: React.FC<NewBatchModalProps> = ({ isOpen, onClose, onSave, sites, onEditSite, onOpenSettings, settings }) => {
   useModalBackdrop(isOpen);
   const [formData, setFormData] = useState({
     chipType: 'B200' as ChipType,
@@ -27,10 +29,16 @@ export const NewBatchModal: React.FC<NewBatchModalProps> = ({ isOpen, onClose, o
     burnInCost: 1723,
   });
 
+  const getGpusPerMW = () => {
+    const chipKey = formData.chipType.toLowerCase() as 'b200' | 'b300' | 'gb300' | 'h100' | 'h200' | 'mi350x';
+    return settings.gpusPerMW[chipKey];
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    const mwEquivalent = (formData.quantity / (formData.chipType === 'B200' ? 532 : 432)).toFixed(2);
+    const gpusPerMW = getGpusPerMW();
+    const mwEquivalent = (formData.quantity / gpusPerMW).toFixed(2);
     const site = sites.find(s => s.id === formData.siteId);
     const siteName = site ? site.name : '';
     const batch: Omit<Batch, 'id'> = {
@@ -101,8 +109,11 @@ export const NewBatchModal: React.FC<NewBatchModalProps> = ({ isOpen, onClose, o
               className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="B200">B200</option>
+              <option value="B300">B300</option>
               <option value="GB300">GB300</option>
               <option value="H100">H100</option>
+              <option value="H200">H200</option>
+              <option value="MI350X">MI350X</option>
             </select>
           </div>
 
@@ -121,7 +132,7 @@ export const NewBatchModal: React.FC<NewBatchModalProps> = ({ isOpen, onClose, o
             <p className="text-xs text-gray-500 mt-1">
               {formData.quantity && formData.chipType ? (
                 <span>
-                  ≈ {formData.quantity.toLocaleString()} ÷ <ClickableVariable title="Click to edit GPUs per MW in settings" field={`gpusPerMW.${formData.chipType.toLowerCase()}`} onOpenSettings={onOpenSettings}>{formData.chipType === 'B200' ? 532 : 432}</ClickableVariable> = {(formData.quantity / (formData.chipType === 'B200' ? 532 : 432)).toFixed(2)}MW
+                  ≈ {formData.quantity.toLocaleString()} ÷ <ClickableVariable title="Click to edit GPUs per MW in settings" field={`gpusPerMW.${formData.chipType.toLowerCase()}`} onOpenSettings={onOpenSettings}>{getGpusPerMW()}</ClickableVariable> = {(formData.quantity / getGpusPerMW()).toFixed(2)}MW
                 </span>
               ) : (
                 'Enter quantity to see MW equivalent'
