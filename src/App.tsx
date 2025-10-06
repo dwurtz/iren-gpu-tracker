@@ -146,8 +146,8 @@ const createDefaultBatches = (settings: ProfitabilitySettings, sites: Site[]): B
     { dateAnnounced: '2025-08-28', month: 7, year: 2025, quantity: 1200, chipType: 'B300' as ChipType, siteId: 'site-prince-george', fundingType: 'Cash' as const, leaseType: null, residualCap: undefined, leaseTerm: undefined, apr: undefined },
     { dateAnnounced: '2025-09-22', month: 8, year: 2025, quantity: 4200, chipType: 'B200' as ChipType, siteId: 'site-prince-george', fundingType: 'Lease' as const, leaseType: 'FMV', residualCap: 20, leaseTerm: 36, apr: 9 },
     { dateAnnounced: '2025-09-22', month: 8, year: 2025, quantity: 1100, chipType: 'MI350X' as ChipType, siteId: 'site-prince-george', fundingType: 'Lease' as const, leaseType: 'FMV', residualCap: 20, leaseTerm: 36, apr: 9 },
-    { dateAnnounced: '2025-08-28', month: 7, year: 2025, quantity: 1200, chipType: 'GB300' as ChipType, siteId: 'site-prince-george', fundingType: 'Lease' as const, leaseType: 'FMV', residualCap: 20, leaseTerm: 24, apr: 9 },
     { dateAnnounced: '2025-09-22', month: 8, year: 2025, quantity: 7100, chipType: 'B300' as ChipType, siteId: 'site-prince-george', fundingType: 'Lease' as const, leaseType: 'FMV', residualCap: 20, leaseTerm: 36, apr: 9 },
+    { dateAnnounced: '2025-08-28', month: 7, year: 2025, quantity: 1200, chipType: 'GB300' as ChipType, siteId: 'site-prince-george', fundingType: 'Lease' as const, leaseType: 'FMV', residualCap: 20, leaseTerm: 24, apr: 9 },
   ];
   
   defaultBatchConfig.forEach((config, index) => {
@@ -261,7 +261,7 @@ const migrateBatch = (batch: any): Batch => {
 };
 
 // Batch configuration version - increment this when default batches change
-const BATCH_CONFIG_VERSION = 5;
+const BATCH_CONFIG_VERSION = 6;
 
 // Initialize batches from storage or create defaults
 const initializeBatches = (settings: ProfitabilitySettings, sites: Site[]): Batch[] => {
@@ -603,19 +603,10 @@ function App() {
     }
   };
 
-  // Format chip count (no dollar sign)
+  // Format chip count (full numbers with commas, no dollar sign)
   const formatChipCount = (value: number) => {
     if (value === 0) return '';
-    
-    if (value >= 1000000) {
-      const millions = value / 1000000;
-      return `${millions.toFixed(1)}M`;
-    } else if (value >= 1000) {
-      const thousands = value / 1000;
-      return `${thousands.toFixed(0)}K`;
-    } else {
-      return `${Math.round(value)}`;
-    }
+    return Math.round(value).toLocaleString();
   };
 
   return (
