@@ -177,6 +177,7 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
                 type="range"
                 min="0"
                 max="100"
+                step="1"
                 value={percentDeployed}
                 onChange={(e) => {
                   const targetTotal = parseInt(e.target.value);
