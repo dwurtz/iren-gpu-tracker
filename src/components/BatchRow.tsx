@@ -101,8 +101,7 @@ export const BatchRow: React.FC<BatchRowProps> = ({
 
     if (value < 0) {
       // Red gradient for losses
-      const linearIntensity = Math.abs(value) / Math.abs(maxLoss);
-      const intensity = Math.sqrt(linearIntensity); // Non-linear scale
+      const intensity = Math.abs(value) / Math.abs(maxLoss); // Linear scale
       const red = Math.round(220 + (255 - 220) * intensity);
       const green = Math.round(180 - 100 * intensity);
       const blue = Math.round(180 - 100 * intensity);
@@ -113,8 +112,7 @@ export const BatchRow: React.FC<BatchRowProps> = ({
       };
     } else {
       // Green gradient for profits
-      const linearIntensity = value / maxProfit;
-      const intensity = Math.sqrt(linearIntensity); // Non-linear scale
+      const intensity = value / maxProfit; // Linear scale
       const red = Math.round(180 - 80 * intensity);
       const green = Math.round(220 - 40 * intensity);
       const blue = Math.round(180 - 80 * intensity);
