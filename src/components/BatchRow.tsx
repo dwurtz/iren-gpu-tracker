@@ -150,12 +150,6 @@ export const BatchRow: React.FC<BatchRowProps> = ({
     }
   };
 
-  const handleSliderChange = (e: React.ChangeEvent<HTMLInputElement>, monthIndex: number) => {
-    e.stopPropagation();
-    const newPercentage = parseInt(e.target.value);
-    onUpdateDeployment?.(batch.id, monthIndex, newPercentage);
-  };
-
   // Calculate final profit (last non-zero value)
   const finalProfit = monthlyData.reduce((max, data) => data.value !== 0 ? data.value : max, 0);
 
@@ -197,9 +191,6 @@ export const BatchRow: React.FC<BatchRowProps> = ({
         const isSelected = selectedCell?.batchId === batch.id && selectedCell?.monthIndex === index;
         const isYearBoundary = index === 4 || index === 16 || index === 28 || index === 40 || index === 52 || index === 64;
         const isFirstMonth = index === 0;
-        
-        // Check if this cell has deployment this month
-        const deploymentThisMonth = batch.deploymentSchedule[index] || 0;
         const hasDeployment = data.percentDeployed > 0;
         
         return (
@@ -229,22 +220,6 @@ export const BatchRow: React.FC<BatchRowProps> = ({
                   <div className="font-medium">
                     {formatValue(data.value)}
                   </div>
-                  {deploymentThisMonth > 0 && (
-                    <div className="mt-1" onClick={(e) => e.stopPropagation()}>
-                      <input
-                        type="range"
-                        min="0"
-                        max="100"
-                        value={deploymentThisMonth}
-                        onChange={(e) => handleSliderChange(e, index)}
-                        className="w-full h-1 bg-gray-300 rounded-lg appearance-none cursor-pointer"
-                        style={{ accentColor: '#10b981' }}
-                      />
-                      <div className="text-xs mt-0.5">
-                        +{deploymentThisMonth}% this month
-                      </div>
-                    </div>
-                  )}
                 </>
               )}
             </div>
@@ -275,6 +250,7 @@ export const BatchRow: React.FC<BatchRowProps> = ({
         settings={settings || {} as any}
         onOpenSettings={onOpenSettings || (() => {})}
         onEditBatch={() => onEdit(batch)}
+        onUpdateDeployment={onUpdateDeployment}
       />
     </tr>
   );

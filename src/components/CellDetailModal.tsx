@@ -17,6 +17,7 @@ interface CellDetailModalProps {
   settings: ProfitabilitySettings;
   onOpenSettings: (field?: string) => void;
   onEditBatch?: () => void;
+  onUpdateDeployment?: (batchId: string, monthIndex: number, percentage: number) => void;
 }
 
 export const CellDetailModal: React.FC<CellDetailModalProps> = ({
@@ -30,7 +31,8 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
   previousCumulative = 0,
   settings,
   onOpenSettings,
-  onEditBatch
+  onEditBatch,
+  onUpdateDeployment
 }) => {
   useModalBackdrop(isOpen);
   
@@ -159,6 +161,35 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
             <X size={24} />
           </button>
         </div>
+
+        {/* Deployment Slider Section */}
+        {deploymentThisMonth > 0 && onUpdateDeployment && (
+          <div className="px-6 py-4 bg-gray-50 border-b">
+            <div className="text-sm font-medium text-gray-700 mb-2">
+              Adjust Deployment for this Month
+            </div>
+            <div className="flex items-center gap-4">
+              <input
+                type="range"
+                min="0"
+                max="100"
+                value={deploymentThisMonth}
+                onChange={(e) => {
+                  const newValue = parseInt(e.target.value);
+                  onUpdateDeployment(batch.id, monthIndex, newValue);
+                }}
+                className="flex-1 h-2 bg-gray-300 rounded-lg appearance-none cursor-pointer"
+                style={{ accentColor: '#10b981' }}
+              />
+              <div className="text-sm font-medium text-gray-700 min-w-[80px]">
+                +{deploymentThisMonth}% 
+              </div>
+            </div>
+            <div className="text-xs text-gray-500 mt-1">
+              {deploymentThisMonth > 0 ? `Deploying ${Math.round(newGpusDeployed).toLocaleString()} GPUs this month` : 'No deployment this month'}
+            </div>
+          </div>
+        )}
 
         {/* Scrollable content */}
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
