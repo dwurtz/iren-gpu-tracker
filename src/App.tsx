@@ -414,31 +414,33 @@ function App() {
       const totalMonths = 77; // Aug 2023 to Dec 2029
       
       for (let monthIndex = 0; monthIndex < totalMonths; monthIndex++) {
-        let liveGPUs = 0;
+        let totalARR = 0;
         
-        // Count GPUs that are live in this month
+        // Calculate ARR for each live batch in this month
         batches.forEach((batch, batchIndex) => {
           const batchData = allBatchData[batchIndex];
           if (batchData && batchData[monthIndex] && batchData[monthIndex].phase === 'LIVE') {
-            liveGPUs += batch.quantity || 0;
+            const gpuCount = batch.quantity || 0;
+            
+            // Use chip-specific rates instead of average
+            const hoursPerMonth = 730;
+            const utilizationRate = settings.utilizationRate / 100;
+            const chipKey = batch.chipType.toLowerCase() as 'b200' | 'b300' | 'gb300' | 'h100' | 'h200' | 'mi350x';
+            const gpuHourRate = settings.gpuHourRate[chipKey];
+            const monthlyRevenuePerGPU = hoursPerMonth * utilizationRate * gpuHourRate;
+            const annualRevenue = gpuCount * monthlyRevenuePerGPU * 12;
+            
+            totalARR += annualRevenue;
           }
         });
         
-        // Calculate forward 12-month revenue based on live GPUs
-        // Note: This is an approximation - we use average of B200 and GB300 rates for mixed fleets
-        const hoursPerMonth = 730;
-        const utilizationRate = settings.utilizationRate / 100;
-        const avgGpuHourRate = (settings.gpuHourRate.b200 + settings.gpuHourRate.gb300) / 2;
-        const monthlyRevenuePerGPU = hoursPerMonth * utilizationRate * avgGpuHourRate;
-        const annualRevenue = liveGPUs * monthlyRevenuePerGPU * 12;
-        
-        arrData.push({ value: annualRevenue || 0 });
+        arrData.push({ value: totalARR || 0 });
       }
       
       return arrData;
     } catch (error) {
       console.error('Error calculating ARR:', error);
-      // Return empty array with 52 zero values as fallback
+      // Return empty array with 77 zero values as fallback
       return Array.from({ length: 77 }, () => ({ value: 0 }));
     }
   };
