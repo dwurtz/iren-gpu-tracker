@@ -156,7 +156,7 @@ const ARRModal: React.FC<ARRModalProps> = ({
                             e.stopPropagation();
                             if (onOpenCellModal) {
                               onOpenCellModal(item.batch, monthIndex);
-                              onClose(); // Close ARR modal after opening cell modal
+                              // Don't close - keep ARR modal open in background
                             }
                           }}
                         >
