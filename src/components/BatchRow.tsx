@@ -222,6 +222,8 @@ export const BatchRow: React.FC<BatchRowProps> = ({ batch, monthlyData, onEdit, 
         return (
           <td 
             key={index}
+            data-batch-id={batch.id}
+            data-month-index={index}
             className={`px-2 py-3 text-center text-sm ${isFirstMonth ? 'border-l border-gray-200' : ''} ${isYearBoundary ? 'border-r-2 border-gray-200' : 'border-r border-gray-200'} cursor-pointer hover:opacity-80`}
             style={{
               minWidth: '80px',

@@ -718,10 +718,17 @@ function App() {
         batches={batches}
         allBatchData={allBatchData}
         settings={settings}
-        onSelectCell={(batchId, monthIndex) => {
-          setSelectedCell({ batchId, monthIndex });
-          setIsARRModalOpen(false);
-          setSelectedARRMonth(null);
+        onOpenCellModal={(batch, monthIndex) => {
+          // Set the selected cell which will trigger the BatchRow to open its modal
+          setSelectedCell({ batchId: batch.id, monthIndex });
+          // Need to trigger the cell click programmatically
+          // Use a small delay to ensure the cell is rendered and selected first
+          setTimeout(() => {
+            const cellElement = document.querySelector(`[data-batch-id="${batch.id}"][data-month-index="${monthIndex}"]`);
+            if (cellElement instanceof HTMLElement) {
+              cellElement.click();
+            }
+          }, 100);
         }}
       />
 

@@ -20,7 +20,7 @@ interface ARRModalProps {
       mi350x: number;
     };
   };
-  onSelectCell?: (batchId: string, monthIndex: number) => void;
+  onOpenCellModal?: (batch: Batch, monthIndex: number) => void;
 }
 
 const ARRModal: React.FC<ARRModalProps> = ({
@@ -30,7 +30,7 @@ const ARRModal: React.FC<ARRModalProps> = ({
   batches,
   allBatchData,
   settings,
-  onSelectCell
+  onOpenCellModal
 }) => {
   useModalBackdrop(isOpen);
   
@@ -154,9 +154,9 @@ const ARRModal: React.FC<ARRModalProps> = ({
                           className="font-medium text-blue-600 hover:text-blue-800 cursor-pointer underline"
                           onClick={(e) => {
                             e.stopPropagation();
-                            if (onSelectCell) {
-                              onSelectCell(item.batch.id, monthIndex);
-                              // Don't close immediately - let the parent handle closing
+                            if (onOpenCellModal) {
+                              onOpenCellModal(item.batch, monthIndex);
+                              onClose(); // Close ARR modal after opening cell modal
                             }
                           }}
                         >
