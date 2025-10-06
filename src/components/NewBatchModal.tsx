@@ -65,6 +65,12 @@ export const NewBatchModal: React.FC<NewBatchModalProps> = ({ isOpen, onClose, o
       [startIndex + 3]: 25,
     };
     
+    // Calculate delivery date - first month with at least 1% deployed
+    const totalMonths = startIndex + 7;
+    const deliveryYear = 2023 + Math.floor(totalMonths / 12);
+    const deliveryMonth = totalMonths % 12;
+    const deliveryDate = `${deliveryYear}-${String(deliveryMonth + 1).padStart(2, '0')}-01`;
+    
     const batch: Omit<Batch, 'id'> = {
       name: `${formData.quantity.toLocaleString()} ${formData.chipType}s\n(${mwEquivalent}MW${siteName ? ` • ${siteName}` : ''})`,
       chipType: formData.chipType,
@@ -73,6 +79,7 @@ export const NewBatchModal: React.FC<NewBatchModalProps> = ({ isOpen, onClose, o
       installationYear: formData.installationYear,
       siteId: formData.siteId,
       dateAnnounced: formData.dateAnnounced,
+      deliveryDate,
       fundingType: formData.fundingType,
       leaseType: formData.fundingType === 'Lease' ? formData.leaseType : null,
       residualCap: formData.fundingType === 'Lease' ? formData.residualCap : undefined,

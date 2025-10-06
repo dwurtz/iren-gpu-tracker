@@ -20,6 +20,7 @@ export interface Batch {
   installationYear: number;
   siteId: string;
   dateAnnounced: string; // ISO date string
+  deliveryDate: string; // ISO date string - first month with >=1% deployed
   fundingType: FundingType;
   leaseType: LeaseType;
   residualCap?: number; // percentage, only for leases

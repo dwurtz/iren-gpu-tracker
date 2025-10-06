@@ -214,6 +214,24 @@ const createDefaultBatches = (settings: ProfitabilitySettings, sites: Site[]): B
       };
     }
     
+    // Calculate delivery date - first month with at least 1% deployed
+    let deliveryDate = config.dateAnnounced; // Default to announcement date
+    let cumulativePercent = 0;
+    const sortedMonths = Object.keys(deploymentSchedule).map(Number).sort((a, b) => a - b);
+    
+    for (const monthIdx of sortedMonths) {
+      cumulativePercent += deploymentSchedule[monthIdx];
+      if (cumulativePercent >= 1) {
+        // Convert month index back to year/month
+        // monthIdx is relative to Aug 2023 (index 0)
+        const totalMonths = monthIdx + 7; // Add 7 to account for Aug being month 7
+        const deliveryYear = 2023 + Math.floor(totalMonths / 12);
+        const deliveryMonth = totalMonths % 12;
+        deliveryDate = `${deliveryYear}-${String(deliveryMonth + 1).padStart(2, '0')}-01`;
+        break;
+      }
+    }
+    
     batches.push({
       id: `batch-${index}`,
       name: `${config.quantity.toLocaleString()} ${config.chipType}s\n(${mwEquivalent}MW${siteName ? ` • ${siteName}` : ''})`,
@@ -223,6 +241,7 @@ const createDefaultBatches = (settings: ProfitabilitySettings, sites: Site[]): B
       installationYear: config.year,
       siteId: config.siteId,
       dateAnnounced: config.dateAnnounced,
+      deliveryDate,
       fundingType: config.fundingType,
       leaseType: config.leaseType as LeaseType,
       residualCap: config.residualCap,
@@ -235,7 +254,7 @@ const createDefaultBatches = (settings: ProfitabilitySettings, sites: Site[]): B
   return batches;
 };
 
-// Migrate old batches to new format (add deploymentSchedule if missing)
+// Migrate old batches to new format (add deploymentSchedule and deliveryDate if missing)
 const migrateBatch = (batch: any): Batch => {
   // Remove phases if they exist
   const { phases, ...batchWithoutPhases } = batch;
@@ -250,13 +269,44 @@ const migrateBatch = (batch: any): Batch => {
       [startIndex + 2]: 25,
       [startIndex + 3]: 25,
     };
+    
+    // Calculate delivery date for migrated batch
+    const totalMonths = startIndex + 7;
+    const deliveryYear = 2023 + Math.floor(totalMonths / 12);
+    const deliveryMonth = totalMonths % 12;
+    const deliveryDate = `${deliveryYear}-${String(deliveryMonth + 1).padStart(2, '0')}-01`;
+    
     return {
       ...batchWithoutPhases,
       deploymentSchedule,
+      deliveryDate: deliveryDate || batch.dateAnnounced,
     } as Batch;
   }
   
-  // Batch already has deployment schedule, preserve it
+  // Calculate delivery date if missing
+  if (!batch.deliveryDate) {
+    let deliveryDate = batch.dateAnnounced;
+    let cumulativePercent = 0;
+    const sortedMonths = Object.keys(batch.deploymentSchedule).map(Number).sort((a, b) => a - b);
+    
+    for (const monthIdx of sortedMonths) {
+      cumulativePercent += batch.deploymentSchedule[monthIdx];
+      if (cumulativePercent >= 1) {
+        const totalMonths = monthIdx + 7;
+        const deliveryYear = 2023 + Math.floor(totalMonths / 12);
+        const deliveryMonth = totalMonths % 12;
+        deliveryDate = `${deliveryYear}-${String(deliveryMonth + 1).padStart(2, '0')}-01`;
+        break;
+      }
+    }
+    
+    return {
+      ...batchWithoutPhases,
+      deliveryDate,
+    } as Batch;
+  }
+  
+  // Batch already has deployment schedule and delivery date, preserve it
   return batchWithoutPhases as Batch;
 };
 
