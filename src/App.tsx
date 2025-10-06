@@ -181,14 +181,9 @@ const createDefaultBatches = (settings: ProfitabilitySettings, sites: Site[]): B
   return batches;
 };
 
-// Migrate old batches to new format (add deploymentSchedule if missing)
+// Migrate old batches to new format (add deploymentSchedule if missing OR fix incorrect schedule)
 const migrateBatch = (batch: any): Batch => {
-  // If batch already has deploymentSchedule, return as is
-  if (batch.deploymentSchedule) {
-    return batch as Batch;
-  }
-  
-  // Migrate old batch with phases to new format with deploymentSchedule
+  // Always recalculate deployment schedule to fix indexing issues
   // MONTHS array starts at Aug 2023 (index 0)
   const startIndex = (batch.installationYear - 2023) * 12 + (batch.installationMonth - 7);
   const deploymentSchedule: { [monthIndex: number]: number } = {
@@ -198,7 +193,7 @@ const migrateBatch = (batch: any): Batch => {
     [startIndex + 3]: 25,
   };
   
-  // Remove phases, add deploymentSchedule
+  // Remove phases if they exist, add correct deploymentSchedule
   const { phases, ...batchWithoutPhases } = batch;
   return {
     ...batchWithoutPhases,
