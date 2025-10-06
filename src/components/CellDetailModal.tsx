@@ -170,36 +170,52 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
           </button>
         </div>
 
-        {/* Deployment Slider Section */}
+        {/* Deployment Section */}
         {onUpdateDeployment && monthsSinceInstallation >= 1 && (
           <div className="px-6 py-4 bg-gray-50 border-b">
             <div className="text-sm font-medium text-gray-700 mb-2">
               Adjust Total Live by End of this Month
             </div>
             <div className="flex items-center gap-4">
+              {/* Progress bar */}
+              <div 
+                className="flex-1 h-8 bg-gray-200 rounded-lg overflow-hidden cursor-pointer relative"
+                onClick={(e) => {
+                  const rect = e.currentTarget.getBoundingClientRect();
+                  const x = e.clientX - rect.left;
+                  const percentage = Math.round((x / rect.width) * 100);
+                  const targetTotal = Math.max(0, Math.min(100, percentage));
+                  const previousTotal = percentDeployed - deploymentThisMonth;
+                  const newDeploymentThisMonth = targetTotal - previousTotal;
+                  onUpdateDeployment(batch.id, monthIndex, newDeploymentThisMonth);
+                }}
+              >
+                <div 
+                  className="h-full bg-emerald-500 transition-all duration-200"
+                  style={{ width: `${Math.round(percentDeployed)}%` }}
+                ></div>
+                <div className="absolute inset-0 flex items-center justify-center text-sm font-medium text-gray-700">
+                  {Math.round(percentDeployed)}%
+                </div>
+              </div>
+              {/* Text input */}
               <input
-                type="range"
+                type="number"
                 min="0"
                 max="100"
                 step="1"
                 value={Math.round(percentDeployed)}
                 onChange={(e) => {
-                  const targetTotal = parseInt(e.target.value);
-                  // Calculate previous cumulative (before this month)
+                  const targetTotal = Math.max(0, Math.min(100, parseInt(e.target.value) || 0));
                   const previousTotal = percentDeployed - deploymentThisMonth;
-                  // Calculate how much to deploy this month to reach target
-                  // Allow going backwards (negative deployment means reducing from previous)
                   const newDeploymentThisMonth = targetTotal - previousTotal;
                   onUpdateDeployment(batch.id, monthIndex, newDeploymentThisMonth);
                 }}
-                className="flex-1 h-2 bg-gray-300 rounded-lg appearance-none cursor-pointer"
-                style={{ accentColor: '#10b981' }}
+                className="w-20 px-3 py-2 border border-gray-300 rounded text-sm text-right"
               />
-              <div className="text-sm font-medium text-gray-700 min-w-[80px]">
-                {Math.round(percentDeployed)}%
-              </div>
+              <span className="text-sm text-gray-600">%</span>
             </div>
-            <div className="text-xs text-gray-500 mt-1">
+            <div className="text-xs text-gray-500 mt-2">
               {deploymentThisMonth > 0 
                 ? `Going live: ${Math.round(newGpusDeployed).toLocaleString()} GPUs this month (+${deploymentThisMonth}%)`
                 : deploymentThisMonth < 0
