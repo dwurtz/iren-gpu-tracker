@@ -822,7 +822,7 @@ function App() {
                             {data.value !== 0 && (
                               <div className="text-gray-700">
                                 {change !== 0 && (
-                                  <div className="text-xs text-gray-500 mb-0.5">
+                                  <div className="text-[10px] text-gray-500 mb-0.5">
                                     {change > 0 ? '+' : ''}{formatChipCount(change)}
                                   </div>
                                 )}
