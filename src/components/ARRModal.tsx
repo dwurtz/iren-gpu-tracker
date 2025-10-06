@@ -74,7 +74,7 @@ const ARRModal: React.FC<ARRModalProps> = ({
     let totalLiveGPUs = 0;
     let totalARR = 0;
 
-    // Find all batches that have deployed GPUs in this month
+    // Find all batches that have live GPUs in this month
     batches.forEach((batch, batchIndex) => {
       const batchData = allBatchData[batchIndex];
       if (batchData && batchData[monthIndex]) {

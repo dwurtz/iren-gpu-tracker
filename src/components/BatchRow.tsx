@@ -223,7 +223,7 @@ export const BatchRow: React.FC<BatchRowProps> = ({
                 <>
                   {!wasFullyDeployed && (
                     <div className="text-xs opacity-75">
-                      {data.percentDeployed.toFixed(0)}% deployed
+                      {data.percentDeployed.toFixed(0)}% live
                     </div>
                   )}
                   <div className="font-medium">

@@ -352,13 +352,10 @@ function App() {
           .filter(([idx]) => parseInt(idx) < monthIndex)
           .reduce((sum, [, pct]) => sum + pct, 0);
         
-        // Ensure we don't go below 0% or exceed 100% total
-        // percentage here is the incremental change for this month
-        // The minimum allowed is -previousCumulative (to reach 0% total)
-        // The maximum allowed is 100 - previousCumulative (to reach 100% total)
-        const minAllowed = -previousCumulative;
+        // Only constraint: total can't exceed 100%
+        // Allow negative incremental values (un-deploying) by setting very negative min
         const maxAllowed = 100 - previousCumulative;
-        const clampedPercentage = Math.max(minAllowed, Math.min(percentage, maxAllowed));
+        const clampedPercentage = Math.min(percentage, maxAllowed);
         
         return {
           ...batch,

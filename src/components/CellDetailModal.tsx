@@ -80,7 +80,7 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
 
   // === COSTS ===
   
-  // 1. Installation costs for newly deployed GPUs
+  // 1. Installation costs for newly live GPUs
   const installationCost = newGpusDeployed * installationCostPerGpu;
 
   // 2. Upfront GPU cost (cash purchases only)
@@ -101,7 +101,7 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
   
   const monthlyGpuPaymentPerUnit = calculateMonthlyPaymentPerGpu();
   
-  // Calculate total GPU financing for all deployed GPUs still in their term
+  // Calculate total GPU financing for all live GPUs still in their term
   let totalGpuFinancingPayment = 0;
   for (let deployMonth = batchInstallationIndex; deployMonth <= monthIndex; deployMonth++) {
     const monthsIntoFinancing = monthIndex - deployMonth;
@@ -158,7 +158,7 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
               <Edit2 size={16} />
             </h2>
             <div className="text-sm text-gray-600 mt-1">
-              Month {monthsSinceInstallation} • {percentDeployed.toFixed(0)}% deployed ({Math.round(totalGpusDeployed).toLocaleString()} GPUs)
+              Month {monthsSinceInstallation} • {percentDeployed.toFixed(0)}% live ({Math.round(totalGpusDeployed).toLocaleString()} GPUs)
             </div>
           </div>
           <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
@@ -170,7 +170,7 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
         {onUpdateDeployment && monthsSinceInstallation >= 1 && (
           <div className="px-6 py-4 bg-gray-50 border-b">
             <div className="text-sm font-medium text-gray-700 mb-2">
-              Adjust Total Deployment by End of this Month
+              Adjust Total Live by End of this Month
             </div>
             <div className="flex items-center gap-4">
               <input
@@ -197,10 +197,10 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
             </div>
             <div className="text-xs text-gray-500 mt-1">
               {deploymentThisMonth > 0 
-                ? `Deploying ${Math.round(newGpusDeployed).toLocaleString()} GPUs this month (+${deploymentThisMonth}%)`
+                ? `Going live: ${Math.round(newGpusDeployed).toLocaleString()} GPUs this month (+${deploymentThisMonth}%)`
                 : deploymentThisMonth < 0
                 ? `Reducing by ${Math.round(Math.abs(newGpusDeployed)).toLocaleString()} GPUs this month (${deploymentThisMonth}%)`
-                : 'No deployment change this month'}
+                : 'No change this month'}
             </div>
           </div>
         )}
