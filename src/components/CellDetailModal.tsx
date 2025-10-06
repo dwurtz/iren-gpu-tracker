@@ -262,7 +262,7 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
 
   return (
     <div
-      className="fixed inset-0 flex items-start justify-center pt-16 z-[9999]"
+      className="fixed inset-0 flex items-start justify-center pt-16 z-[10000]"
       onClick={onClose}
     >
       <div 
