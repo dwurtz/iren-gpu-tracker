@@ -19,6 +19,14 @@ export interface ProfitabilitySettings {
     h200: number;
     mi350x: number;
   };
+  effectiveGpuCost: {
+    b200: number;
+    b300: number;
+    gb300: number;
+    h100: number;
+    h200: number;
+    mi350x: number;
+  };
   installationCost: {
     b200: number; // per GPU
     b300: number; // per GPU

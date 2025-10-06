@@ -40,12 +40,20 @@ const defaultSettings: ProfitabilitySettings = {
     mi350x: 475, // 460-500 GPUs/MW (~2.0-2.17 kW/GPU) - fine
   },
   upfrontGpuCost: {
-    b200: 46233, // from table
-    b300: 58674, // from table
-    gb300: 80000, // from table
-    h100: 39216, // from table
-    h200: 40648, // from table
-    mi350x: 43637, // from table
+    b200: 46233, // Principal cost per GPU
+    b300: 58674, // Principal cost per GPU
+    gb300: 80000, // Principal cost per GPU
+    h100: 39216, // Principal cost per GPU
+    h200: 40648, // Principal cost per GPU
+    mi350x: 43637, // Principal cost per GPU
+  },
+  effectiveGpuCost: {
+    b200: 52927, // Effective cost per GPU including financing
+    b300: 66061, // Effective cost per GPU including financing
+    gb300: 87715, // Effective cost per GPU including financing
+    h100: 39216, // Effective cost per GPU (cash purchase, no interest)
+    h200: 40648, // Effective cost per GPU (cash purchase, no interest)
+    mi350x: 49955, // Effective cost per GPU including financing
   },
   installationCost: {
     b200: 20, // per GPU

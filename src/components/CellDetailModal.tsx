@@ -83,34 +83,14 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
   // 1. Installation costs for newly live GPUs
   const installationCost = newGpusDeployed * installationCostPerGpu;
 
-  // 2. Upfront GPU cost (cash purchases only)
+  // 2. GPU costs (simplified with effective rate)
   const isCashPurchase = batch.fundingType === 'Cash';
-  const upfrontGpuCost = isCashPurchase ? (newGpusDeployed * upfrontCostPerGpu) : 0;
-
-  // 3. GPU financing payments (lease only)
-  const loanTermMonths = batch.leaseTerm || 36;
-  const annualInterestRate = isCashPurchase ? 0 : (batch.apr || 0) / 100;
-  const monthlyInterestRate = annualInterestRate / 12;
+  const effectiveCostPerGpu = settings.effectiveGpuCost[chipKey];
+  const interestPremiumPerGpu = effectiveCostPerGpu - upfrontCostPerGpu;
   
-  const calculateMonthlyPaymentPerGpu = () => {
-    if (isCashPurchase) return 0;
-    if (monthlyInterestRate === 0) return upfrontCostPerGpu / loanTermMonths;
-    return upfrontCostPerGpu * (monthlyInterestRate * Math.pow(1 + monthlyInterestRate, loanTermMonths)) / 
-           (Math.pow(1 + monthlyInterestRate, loanTermMonths) - 1);
-  };
-  
-  const monthlyGpuPaymentPerUnit = calculateMonthlyPaymentPerGpu();
-  
-  // Calculate total GPU financing for all live GPUs still in their term
-  let totalGpuFinancingPayment = 0;
-  for (let deployMonth = batchInstallationIndex; deployMonth <= monthIndex; deployMonth++) {
-    const monthsIntoFinancing = monthIndex - deployMonth;
-    if (monthsIntoFinancing < loanTermMonths) {
-      // deploymentSchedule uses same indexing as MONTHS array
-      const gpusDeployedThatMonth = ((batch.deploymentSchedule[deployMonth] || 0) / 100) * batch.quantity;
-      totalGpuFinancingPayment += gpusDeployedThatMonth * monthlyGpuPaymentPerUnit;
-    }
-  }
+  // For new deployments, book the full effective cost upfront
+  const gpuPrincipalCost = newGpusDeployed * upfrontCostPerGpu;
+  const gpuInterestPremium = isCashPurchase ? 0 : newGpusDeployed * interestPremiumPerGpu;
 
   // 4. Datacenter overhead
   const datacenterOverheadCost = totalGpusDeployed * datacenterOverheadPerGpu;
@@ -125,7 +105,7 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
   const monthlyRevenue = totalGpusDeployed * hoursPerMonth * utilizationRate * gpuHourRate;
 
   // === NET MONTHLY PROFIT ===
-  const totalCosts = installationCost + upfrontGpuCost + totalGpuFinancingPayment + datacenterOverheadCost + electricalCost;
+  const totalCosts = installationCost + gpuPrincipalCost + gpuInterestPremium + datacenterOverheadCost + electricalCost;
   const netProfitThisMonth = monthlyRevenue - totalCosts;
 
   // Month name
@@ -229,21 +209,15 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
                   <div className="flex justify-between">
                     <span>Installation Cost: {Math.round(newGpusDeployed).toLocaleString()} × <ClickableVariable title="Click to edit installation cost" field={`installationCost.${chipKey}`} onOpenSettings={onOpenSettings}>${installationCostPerGpu}</ClickableVariable> = {formatValue(installationCost)}</span>
                   </div>
-                  {isCashPurchase && (
+                  <div className="flex justify-between">
+                    <span>GPU Principal: {Math.round(newGpusDeployed).toLocaleString()} × <ClickableVariable title="Click to edit GPU principal cost" field={`upfrontGpuCost.${chipKey}`} onOpenSettings={onOpenSettings}>${upfrontCostPerGpu.toLocaleString()}</ClickableVariable> = {formatValue(gpuPrincipalCost)}</span>
+                  </div>
+                  {!isCashPurchase && gpuInterestPremium > 0 && (
                     <div className="flex justify-between">
-                      <span>Upfront GPU Cost (Cash): {Math.round(newGpusDeployed).toLocaleString()} × <ClickableVariable title="Click to edit upfront GPU cost" field={`upfrontGpuCost.${chipKey}`} onOpenSettings={onOpenSettings}>${upfrontCostPerGpu.toLocaleString()}</ClickableVariable> = {formatValue(upfrontGpuCost)}</span>
+                      <span>Interest Premium: {Math.round(newGpusDeployed).toLocaleString()} × ${interestPremiumPerGpu.toLocaleString()} = {formatValue(gpuInterestPremium)}</span>
                     </div>
                   )}
                 </>
-              )}
-              {!isCashPurchase && totalGpuFinancingPayment > 0 && (
-                <div className="flex justify-between flex-col">
-                  <span>GPU Financing Payment: {formatValue(totalGpuFinancingPayment)}</span>
-                  <div className="text-xs text-gray-500 ml-4 mt-1">
-                    Monthly payment per GPU: ${upfrontCostPerGpu.toLocaleString()} × (
-                    <ClickableVariable title="Click to edit APR" field="apr" onOpenSettings={onOpenSettings}>{(annualInterestRate * 100).toFixed(1)}%</ClickableVariable> / 12) × (1 + r)^{loanTermMonths} / ((1 + r)^{loanTermMonths} - 1) = ${monthlyGpuPaymentPerUnit.toFixed(2)}
-                  </div>
-                </div>
               )}
               <div className="flex justify-between">
                 <span>Datacenter Overhead: {Math.round(totalGpusDeployed).toLocaleString()} × <ClickableVariable title="Click to edit datacenter overhead" field="datacenterOverhead" onOpenSettings={onOpenSettings}>${datacenterOverheadPerGpu}/mo</ClickableVariable> = {formatValue(datacenterOverheadCost)}</span>
