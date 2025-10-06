@@ -196,6 +196,10 @@ export const BatchRow: React.FC<BatchRowProps> = ({
         const batchStartIndex = (batch.installationYear - 2023) * 12 + (batch.installationMonth - 7);
         const isBatchActive = index >= batchStartIndex;
         
+        // Check if previous month was already at 100%
+        const prevData = index > 0 ? monthlyData[index - 1] : null;
+        const wasFullyDeployed = prevData && prevData.percentDeployed === 100;
+        
         return (
           <td 
             key={index}
@@ -217,9 +221,11 @@ export const BatchRow: React.FC<BatchRowProps> = ({
             <div className="space-y-1">
               {isBatchActive && (
                 <>
-                  <div className="text-xs opacity-75">
-                    {data.percentDeployed.toFixed(0)}% deployed
-                  </div>
+                  {!wasFullyDeployed && (
+                    <div className="text-xs opacity-75">
+                      {data.percentDeployed.toFixed(0)}% deployed
+                    </div>
+                  )}
                   <div className="font-medium">
                     {formatValue(data.value)}
                   </div>
