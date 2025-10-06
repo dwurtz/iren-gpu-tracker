@@ -322,7 +322,7 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
           </div>
 
           {/* Net Profit This Month */}
-          <div className="bg-gray-50 p-4 rounded">
+          <div>
             <h3 className="text-lg font-semibold mb-3">Net Profit This Month:</h3>
             <table className="w-full text-sm">
               <tbody>
@@ -339,7 +339,7 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
                 <tr className="border-t border-gray-300">
                   <td className="py-2 pr-4 font-semibold">Net Profit</td>
                   <td className="py-2 pr-4"></td>
-                  <td className="py-2 text-right font-bold" style={{ color: netProfitThisMonth >= 0 ? '#047857' : '#991b1b' }}>
+                  <td className={`py-2 text-right font-bold ${netProfitThisMonth >= 0 ? 'text-green-600' : 'text-red-600'}`}>
                     {formatValue(netProfitThisMonth)}
                   </td>
                 </tr>
@@ -348,7 +348,7 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
           </div>
 
           {/* Cumulative Impact */}
-          <div className="bg-gray-50 p-4 rounded">
+          <div>
             <h3 className="text-lg font-semibold mb-3">Cumulative Impact:</h3>
             <table className="w-full text-sm">
               <tbody>
@@ -365,7 +365,7 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
                 <tr className="border-t border-gray-300">
                   <td className="py-2 pr-4 font-semibold">New Cumulative Total</td>
                   <td className="py-2 pr-4"></td>
-                  <td className="py-2 text-right font-bold" style={{ color: cumulativeProfit >= 0 ? '#047857' : '#991b1b' }}>
+                  <td className={`py-2 text-right font-bold ${cumulativeProfit >= 0 ? 'text-green-600' : 'text-red-600'}`}>
                     {formatValue(cumulativeProfit)}
                   </td>
                 </tr>
