@@ -358,18 +358,21 @@ function App() {
         
         let newMonthIndex = selectedCell.monthIndex;
         
+        // Calculate batch start index
+        const batchStartIndex = (currentBatch.installationYear - 2023) * 12 + (currentBatch.installationMonth - 7);
+        
         if (event.key === 'ArrowLeft') {
-          // Move left, find previous valid cell
-          for (let i = selectedCell.monthIndex - 1; i >= 0; i--) {
-            if (batchData[i] && batchData[i].percentDeployed > 0) {
+          // Move left, find previous valid cell (after batch start)
+          for (let i = selectedCell.monthIndex - 1; i >= batchStartIndex; i--) {
+            if (batchData[i]) {
               newMonthIndex = i;
               break;
             }
           }
         } else if (event.key === 'ArrowRight') {
-          // Move right, find next valid cell
+          // Move right, find next valid cell (after batch start)
           for (let i = selectedCell.monthIndex + 1; i < batchData.length; i++) {
-            if (batchData[i] && batchData[i].percentDeployed > 0) {
+            if (batchData[i] && i >= batchStartIndex) {
               newMonthIndex = i;
               break;
             }

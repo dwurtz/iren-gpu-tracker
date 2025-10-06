@@ -48,11 +48,11 @@ export const BatchRow: React.FC<BatchRowProps> = ({
   useEffect(() => {
     if (selectedCell?.batchId === batch.id && modalCell !== null && selectedCell) {
       const data = monthlyData[selectedCell.monthIndex];
-      if (data && data.percentDeployed > 0) {
+      if (data) {
         // Find the previous cell that actually has data
         let previousCumulative = 0;
         for (let i = selectedCell.monthIndex - 1; i >= 0; i--) {
-          if (monthlyData[i] && monthlyData[i].percentDeployed > 0) {
+          if (monthlyData[i]) {
             previousCumulative = monthlyData[i].value;
             break;
           }
