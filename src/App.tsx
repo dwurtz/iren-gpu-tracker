@@ -147,7 +147,7 @@ const createDefaultBatches = (settings: ProfitabilitySettings, sites: Site[]): B
     { dateAnnounced: '2025-09-22', month: 8, year: 2025, quantity: 4200, chipType: 'B200' as ChipType, siteId: 'site-prince-george', fundingType: 'Lease' as const, leaseType: 'FMV', residualCap: 20, leaseTerm: 36, apr: 9 },
     { dateAnnounced: '2025-09-22', month: 8, year: 2025, quantity: 1100, chipType: 'MI350X' as ChipType, siteId: 'site-prince-george', fundingType: 'Lease' as const, leaseType: 'FMV', residualCap: 20, leaseTerm: 36, apr: 9 },
     { dateAnnounced: '2025-09-22', month: 8, year: 2025, quantity: 7100, chipType: 'B300' as ChipType, siteId: 'site-prince-george', fundingType: 'Lease' as const, leaseType: 'FMV', residualCap: 20, leaseTerm: 36, apr: 9 },
-    { dateAnnounced: '2025-08-28', month: 7, year: 2025, quantity: 1200, chipType: 'GB300' as ChipType, siteId: 'site-prince-george', fundingType: 'Lease' as const, leaseType: 'FMV', residualCap: 20, leaseTerm: 24, apr: 9 },
+    { dateAnnounced: '2025-08-28', month: 9, year: 2025, quantity: 1200, chipType: 'GB300' as ChipType, siteId: 'site-prince-george', fundingType: 'Lease' as const, leaseType: 'FMV', residualCap: 20, leaseTerm: 24, apr: 9 },
   ];
   
   defaultBatchConfig.forEach((config, index) => {
@@ -261,7 +261,7 @@ const migrateBatch = (batch: any): Batch => {
 };
 
 // Batch configuration version - increment this when default batches change
-const BATCH_CONFIG_VERSION = 6;
+const BATCH_CONFIG_VERSION = 7;
 
 // Initialize batches from storage or create defaults
 const initializeBatches = (settings: ProfitabilitySettings, sites: Site[]): Batch[] => {
