@@ -128,14 +128,14 @@ export const EditBatchModal: React.FC<EditBatchModalProps> = ({ isOpen, onClose,
               Installation Start Date
             </label>
             <input
-              type="month"
-              value={`${formData.installationYear}-${String((formData.installationMonth || 0) + 1).padStart(2, '0')}`}
+              type="date"
+              value={`${formData.installationYear}-${String((formData.installationMonth || 0) + 1).padStart(2, '0')}-01`}
               onChange={(e) => {
-                const [year, month] = e.target.value.split('-');
+                const date = new Date(e.target.value);
                 setFormData({ 
                   ...formData, 
-                  installationYear: parseInt(year),
-                  installationMonth: parseInt(month) - 1
+                  installationYear: date.getFullYear(),
+                  installationMonth: date.getMonth()
                 });
               }}
               className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
