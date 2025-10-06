@@ -233,7 +233,22 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
                     <div className="flex justify-between flex-col">
                       <span>Interest Premium: {Math.round(newGpusDeployed).toLocaleString()} × ${interestPremiumPerGpu.toLocaleString()} = {formatValue(gpuInterestPremium)}</span>
                       <div className="text-xs text-gray-500 ml-4 mt-1">
-                        Financing ${upfrontCostPerGpu.toLocaleString()} at <ClickableVariable title="Click to edit APR" field="apr" onOpenSettings={onOpenSettings}>{annualInterestRate}%</ClickableVariable> APR over {loanTermMonths} months
+                        Financing ${upfrontCostPerGpu.toLocaleString()} at{' '}
+                        <span 
+                          className="bg-yellow-200 px-1 cursor-pointer hover:bg-yellow-300 transition-colors"
+                          onClick={onEditBatch}
+                          title="Click to edit batch financing terms"
+                        >
+                          {annualInterestRate}%
+                        </span>
+                        {' '}APR over{' '}
+                        <span 
+                          className="bg-yellow-200 px-1 cursor-pointer hover:bg-yellow-300 transition-colors"
+                          onClick={onEditBatch}
+                          title="Click to edit batch financing terms"
+                        >
+                          {loanTermMonths} months
+                        </span>
                       </div>
                     </div>
                   )}
