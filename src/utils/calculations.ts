@@ -28,6 +28,25 @@ export const calculateMonthlyData = (batch: Batch, startMonth: number, startYear
   // GPU financing terms
   const isCashPurchase = batch.fundingType === 'Cash';
   const gpuCostPerUnit = chipSettings.upfrontCost;
+  const totalBatchGpuCost = gpuCostPerUnit * batch.quantity;
+  
+  // Calculate fixed monthly GPU payment for financed batches
+  let monthlyGpuPayment = 0;
+  if (!isCashPurchase) {
+    const loanTermMonths = batch.leaseTerm || 36;
+    const annualInterestRate = batch.apr || 0;
+    const monthlyInterestRate = annualInterestRate / 100 / 12;
+    
+    if (monthlyInterestRate > 0) {
+      // Calculate monthly payment using amortization formula
+      monthlyGpuPayment = totalBatchGpuCost * 
+        (monthlyInterestRate * Math.pow(1 + monthlyInterestRate, loanTermMonths)) / 
+        (Math.pow(1 + monthlyInterestRate, loanTermMonths) - 1);
+    } else {
+      // No interest, just divide principal by term
+      monthlyGpuPayment = totalBatchGpuCost / loanTermMonths;
+    }
+  }
   
   // Track cumulative deployment percentage
   let cumulativeDeployedPercent = 0;
@@ -60,26 +79,21 @@ export const calculateMonthlyData = (batch: Batch, startMonth: number, startYear
       // 1. Installation costs for newly deployed GPUs
       const installationCostThisMonth = newGpusDeployed * chipSettings.installationCost;
       
-      // 2. GPU costs (calculate interest from batch APR)
-      const loanTermMonths = batch.leaseTerm || 36;
-      const annualInterestRate = batch.apr || 0;
-      const monthlyInterestRate = annualInterestRate / 100 / 12;
+      // 2. GPU costs - independent of deployment %
+      let gpuCostThisMonth = 0;
       
-      const calculateTotalInterestPerGpu = () => {
-        if (isCashPurchase || monthlyInterestRate === 0) return 0;
-        
-        // Calculate monthly payment
-        const monthlyPayment = gpuCostPerUnit * 
-          (monthlyInterestRate * Math.pow(1 + monthlyInterestRate, loanTermMonths)) / 
-          (Math.pow(1 + monthlyInterestRate, loanTermMonths) - 1);
-        
-        // Total interest = (monthly payment × months) - principal
-        return (monthlyPayment * loanTermMonths) - gpuCostPerUnit;
-      };
-      
-      const interestPremiumPerGpu = calculateTotalInterestPerGpu();
-      const gpuPrincipalCost = newGpusDeployed * gpuCostPerUnit;
-      const gpuInterestPremium = newGpusDeployed * interestPremiumPerGpu;
+      if (isCashPurchase) {
+        // Cash purchase: full cost in first month only
+        if (monthsSinceInstallation === 0) {
+          gpuCostThisMonth = totalBatchGpuCost;
+        }
+      } else {
+        // Financed: fixed monthly payment for duration of lease term
+        const leaseTerm = batch.leaseTerm || 36;
+        if (monthsSinceInstallation < leaseTerm) {
+          gpuCostThisMonth = monthlyGpuPayment;
+        }
+      }
       
       // === ONGOING COSTS FOR ALL DEPLOYED GPUS ===
       
@@ -96,7 +110,7 @@ export const calculateMonthlyData = (batch: Batch, startMonth: number, startYear
       const monthlyRevenue = totalGpusDeployed * hoursPerMonth * utilizationRate * gpuHourRate;
       
       // === NET MONTHLY PROFIT ===
-      const totalCosts = installationCostThisMonth + gpuPrincipalCost + gpuInterestPremium + 
+      const totalCosts = installationCostThisMonth + gpuCostThisMonth + 
                          datacenterOverheadCost + electricalCost;
       monthlyValue = monthlyRevenue - totalCosts;
       

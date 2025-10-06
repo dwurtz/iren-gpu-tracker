@@ -83,31 +83,38 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
   // 1. Installation costs for newly live GPUs
   const installationCost = newGpusDeployed * installationCostPerGpu;
 
-  // 2. GPU costs (calculate interest from batch APR)
+  // 2. GPU costs - independent of deployment %
   const isCashPurchase = batch.fundingType === 'Cash';
+  const totalBatchGpuCost = upfrontCostPerGpu * batch.quantity;
   
-  // Calculate total interest from batch-level APR and loan term
-  const loanTermMonths = batch.leaseTerm || 36;
-  const annualInterestRate = batch.apr || 0;
-  const monthlyInterestRate = annualInterestRate / 100 / 12;
+  let gpuCostThisMonth = 0;
+  let monthlyGpuPayment = 0;
   
-  const calculateTotalInterestPerGpu = () => {
-    if (isCashPurchase || monthlyInterestRate === 0) return 0;
+  if (isCashPurchase) {
+    // Cash purchase: full cost in first month only
+    if (monthsSinceInstallation === 1) {
+      gpuCostThisMonth = totalBatchGpuCost;
+    }
+  } else {
+    // Financed: fixed monthly payment for duration of lease term
+    const leaseTerm = batch.leaseTerm || 36;
+    const annualInterestRate = batch.apr || 0;
+    const monthlyInterestRate = annualInterestRate / 100 / 12;
     
-    // Calculate monthly payment
-    const monthlyPayment = upfrontCostPerGpu * 
-      (monthlyInterestRate * Math.pow(1 + monthlyInterestRate, loanTermMonths)) / 
-      (Math.pow(1 + monthlyInterestRate, loanTermMonths) - 1);
+    if (monthlyInterestRate > 0) {
+      // Calculate monthly payment using amortization formula
+      monthlyGpuPayment = totalBatchGpuCost * 
+        (monthlyInterestRate * Math.pow(1 + monthlyInterestRate, leaseTerm)) / 
+        (Math.pow(1 + monthlyInterestRate, leaseTerm) - 1);
+    } else {
+      // No interest, just divide principal by term
+      monthlyGpuPayment = totalBatchGpuCost / leaseTerm;
+    }
     
-    // Total interest = (monthly payment × months) - principal
-    return (monthlyPayment * loanTermMonths) - upfrontCostPerGpu;
-  };
-  
-  const interestPremiumPerGpu = calculateTotalInterestPerGpu();
-  
-  // For new deployments, book the full effective cost upfront
-  const gpuPrincipalCost = newGpusDeployed * upfrontCostPerGpu;
-  const gpuInterestPremium = newGpusDeployed * interestPremiumPerGpu;
+    if (monthsSinceInstallation <= leaseTerm) {
+      gpuCostThisMonth = monthlyGpuPayment;
+    }
+  }
 
   // 4. Datacenter overhead
   const datacenterOverheadCost = totalGpusDeployed * datacenterOverheadPerGpu;
@@ -122,7 +129,7 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
   const monthlyRevenue = totalGpusDeployed * hoursPerMonth * utilizationRate * gpuHourRate;
 
   // === NET MONTHLY PROFIT ===
-  const totalCosts = installationCost + gpuPrincipalCost + gpuInterestPremium + datacenterOverheadCost + electricalCost;
+  const totalCosts = installationCost + gpuCostThisMonth + datacenterOverheadCost + electricalCost;
   const netProfitThisMonth = monthlyRevenue - totalCosts;
 
   // Month name
@@ -222,37 +229,39 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
             <h3 className="text-lg font-semibold mb-3 text-red-600">Costs: {formatValue(totalCosts)}</h3>
             <div className="space-y-2 text-sm">
               {deploymentThisMonth > 0 && (
-                <>
-                  <div className="flex justify-between">
-                    <span>Installation Cost: {Math.round(newGpusDeployed).toLocaleString()} × <ClickableVariable title="Click to edit installation cost" field={`installationCost.${chipKey}`} onOpenSettings={onOpenSettings}>${installationCostPerGpu}</ClickableVariable> = {formatValue(installationCost)}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>GPU Principal: {Math.round(newGpusDeployed).toLocaleString()} × <ClickableVariable title="Click to edit GPU principal cost" field={`upfrontGpuCost.${chipKey}`} onOpenSettings={onOpenSettings}>${upfrontCostPerGpu.toLocaleString()}</ClickableVariable> = {formatValue(gpuPrincipalCost)}</span>
-                  </div>
-                  {!isCashPurchase && gpuInterestPremium > 0 && (
-                    <div className="flex justify-between flex-col">
-                      <span>Interest Premium: {Math.round(newGpusDeployed).toLocaleString()} × ${interestPremiumPerGpu.toLocaleString()} = {formatValue(gpuInterestPremium)}</span>
-                      <div className="text-xs text-gray-500 ml-4 mt-1">
-                        Financing ${upfrontCostPerGpu.toLocaleString()} at{' '}
-                        <span 
-                          className="bg-yellow-200 px-1 cursor-pointer hover:bg-yellow-300 transition-colors"
-                          onClick={() => onEditBatch?.('apr')}
-                          title="Click to edit batch financing terms"
-                        >
-                          {annualInterestRate}%
-                        </span>
-                        {' '}APR over{' '}
-                        <span 
-                          className="bg-yellow-200 px-1 cursor-pointer hover:bg-yellow-300 transition-colors"
-                          onClick={() => onEditBatch?.('leaseTerm')}
-                          title="Click to edit batch financing terms"
-                        >
-                          {loanTermMonths} months
-                        </span>
-                      </div>
+                <div className="flex justify-between">
+                  <span>Installation Cost: {Math.round(newGpusDeployed).toLocaleString()} × <ClickableVariable title="Click to edit installation cost" field={`installationCost.${chipKey}`} onOpenSettings={onOpenSettings}>${installationCostPerGpu}</ClickableVariable> = {formatValue(installationCost)}</span>
+                </div>
+              )}
+              {gpuCostThisMonth > 0 && (
+                <div className="flex justify-between flex-col">
+                  <span>
+                    {isCashPurchase 
+                      ? `GPU Cost (Cash): ${batch.quantity.toLocaleString()} × $${upfrontCostPerGpu.toLocaleString()} = ${formatValue(gpuCostThisMonth)}`
+                      : `GPU Payment (Month ${monthsSinceInstallation} of ${batch.leaseTerm || 36}): ${formatValue(monthlyGpuPayment)}`
+                    }
+                  </span>
+                  {!isCashPurchase && (
+                    <div className="text-xs text-gray-500 ml-4 mt-1">
+                      Total batch cost: ${totalBatchGpuCost.toLocaleString()} financed at{' '}
+                      <span 
+                        className="bg-yellow-200 px-1 cursor-pointer hover:bg-yellow-300 transition-colors"
+                        onClick={() => onEditBatch?.('apr')}
+                        title="Click to edit batch financing terms"
+                      >
+                        {batch.apr}%
+                      </span>
+                      {' '}APR over{' '}
+                      <span 
+                        className="bg-yellow-200 px-1 cursor-pointer hover:bg-yellow-300 transition-colors"
+                        onClick={() => onEditBatch?.('leaseTerm')}
+                        title="Click to edit batch financing terms"
+                      >
+                        {batch.leaseTerm || 36} months
+                      </span>
                     </div>
                   )}
-                </>
+                </div>
               )}
               <div className="flex justify-between">
                 <span>Datacenter Overhead: {Math.round(totalGpusDeployed).toLocaleString()} × <ClickableVariable title="Click to edit datacenter overhead" field="datacenterOverhead" onOpenSettings={onOpenSettings}>${datacenterOverheadPerGpu}/mo</ClickableVariable> = {formatValue(datacenterOverheadCost)}</span>
