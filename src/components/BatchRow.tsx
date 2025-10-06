@@ -252,8 +252,8 @@ export const BatchRow: React.FC<BatchRowProps> = ({
         }}
         batch={batch}
         monthIndex={modalCell?.monthIndex || 0}
-        percentDeployed={modalCell?.percentDeployed || 0}
-        cumulativeProfit={modalCell?.cumulativeProfit || 0}
+        percentDeployed={modalCell ? monthlyData[modalCell.monthIndex]?.percentDeployed || 0 : 0}
+        cumulativeProfit={modalCell ? monthlyData[modalCell.monthIndex]?.value || 0 : 0}
         monthlyValue={modalCell?.monthlyValue || 0}
         previousCumulative={modalCell?.previousCumulative || 0}
         settings={settings || {} as any}
