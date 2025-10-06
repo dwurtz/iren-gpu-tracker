@@ -48,6 +48,9 @@ export const calculateMonthlyData = (batch: Batch, startMonth: number, startYear
     const currentMonth = (startMonth + i) % 12;
     const currentYear = startYear + Math.floor((startMonth + i) / 12);
     
+    // Calculate absolute month index from Aug 2023 (month 7, year 2023)
+    const absoluteMonthIndex = (currentYear - 2023) * 12 + currentMonth - 7;
+    
     // Calculate months since installation start
     const installationStartIndex = 
       (batch.installationYear - startYear) * 12 + (batch.installationMonth - startMonth);
@@ -57,8 +60,8 @@ export const calculateMonthlyData = (batch: Batch, startMonth: number, startYear
     let percentDeployed = 0;
     
     if (monthsSinceInstallation >= 0) {
-      // Get deployment percentage for this specific month
-      const deploymentThisMonth = batch.deploymentSchedule[i] || 0;
+      // Get deployment percentage for this specific month using absolute index
+      const deploymentThisMonth = batch.deploymentSchedule[absoluteMonthIndex] || 0;
       cumulativeDeployedPercent = Math.min(100, cumulativeDeployedPercent + deploymentThisMonth);
       percentDeployed = cumulativeDeployedPercent;
       
@@ -82,7 +85,9 @@ export const calculateMonthlyData = (batch: Batch, startMonth: number, startYear
       for (let deployMonth = installationStartIndex; deployMonth <= i; deployMonth++) {
         const monthsIntoFinancing = i - deployMonth;
         if (monthsIntoFinancing < loanTermMonths) {
-          const gpusDeployedThatMonth = ((batch.deploymentSchedule[deployMonth] || 0) / 100) * batch.quantity;
+          // Calculate absolute month index for this deploy month
+          const deployMonthAbsolute = (startYear - 2023) * 12 + (startMonth - 7) + deployMonth;
+          const gpusDeployedThatMonth = ((batch.deploymentSchedule[deployMonthAbsolute] || 0) / 100) * batch.quantity;
           totalGpuFinancingPayment += gpusDeployedThatMonth * monthlyGpuPaymentPerUnit;
         }
       }

@@ -57,6 +57,9 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
   };
 
   // Calculate month relative to batch start
+  // monthIndex is from MONTHS array (0 = Aug'23, 1 = Sep'23, etc.)
+  // We need to convert to absolute month index for deploymentSchedule lookup
+  const absoluteMonthIndex = monthIndex + 7; // Aug 2023 is month 7
   const batchInstallationIndex = (batch.installationYear - 2023) * 12 + batch.installationMonth;
   const monthsSinceInstallation = monthIndex - batchInstallationIndex + 1;
 
@@ -70,8 +73,8 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
   const upfrontCostPerGpu = settings.upfrontGpuCost[chipKey];
   const datacenterOverheadPerGpu = settings.datacenterOverhead;
 
-  // Calculate deployment this month
-  const deploymentThisMonth = batch.deploymentSchedule[monthIndex] || 0;
+  // Calculate deployment this month using absolute month index
+  const deploymentThisMonth = batch.deploymentSchedule[absoluteMonthIndex] || 0;
   const newGpusDeployed = (deploymentThisMonth / 100) * batch.quantity;
   const totalGpusDeployed = (percentDeployed / 100) * batch.quantity;
 
@@ -103,7 +106,9 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
   for (let deployMonth = batchInstallationIndex; deployMonth <= monthIndex; deployMonth++) {
     const monthsIntoFinancing = monthIndex - deployMonth;
     if (monthsIntoFinancing < loanTermMonths) {
-      const gpusDeployedThatMonth = ((batch.deploymentSchedule[deployMonth] || 0) / 100) * batch.quantity;
+      // Convert table index to absolute month index for schedule lookup
+      const deployMonthAbsolute = deployMonth + 7; // Aug 2023 is month 7
+      const gpusDeployedThatMonth = ((batch.deploymentSchedule[deployMonthAbsolute] || 0) / 100) * batch.quantity;
       totalGpuFinancingPayment += gpusDeployedThatMonth * monthlyGpuPaymentPerUnit;
     }
   }
