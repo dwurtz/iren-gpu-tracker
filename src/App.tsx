@@ -719,6 +719,9 @@ function App() {
         allBatchData={allBatchData}
         settings={settings}
         onEditBatch={handleEditBatch}
+        onSelectCell={(batchId, monthIndex) => {
+          setSelectedCell({ batchId, monthIndex });
+        }}
       />
 
       <SiteEditorModal

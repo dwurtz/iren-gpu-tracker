@@ -13,10 +13,15 @@ interface ARRModalProps {
     utilizationRate: number;
     gpuHourRate: {
       b200: number;
+      b300: number;
       gb300: number;
+      h100: number;
+      h200: number;
+      mi350x: number;
     };
   };
   onEditBatch?: (batch: Batch) => void;
+  onSelectCell?: (batchId: string, monthIndex: number) => void;
 }
 
 const ARRModal: React.FC<ARRModalProps> = ({
@@ -26,7 +31,8 @@ const ARRModal: React.FC<ARRModalProps> = ({
   batches,
   allBatchData,
   settings,
-  onEditBatch
+  onEditBatch,
+  onSelectCell
 }) => {
   useModalBackdrop(isOpen);
   
@@ -80,7 +86,8 @@ const ARRModal: React.FC<ARRModalProps> = ({
         // Calculate revenue for this batch - chip-specific
         const hoursPerMonth = 730;
         const utilizationRate = settings.utilizationRate / 100;
-        const gpuHourRate = batch.chipType === 'B200' ? settings.gpuHourRate.b200 : settings.gpuHourRate.gb300;
+        const chipKey = batch.chipType.toLowerCase() as 'b200' | 'b300' | 'gb300' | 'h100' | 'h200' | 'mi350x';
+        const gpuHourRate = settings.gpuHourRate[chipKey];
         const monthlyRevenuePerGPU = hoursPerMonth * utilizationRate * gpuHourRate;
         const monthlyRevenue = gpuCount * monthlyRevenuePerGPU;
         const annualRevenue = monthlyRevenue * 12;
@@ -149,8 +156,9 @@ const ARRModal: React.FC<ARRModalProps> = ({
                           className="font-medium text-blue-600 hover:text-blue-800 cursor-pointer underline"
                           onClick={(e) => {
                             e.stopPropagation();
-                            if (onEditBatch) {
-                              onEditBatch(item.batch);
+                            if (onSelectCell) {
+                              onSelectCell(item.batch.id, monthIndex);
+                              onClose(); // Close the ARR modal when selecting a cell
                             }
                           }}
                         >
