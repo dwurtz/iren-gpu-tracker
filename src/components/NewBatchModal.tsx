@@ -109,11 +109,6 @@ export const NewBatchModal: React.FC<NewBatchModalProps> = ({ isOpen, onClose, o
 
   if (!isOpen) return null;
 
-  const months = [
-    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
-  ];
-
   return (
     <div className="fixed inset-0 flex items-start justify-center pt-16 z-[9999]">
       <div className="bg-white rounded-lg w-full max-w-2xl h-[85vh] flex flex-col">
@@ -167,35 +162,24 @@ export const NewBatchModal: React.FC<NewBatchModalProps> = ({ isOpen, onClose, o
             </p>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Installation Month
-              </label>
-              <select
-                value={formData.installationMonth}
-                onChange={(e) => setFormData({ ...formData, installationMonth: parseInt(e.target.value) })}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                {months.map((month, index) => (
-                  <option key={index} value={index}>{month}</option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Year
-              </label>
-              <input
-                type="number"
-                value={formData.installationYear}
-                onChange={(e) => setFormData({ ...formData, installationYear: parseInt(e.target.value) })}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                min="2024"
-                max="2030"
-                required
-              />
-            </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Installation Start Date
+            </label>
+            <input
+              type="month"
+              value={`${formData.installationYear}-${String(formData.installationMonth + 1).padStart(2, '0')}`}
+              onChange={(e) => {
+                const [year, month] = e.target.value.split('-');
+                setFormData({ 
+                  ...formData, 
+                  installationYear: parseInt(year),
+                  installationMonth: parseInt(month) - 1
+                });
+              }}
+              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
           </div>
 
           <div>

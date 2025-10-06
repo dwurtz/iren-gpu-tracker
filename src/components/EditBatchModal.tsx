@@ -125,33 +125,21 @@ export const EditBatchModal: React.FC<EditBatchModalProps> = ({ isOpen, onClose,
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Installation Month
-            </label>
-            <select
-              value={formData.installationMonth !== undefined ? formData.installationMonth : ''}
-              onChange={(e) => setFormData({ ...formData, installationMonth: parseInt(e.target.value) })}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            >
-              <option value="">Select month</option>
-              {['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].map((month, index) => (
-                <option key={index} value={index}>{month}</option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Installation Year
+              Installation Start Date
             </label>
             <input
-              type="number"
-              value={formData.installationYear || ''}
-              onChange={(e) => setFormData({ ...formData, installationYear: parseInt(e.target.value) || new Date().getFullYear() })}
+              type="month"
+              value={`${formData.installationYear}-${String((formData.installationMonth || 0) + 1).padStart(2, '0')}`}
+              onChange={(e) => {
+                const [year, month] = e.target.value.split('-');
+                setFormData({ 
+                  ...formData, 
+                  installationYear: parseInt(year),
+                  installationMonth: parseInt(month) - 1
+                });
+              }}
               className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
-              min="2025"
-              max="2030"
             />
           </div>
 

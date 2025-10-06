@@ -214,8 +214,10 @@ const createDefaultBatches = (settings: ProfitabilitySettings, sites: Site[]): B
       };
     }
     
-    // Calculate delivery date - first month with at least 1% deployed
+    // Calculate delivery date and actual installation start - first month with at least 1% deployed
     let deliveryDate = config.dateAnnounced; // Default to announcement date
+    let actualInstallMonth = config.month;
+    let actualInstallYear = config.year;
     let cumulativePercent = 0;
     const sortedMonths = Object.keys(deploymentSchedule).map(Number).sort((a, b) => a - b);
     
@@ -228,6 +230,10 @@ const createDefaultBatches = (settings: ProfitabilitySettings, sites: Site[]): B
         const deliveryYear = 2023 + Math.floor(totalMonths / 12);
         const deliveryMonth = totalMonths % 12;
         deliveryDate = `${deliveryYear}-${String(deliveryMonth + 1).padStart(2, '0')}-01`;
+        
+        // Set installation start to match first deployment month (to avoid interest before delivery)
+        actualInstallYear = deliveryYear;
+        actualInstallMonth = deliveryMonth;
         break;
       }
     }
@@ -237,8 +243,8 @@ const createDefaultBatches = (settings: ProfitabilitySettings, sites: Site[]): B
       name: `${config.quantity.toLocaleString()} ${config.chipType}s\n(${mwEquivalent}MW${siteName ? ` • ${siteName}` : ''})`,
       chipType: config.chipType,
       quantity: config.quantity,
-      installationMonth: config.month,
-      installationYear: config.year,
+      installationMonth: actualInstallMonth,
+      installationYear: actualInstallYear,
       siteId: config.siteId,
       dateAnnounced: config.dateAnnounced,
       deliveryDate,
@@ -311,7 +317,7 @@ const migrateBatch = (batch: any): Batch => {
 };
 
 // Batch configuration version - increment this when default batches change
-const BATCH_CONFIG_VERSION = 7;
+const BATCH_CONFIG_VERSION = 8;
 
 // Initialize batches from storage or create defaults
 const initializeBatches = (settings: ProfitabilitySettings, sites: Site[]): Batch[] => {
