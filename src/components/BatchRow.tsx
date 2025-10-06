@@ -128,13 +128,15 @@ export const BatchRow: React.FC<BatchRowProps> = ({
 
   const handleCellClick = (index: number) => {
     const data = monthlyData[index];
-    if (data && data.percentDeployed > 0) {
+    // Check if this is a valid month for this batch (after installation start)
+    const batchStartIndex = (batch.installationYear - 2023) * 12 + (batch.installationMonth - 7);
+    if (data && index >= batchStartIndex) {
       onCellSelect?.(batch.id, index);
       
       // Find previous cumulative value
       let previousCumulative = 0;
-      for (let i = index - 1; i >= 0; i--) {
-        if (monthlyData[i] && monthlyData[i].percentDeployed > 0) {
+      for (let i = index - 1; i >= batchStartIndex; i--) {
+        if (monthlyData[i]) {
           previousCumulative = monthlyData[i].value;
           break;
         }
@@ -191,14 +193,17 @@ export const BatchRow: React.FC<BatchRowProps> = ({
         const isSelected = selectedCell?.batchId === batch.id && selectedCell?.monthIndex === index;
         const isYearBoundary = index === 4 || index === 16 || index === 28 || index === 40 || index === 52 || index === 64;
         const isFirstMonth = index === 0;
-        const hasDeployment = data.percentDeployed > 0;
+        
+        // Check if this month is after batch installation started
+        const batchStartIndex = (batch.installationYear - 2023) * 12 + (batch.installationMonth - 7);
+        const isBatchActive = index >= batchStartIndex;
         
         return (
           <td 
             key={index}
             data-batch-id={batch.id}
             data-month-index={index}
-            className={`px-2 py-2 text-center text-sm ${isFirstMonth ? 'border-l border-gray-200' : ''} ${isYearBoundary ? 'border-r-2 border-gray-200' : 'border-r border-gray-200'} cursor-pointer hover:opacity-80`}
+            className={`px-2 py-2 text-center text-sm ${isFirstMonth ? 'border-l border-gray-200' : ''} ${isYearBoundary ? 'border-r-2 border-gray-200' : 'border-r border-gray-200'} ${isBatchActive ? 'cursor-pointer hover:opacity-80' : ''}`}
             style={{
               minWidth: '100px',
               ...getProfitColorStyle(data.value, data.percentDeployed),
@@ -209,10 +214,10 @@ export const BatchRow: React.FC<BatchRowProps> = ({
                 position: 'relative'
               } : {})
             }}
-            onClick={() => handleCellClick(index)}
+            onClick={() => isBatchActive && handleCellClick(index)}
           >
             <div className="space-y-1">
-              {hasDeployment && (
+              {isBatchActive && (
                 <>
                   <div className="text-xs opacity-75">
                     {data.percentDeployed.toFixed(0)}% deployed
