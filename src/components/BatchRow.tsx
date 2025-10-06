@@ -79,10 +79,10 @@ export const BatchRow: React.FC<BatchRowProps> = ({
       return `${sign}$${billions.toFixed(1)}B`;
     } else if (absValue >= 1000000) {
       const millions = absValue / 1000000;
-      return `${sign}$${millions.toFixed(0)}M`;
+      return `${sign}$${millions.toFixed(1)}M`;
     } else {
       const thousands = absValue / 1000;
-      return `${sign}$${thousands.toFixed(0)}K`;
+      return `${sign}$${thousands.toFixed(1)}K`;
     }
   };
 
