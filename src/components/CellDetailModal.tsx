@@ -378,7 +378,7 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
         <div className="p-6 border-t">
           <button
             onClick={onClose}
-            className="w-full px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700"
+            className="w-full px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700"
           >
             Close
           </button>
