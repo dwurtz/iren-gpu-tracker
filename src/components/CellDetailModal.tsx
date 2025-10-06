@@ -323,25 +323,54 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
 
           {/* Net Profit This Month */}
           <div className="bg-gray-50 p-4 rounded">
-            <h3 className="text-lg font-semibold mb-2">Net Profit This Month:</h3>
-            <div className="text-2xl font-bold" style={{ color: netProfitThisMonth >= 0 ? '#047857' : '#991b1b' }}>
-              {formatValue(monthlyRevenue)} - {formatValue(totalCosts)} = {formatValue(netProfitThisMonth)}
-            </div>
+            <h3 className="text-lg font-semibold mb-3">Net Profit This Month:</h3>
+            <table className="w-full text-sm">
+              <tbody>
+                <tr>
+                  <td className="py-1 pr-4">Revenue</td>
+                  <td className="py-1 pr-4"></td>
+                  <td className="py-1 text-right font-medium">{formatValue(monthlyRevenue)}</td>
+                </tr>
+                <tr>
+                  <td className="py-1 pr-4">Costs</td>
+                  <td className="py-1 pr-4"></td>
+                  <td className="py-1 text-right font-medium">-{formatValue(totalCosts)}</td>
+                </tr>
+                <tr className="border-t border-gray-300">
+                  <td className="py-2 pr-4 font-semibold">Net Profit</td>
+                  <td className="py-2 pr-4"></td>
+                  <td className="py-2 text-right font-bold" style={{ color: netProfitThisMonth >= 0 ? '#047857' : '#991b1b' }}>
+                    {formatValue(netProfitThisMonth)}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
 
           {/* Cumulative Impact */}
           <div className="bg-gray-50 p-4 rounded">
-            <h3 className="text-lg font-semibold mb-2">Cumulative Impact:</h3>
-            <div className="text-sm space-y-1">
-              <div>Previous Cumulative: {formatValue(previousCumulative)}</div>
-              <div>This Month's Impact: {formatValue(netProfitThisMonth)}</div>
-              <div className="pt-2 border-t border-gray-300">
-                <span className="font-semibold">New Cumulative Total: </span>
-                <span className="text-xl font-bold" style={{ color: cumulativeProfit >= 0 ? '#047857' : '#991b1b' }}>
-                  {formatValue(cumulativeProfit)}
-                </span>
-              </div>
-            </div>
+            <h3 className="text-lg font-semibold mb-3">Cumulative Impact:</h3>
+            <table className="w-full text-sm">
+              <tbody>
+                <tr>
+                  <td className="py-1 pr-4">Previous Cumulative</td>
+                  <td className="py-1 pr-4"></td>
+                  <td className="py-1 text-right font-medium">{formatValue(previousCumulative)}</td>
+                </tr>
+                <tr>
+                  <td className="py-1 pr-4">This Month's Impact</td>
+                  <td className="py-1 pr-4"></td>
+                  <td className="py-1 text-right font-medium">{formatValue(netProfitThisMonth)}</td>
+                </tr>
+                <tr className="border-t border-gray-300">
+                  <td className="py-2 pr-4 font-semibold">New Cumulative Total</td>
+                  <td className="py-2 pr-4"></td>
+                  <td className="py-2 text-right font-bold" style={{ color: cumulativeProfit >= 0 ? '#047857' : '#991b1b' }}>
+                    {formatValue(cumulativeProfit)}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
 
