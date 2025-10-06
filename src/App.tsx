@@ -720,6 +720,8 @@ function App() {
         settings={settings}
         onSelectCell={(batchId, monthIndex) => {
           setSelectedCell({ batchId, monthIndex });
+          setIsARRModalOpen(false);
+          setSelectedARRMonth(null);
         }}
       />
 

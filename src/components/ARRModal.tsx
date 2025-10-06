@@ -156,7 +156,7 @@ const ARRModal: React.FC<ARRModalProps> = ({
                             e.stopPropagation();
                             if (onSelectCell) {
                               onSelectCell(item.batch.id, monthIndex);
-                              onClose(); // Close the ARR modal when selecting a cell
+                              // Don't close immediately - let the parent handle closing
                             }
                           }}
                         >
