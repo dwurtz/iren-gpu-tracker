@@ -815,10 +815,17 @@ function App() {
                       {liveChipData.map((data, index) => {
                         const isYearBoundary = index === 4 || index === 16 || index === 28 || index === 40 || index === 52 || index === 64;
                         const isFirstMonth = index === 0;
+                        const previousValue = index > 0 ? liveChipData[index - 1]?.value || 0 : 0;
+                        const change = data.value - previousValue;
                         return (
                           <td key={index} className={`px-2 py-3 text-center text-sm ${isFirstMonth ? 'border-l border-gray-200' : ''} ${isYearBoundary ? 'border-r-2 border-gray-200' : 'border-r border-gray-200'}`} style={{ minWidth: '80px' }}>
                             {data.value !== 0 && (
                               <div className="text-gray-700">
+                                {change !== 0 && (
+                                  <div className="text-xs text-gray-500 mb-0.5">
+                                    {change > 0 ? '+' : ''}{formatChipCount(change)}
+                                  </div>
+                                )}
                                 {formatChipCount(data.value)}
                               </div>
                             )}
