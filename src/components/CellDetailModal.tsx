@@ -215,18 +215,22 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
           {/* Revenue Section */}
           <div>
             <h3 className="text-lg font-semibold mb-3 text-green-600">Revenue:</h3>
-            <div className="space-y-2 text-sm">
-              <div className="flex justify-between">
-                <span>
-                  {Math.round(totalGpusDeployed).toLocaleString()} GPUs × {hoursPerMonth} hrs × <ClickableVariable title="Click to edit utilization rate" field="utilizationRate" onOpenSettings={onOpenSettings}>{(utilizationRate * 100).toFixed(0)}%</ClickableVariable> × <ClickableVariable title="Click to edit GPU hour rate" field={`gpuHourRate.${chipKey}`} onOpenSettings={onOpenSettings}>${gpuHourRate.toFixed(2)}/hr</ClickableVariable> = {formatValue(monthlyRevenue)}
-                </span>
-              </div>
-            </div>
+            <table className="w-full text-sm">
+              <tbody>
+                <tr>
+                  <td className="py-1 pr-4">GPU Rental Revenue</td>
+                  <td className="py-1 pr-4 text-gray-600">
+                    {Math.round(totalGpusDeployed).toLocaleString()} GPUs × {hoursPerMonth} hrs × <ClickableVariable title="Click to edit utilization rate" field="utilizationRate" onOpenSettings={onOpenSettings}>{(utilizationRate * 100).toFixed(0)}%</ClickableVariable> × <ClickableVariable title="Click to edit GPU hour rate" field={`gpuHourRate.${chipKey}`} onOpenSettings={onOpenSettings}>${gpuHourRate.toFixed(2)}/hr</ClickableVariable>
+                  </td>
+                  <td className="py-1 text-right font-medium">{formatValue(monthlyRevenue)}</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
 
           {/* Costs Section */}
           <div>
-            <h3 className="text-lg font-semibold mb-3 text-red-600">Costs: {formatValue(totalCosts)}</h3>
+            <h3 className="text-lg font-semibold mb-3 text-red-600">Costs:</h3>
             <table className="w-full text-sm">
               <tbody>
                 {deploymentThisMonth > 0 && (
@@ -286,6 +290,11 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
                     {hoursGpusRun.toFixed(0)} hrs × {totalPowerKw.toFixed(1)} kW × <ClickableVariable title="Click to edit electricity cost" field="electricityCost" onOpenSettings={onOpenSettings}>${settings.electricityCost}/kWh</ClickableVariable> × <ClickableVariable title="Click to edit PUE" field="electricalOverhead" onOpenSettings={onOpenSettings}>{settings.electricalOverhead}x PUE</ClickableVariable>
                   </td>
                   <td className="py-1 text-right font-medium">{formatValue(electricalCost)}</td>
+                </tr>
+                <tr className="border-t border-gray-300">
+                  <td className="py-2 pr-4 font-semibold">Total Costs</td>
+                  <td className="py-2 pr-4"></td>
+                  <td className="py-2 text-right font-bold">{formatValue(totalCosts)}</td>
                 </tr>
               </tbody>
             </table>
