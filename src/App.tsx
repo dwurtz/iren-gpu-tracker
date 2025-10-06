@@ -347,16 +347,18 @@ function App() {
   const handleUpdateDeployment = (batchId: string, monthIndex: number, percentage: number) => {
     const updatedBatches = batches.map(batch => {
       if (batch.id === batchId) {
-        // Calculate how much deployment percentage this would add
-        const currentCumulative = Object.entries(batch.deploymentSchedule)
+        // Calculate cumulative deployment before this month
+        const previousCumulative = Object.entries(batch.deploymentSchedule)
           .filter(([idx]) => parseInt(idx) < monthIndex)
           .reduce((sum, [, pct]) => sum + pct, 0);
         
-        const otherMonthsTotal = currentCumulative;
-        
-        // Ensure we don't exceed 100% total
-        const maxAllowed = 100 - otherMonthsTotal;
-        const clampedPercentage = Math.min(percentage, maxAllowed);
+        // Ensure we don't go below 0% or exceed 100% total
+        // percentage here is the incremental change for this month
+        // The minimum allowed is -previousCumulative (to reach 0% total)
+        // The maximum allowed is 100 - previousCumulative (to reach 100% total)
+        const minAllowed = -previousCumulative;
+        const maxAllowed = 100 - previousCumulative;
+        const clampedPercentage = Math.max(minAllowed, Math.min(percentage, maxAllowed));
         
         return {
           ...batch,
