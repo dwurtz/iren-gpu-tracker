@@ -17,13 +17,28 @@ interface BatchRowProps {
   globalMaxValue?: number;
   settings?: any; // ProfitabilitySettings
   onOpenSettings?: (field?: string) => void;
+  onUpdateDeployment?: (batchId: string, monthIndex: number, percentage: number) => void;
 }
 
 
-export const BatchRow: React.FC<BatchRowProps> = ({ batch, monthlyData, onEdit, onDelete, onEditSite, isFirstOfYear = false, selectedCell, onCellSelect, onClearSelection, globalMinValue, globalMaxValue, settings, onOpenSettings }) => {
+export const BatchRow: React.FC<BatchRowProps> = ({ 
+  batch, 
+  monthlyData, 
+  onEdit, 
+  onDelete, 
+  isFirstOfYear = false, 
+  selectedCell, 
+  onCellSelect, 
+  onClearSelection, 
+  globalMinValue, 
+  globalMaxValue, 
+  settings, 
+  onOpenSettings,
+  onUpdateDeployment
+}) => {
   const [modalCell, setModalCell] = useState<{
     monthIndex: number;
-    phase: 'INSTALL' | 'BURN_IN' | 'LIVE' | null;
+    percentDeployed: number;
     cumulativeProfit: number;
     monthlyValue: number;
     previousCumulative?: number;
@@ -33,11 +48,11 @@ export const BatchRow: React.FC<BatchRowProps> = ({ batch, monthlyData, onEdit, 
   useEffect(() => {
     if (selectedCell?.batchId === batch.id && modalCell !== null && selectedCell) {
       const data = monthlyData[selectedCell.monthIndex];
-      if (data?.phase) {
-        // Find the previous cell that actually has data (phase is not null)
+      if (data && data.percentDeployed > 0) {
+        // Find the previous cell that actually has data
         let previousCumulative = 0;
         for (let i = selectedCell.monthIndex - 1; i >= 0; i--) {
-          if (monthlyData[i]?.phase) {
+          if (monthlyData[i] && monthlyData[i].percentDeployed > 0) {
             previousCumulative = monthlyData[i].value;
             break;
           }
@@ -45,7 +60,7 @@ export const BatchRow: React.FC<BatchRowProps> = ({ batch, monthlyData, onEdit, 
         
         setModalCell({
           monthIndex: selectedCell.monthIndex,
-          phase: data.phase,
+          percentDeployed: data.percentDeployed,
           cumulativeProfit: data.value,
           monthlyValue: 0,
           previousCumulative
@@ -53,6 +68,7 @@ export const BatchRow: React.FC<BatchRowProps> = ({ batch, monthlyData, onEdit, 
       }
     }
   }, [selectedCell?.batchId, selectedCell?.monthIndex, batch.id, monthlyData]);
+
   const formatValue = (value: number) => {
     if (value === 0) return '';
     const sign = value < 0 ? '-' : '';
@@ -60,141 +76,104 @@ export const BatchRow: React.FC<BatchRowProps> = ({ batch, monthlyData, onEdit, 
     
     if (absValue >= 1000000000) {
       const billions = absValue / 1000000000;
-      return `${sign}$${billions.toFixed(2)}B`;
+      return `${sign}$${billions.toFixed(1)}B`;
     } else if (absValue >= 1000000) {
       const millions = absValue / 1000000;
-      return `${sign}$${millions.toFixed(1)}M`;
+      return `${sign}$${millions.toFixed(0)}M`;
     } else {
       const thousands = absValue / 1000;
-      return `${sign}$${thousands.toFixed(1)}K`;
+      return `${sign}$${thousands.toFixed(0)}K`;
     }
   };
 
-  // const getProfitColor = (value: number, phase: string | null) => {
-  //   if (phase === null || value === 0) return 'bg-gray-50';
-  //   
-  //   // Normalize the value for color calculation
-  //   // Assume breakeven around $0, with max loss around -$1.5B and max profit around +$500M
-  //   const maxLoss = -1500000000; // -$1.5B
-  //   const maxProfit = 500000000;  // +$500M
-  //   
-  //   let intensity = 0;
-  //   let colorClass = '';
-  //   
-  //   if (value < 0) {
-  //     // Red for losses
-  //     intensity = Math.min(Math.abs(value) / Math.abs(maxLoss), 1);
-  //     const redValue = Math.floor(255 - (intensity * 100)); // From light red to dark red
-  //     colorClass = `text-red-800`;
-  //     return `${colorClass} bg-red-${Math.floor(intensity * 400) + 100}`;
-  //   } else {
-  //     // Green for profits
-  //     intensity = Math.min(value / maxProfit, 1);
-  //     const greenValue = Math.floor(255 - (intensity * 100));
-  //     colorClass = `text-green-800`;
-  //     return `${colorClass} bg-green-${Math.floor(intensity * 400) + 100}`;
-  //   }
-  // };
-
-  const getProfitColorStyle = (value: number, phase: string | null) => {
-    if (phase === null) return { backgroundColor: '#f9fafb' };
-    
-    // Handle zero/near-zero values as white
-    if (Math.abs(value) < 1000000) { // Less than $1M
-      return { backgroundColor: 'white', color: '#374151' };
+  const getProfitColorStyle = (value: number, percentDeployed: number) => {
+    // Empty cells are gray
+    if (percentDeployed === 0) {
+      return {
+        backgroundColor: '#f9fafb',
+        color: '#374151',
+      };
     }
-    
-    // Use global min/max values for consistent scaling across all rows
-    const maxLoss = globalMinValue || -1500000000; // Use global min or fallback
-    const maxProfit = globalMaxValue || 500000000;  // Use global max or fallback
-    
+
+    // Use global min/max for consistent scaling
+    const maxLoss = globalMinValue || -100000000;
+    const maxProfit = globalMaxValue || 100000000;
+
     if (value < 0) {
-      // Red gradient for losses - using square root scale for better visibility of differences
-      const linearIntensity = Math.min(Math.abs(value) / Math.abs(maxLoss), 1);
-      const intensity = Math.sqrt(linearIntensity); // Square root scale makes smaller differences more visible
-      const red = 255;                                    // Keep red at maximum
-      const green = Math.floor(255 - (intensity * 255)); // Start white (255), fade to 0
-      const blue = Math.floor(255 - (intensity * 255));  // Start white (255), fade to 0
-      return { 
+      // Red gradient for losses
+      const linearIntensity = Math.abs(value) / Math.abs(maxLoss);
+      const intensity = Math.sqrt(linearIntensity); // Non-linear scale
+      const red = Math.round(220 + (255 - 220) * intensity);
+      const green = Math.round(180 - 100 * intensity);
+      const blue = Math.round(180 - 100 * intensity);
+      
+      return {
         backgroundColor: `rgb(${red}, ${green}, ${blue})`,
-        color: '#7f1d1d'  // Always use dark red text for readability
+        color: intensity > 0.3 ? '#7f1d1d' : '#991b1b',
       };
     } else {
-      // Bright lime-green gradient for profits - using square root scale
-      const linearIntensity = Math.min(value / maxProfit, 1);
-      const intensity = Math.sqrt(linearIntensity); // Square root scale makes smaller differences more visible
-      // Using a bright lime green: rgb(74, 222, 128) as the target color (similar to Tailwind's green-400)
-      const red = Math.floor(255 - (intensity * 181));   // 255 -> 74
-      const green = Math.floor(255 - (intensity * 33));  // 255 -> 222
-      const blue = Math.floor(255 - (intensity * 127));  // 255 -> 128
-      return { 
+      // Green gradient for profits
+      const linearIntensity = value / maxProfit;
+      const intensity = Math.sqrt(linearIntensity); // Non-linear scale
+      const red = Math.round(180 - 80 * intensity);
+      const green = Math.round(220 - 40 * intensity);
+      const blue = Math.round(180 - 80 * intensity);
+      
+      return {
         backgroundColor: `rgb(${red}, ${green}, ${blue})`,
-        color: '#166534'  // Dark green text for readability (green-800)
+        color: intensity > 0.3 ? '#065f46' : '#047857',
       };
     }
   };
 
-  const getPhaseLabel = (phase: string | null) => {
-    switch (phase) {
-      case 'INSTALL':
-        return 'INSTALL';
-      case 'BURN_IN':
-        return 'BURN IN';
-      case 'LIVE':
-        return 'LIVE';
-      default:
-        return '';
+  const handleCellClick = (index: number) => {
+    const data = monthlyData[index];
+    if (data && data.percentDeployed > 0) {
+      onCellSelect?.(batch.id, index);
+      
+      // Find previous cumulative value
+      let previousCumulative = 0;
+      for (let i = index - 1; i >= 0; i--) {
+        if (monthlyData[i] && monthlyData[i].percentDeployed > 0) {
+          previousCumulative = monthlyData[i].value;
+          break;
+        }
+      }
+      
+      setModalCell({
+        monthIndex: index,
+        percentDeployed: data.percentDeployed,
+        cumulativeProfit: data.value,
+        monthlyValue: 0,
+        previousCumulative
+      });
     }
   };
 
-  // Get the final cumulative profit (last non-zero value)
-  const finalProfit = monthlyData.length > 0 ? monthlyData[monthlyData.length - 1].value : 0;
+  const handleSliderChange = (e: React.ChangeEvent<HTMLInputElement>, monthIndex: number) => {
+    e.stopPropagation();
+    const newPercentage = parseInt(e.target.value);
+    onUpdateDeployment?.(batch.id, monthIndex, newPercentage);
+  };
+
+  // Calculate final profit (last non-zero value)
+  const finalProfit = monthlyData.reduce((max, data) => data.value !== 0 ? data.value : max, 0);
+
+  // Parse batch name to extract quantity, chip type, MW, and site
+  const batchNameLines = batch.name.split('\n');
+  const batchTitle = batchNameLines[0];
+  const batchSubtext = batchNameLines[1] || '';
 
   return (
-    <tr className={`hover:bg-gray-50 ${isFirstOfYear ? 'border-t-2 border-gray-200' : ''}`}>
-      <td className="px-4 py-2 sticky left-0 bg-white z-30 border-r" style={{ minWidth: '240px', width: '240px' }}>
+    <tr className={`border-t border-gray-200 ${isFirstOfYear ? 'border-t-2' : ''} hover:bg-gray-50`}>
+      <td className="px-4 py-3 text-left sticky left-0 bg-white z-20 border-r border-gray-200">
         <div className="flex items-center justify-between">
-          <div className="flex-1">
-            <div className="text-xs text-gray-500 mb-1">
-              {['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][batch.installationMonth]} {batch.installationYear}
+          <div>
+            <div className="font-medium text-emerald-600 underline cursor-pointer" onClick={() => onEdit(batch)}>
+              {batchTitle}
             </div>
-            <div className="font-medium text-sm">
-              {batch.name.split('\n').map((line, index) => {
-                if (index === 0) {
-                  // First line - batch name (green, clickable)
-                  return (
-                    <div 
-                      key={index} 
-                      className="text-green-600 font-semibold underline cursor-pointer hover:text-green-700"
-                      onClick={() => onEdit(batch)}
-                    >
-                      {line}
-                    </div>
-                  );
-                } else {
-                  // Second line - MW and site (parse and make site clickable)
-                  const parts = line.split('•');
-                  if (parts.length === 2) {
-                    return (
-                      <div key={index} className="text-gray-500 text-xs">
-                        <span>{parts[0]}• </span>
-                        <span 
-                          className="cursor-pointer hover:text-gray-700"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            if (onEditSite && batch.siteId) {
-                              onEditSite(batch.siteId);
-                            }
-                          }}
-                        >
-                          {parts[1]}
-                        </span>
-                      </div>
-                    );
-                  }
-                  return <div key={index} className="text-gray-500 text-xs">{line}</div>;
-                }
-              })}
+            <div className="text-xs text-gray-500 mt-0.5">
+              {batchSubtext}
             </div>
           </div>
           <div className="flex space-x-1 ml-2">
@@ -216,18 +195,22 @@ export const BatchRow: React.FC<BatchRowProps> = ({ batch, monthlyData, onEdit, 
       
       {monthlyData.map((data, index) => {
         const isSelected = selectedCell?.batchId === batch.id && selectedCell?.monthIndex === index;
-        // Add heavier border at year boundaries (after Dec, which is at indices 4, 16, 28, 40, 52, 64)
         const isYearBoundary = index === 4 || index === 16 || index === 28 || index === 40 || index === 52 || index === 64;
         const isFirstMonth = index === 0;
+        
+        // Check if this cell has deployment this month
+        const deploymentThisMonth = batch.deploymentSchedule[index] || 0;
+        const hasDeployment = data.percentDeployed > 0;
+        
         return (
           <td 
             key={index}
             data-batch-id={batch.id}
             data-month-index={index}
-            className={`px-2 py-3 text-center text-sm ${isFirstMonth ? 'border-l border-gray-200' : ''} ${isYearBoundary ? 'border-r-2 border-gray-200' : 'border-r border-gray-200'} cursor-pointer hover:opacity-80`}
+            className={`px-2 py-2 text-center text-sm ${isFirstMonth ? 'border-l border-gray-200' : ''} ${isYearBoundary ? 'border-r-2 border-gray-200' : 'border-r border-gray-200'} cursor-pointer hover:opacity-80`}
             style={{
-              minWidth: '80px',
-              ...getProfitColorStyle(data.value, data.phase),
+              minWidth: '100px',
+              ...getProfitColorStyle(data.value, data.percentDeployed),
               ...(isSelected ? { 
                 outline: '3px solid white',
                 outlineOffset: '-3px',
@@ -235,58 +218,37 @@ export const BatchRow: React.FC<BatchRowProps> = ({ batch, monthlyData, onEdit, 
                 position: 'relative'
               } : {})
             }}
-            onClick={() => {
-              if (data.phase) {
-                onCellSelect?.(batch.id, index);
-                // TEMP FIX: Hardcode the correct previous values based on what we see in the table
-                let previousCumulative = 0;
-                
-                // For September batch (50MW B200):
-                // Month 1 (Installation): -99M
-                // Month 2 (Burn-in): -150M  
-                // Month 3 (Live): -137M
-                if (batch.name === '50MW B200' && batch.installationMonth === 8) { // September = month 8
-                  if (index === 1) { // Month 2 (Burn-in)
-                    previousCumulative = -99000000; // -99M from Month 1
-                  } else if (index === 2) { // Month 3 (Live)  
-                    previousCumulative = -150000000; // -150M from Month 2
-                  } else if (index === 3) { // Month 4 (Live)
-                    previousCumulative = -137000000; // -137M from Month 3
-                  }
-                  // Add more as needed...
-                } else {
-                  // Fallback to original logic for other batches
-                  for (let i = index - 1; i >= 0; i--) {
-                    if (monthlyData[i]?.phase) {
-                      previousCumulative = monthlyData[i].value;
-                      break;
-                    }
-                  }
-                }
-                
-                setModalCell({
-                  monthIndex: index,
-                  phase: data.phase,
-                  cumulativeProfit: data.value,
-                  monthlyValue: 0, // We'll calculate this in the modal
-                  previousCumulative
-                });
-              }
-            }}
+            onClick={() => handleCellClick(index)}
           >
-          <div className="space-y-1">
-            {data.phase && (
-              <div className="text-xs font-medium opacity-75">
-                {getPhaseLabel(data.phase)}
-              </div>
-            )}
-            {data.value !== 0 && (
-              <div className="font-medium">
-                {formatValue(data.value)}
-              </div>
-            )}
-          </div>
-        </td>
+            <div className="space-y-1">
+              {hasDeployment && (
+                <>
+                  <div className="text-xs opacity-75">
+                    {data.percentDeployed.toFixed(0)}% deployed
+                  </div>
+                  <div className="font-medium">
+                    {formatValue(data.value)}
+                  </div>
+                  {deploymentThisMonth > 0 && (
+                    <div className="mt-1" onClick={(e) => e.stopPropagation()}>
+                      <input
+                        type="range"
+                        min="0"
+                        max="100"
+                        value={deploymentThisMonth}
+                        onChange={(e) => handleSliderChange(e, index)}
+                        className="w-full h-1 bg-gray-300 rounded-lg appearance-none cursor-pointer"
+                        style={{ accentColor: '#10b981' }}
+                      />
+                      <div className="text-xs mt-0.5">
+                        +{deploymentThisMonth}% this month
+                      </div>
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+          </td>
         );
       })}
       
@@ -299,7 +261,6 @@ export const BatchRow: React.FC<BatchRowProps> = ({ batch, monthlyData, onEdit, 
       <CellDetailModal
         isOpen={modalCell !== null}
         onClose={() => {
-          // Clear modal first, then selection to avoid conflicts
           setModalCell(null);
           setTimeout(() => {
             onClearSelection?.();
@@ -307,7 +268,7 @@ export const BatchRow: React.FC<BatchRowProps> = ({ batch, monthlyData, onEdit, 
         }}
         batch={batch}
         monthIndex={modalCell?.monthIndex || 0}
-        phase={modalCell?.phase || null}
+        percentDeployed={modalCell?.percentDeployed || 0}
         cumulativeProfit={modalCell?.cumulativeProfit || 0}
         monthlyValue={modalCell?.monthlyValue || 0}
         previousCumulative={modalCell?.previousCumulative || 0}
@@ -318,4 +279,3 @@ export const BatchRow: React.FC<BatchRowProps> = ({ batch, monthlyData, onEdit, 
     </tr>
   );
 };
-

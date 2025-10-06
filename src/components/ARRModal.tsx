@@ -8,7 +8,7 @@ interface ARRModalProps {
   onClose: () => void;
   monthIndex: number;
   batches: Batch[];
-  allBatchData: { value: number; phase: string | null }[][];
+  allBatchData: { value: number; percentDeployed: number }[][];
   settings: {
     utilizationRate: number;
     gpuHourRate: {
@@ -74,12 +74,14 @@ const ARRModal: React.FC<ARRModalProps> = ({
     let totalLiveGPUs = 0;
     let totalARR = 0;
 
-    // Find all batches that are live in this month
+    // Find all batches that have deployed GPUs in this month
     batches.forEach((batch, batchIndex) => {
       const batchData = allBatchData[batchIndex];
-      if (batchData && batchData[monthIndex] && batchData[monthIndex].phase === 'LIVE') {
-        const gpuCount = batch.quantity || 0;
-        totalLiveGPUs += gpuCount;
+      if (batchData && batchData[monthIndex]) {
+        const percentDeployed = batchData[monthIndex].percentDeployed;
+        if (percentDeployed > 0) {
+          const gpuCount = (percentDeployed / 100) * (batch.quantity || 0);
+          totalLiveGPUs += gpuCount;
 
         // Calculate revenue for this batch - chip-specific
         const hoursPerMonth = 730;
@@ -108,6 +110,7 @@ const ARRModal: React.FC<ARRModalProps> = ({
           installDate,
           sortKey
         });
+        }
       }
     });
 

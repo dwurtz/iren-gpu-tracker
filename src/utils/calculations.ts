@@ -22,12 +22,7 @@ export const calculateMonthlyData = (batch: Batch, startMonth: number, startYear
   const utilizationRate = settings.utilizationRate / 100;
   const gpuHourRate = chipSettings.gpuHourRate;
   const datacenterOverheadPerGpu = settings.datacenterOverhead;
-  // Calculate electrical cost based on actual GPU usage
-  const hoursGpusRun = hoursPerMonth * utilizationRate; // Hours GPUs actually run
   const powerPerGpuKw = chipSettings.powerConsumption;
-  const totalPowerKw = batch.quantity * powerPerGpuKw;
-  const baseElectricalCost = hoursGpusRun * totalPowerKw * settings.electricityCost;
-  const electricalCost = baseElectricalCost * settings.electricalOverhead; // Apply PUE multiplier
   
   // GPU financing terms - now from batch level
   const isCashPurchase = batch.fundingType === 'Cash';
@@ -35,14 +30,19 @@ export const calculateMonthlyData = (batch: Batch, startMonth: number, startYear
   const monthlyInterestRate = annualInterestRate / 12;
   const loanTermMonths = batch.leaseTerm || 36;
   
-  // Calculate monthly payment for GPU financing (like a mortgage)
-  // For cash purchases, this will be 0
-  const calculateMonthlyPayment = (principal: number) => {
+  // Calculate monthly payment for GPU financing per GPU (like a mortgage)
+  const gpuCostPerUnit = chipSettings.upfrontCost;
+  const calculateMonthlyPaymentPerGpu = () => {
     if (isCashPurchase) return 0;
-    if (monthlyInterestRate === 0) return principal / loanTermMonths;
-    return principal * (monthlyInterestRate * Math.pow(1 + monthlyInterestRate, loanTermMonths)) / 
+    if (monthlyInterestRate === 0) return gpuCostPerUnit / loanTermMonths;
+    return gpuCostPerUnit * (monthlyInterestRate * Math.pow(1 + monthlyInterestRate, loanTermMonths)) / 
            (Math.pow(1 + monthlyInterestRate, loanTermMonths) - 1);
   };
+  
+  const monthlyGpuPaymentPerUnit = calculateMonthlyPaymentPerGpu();
+  
+  // Track cumulative deployment percentage
+  let cumulativeDeployedPercent = 0;
   
   for (let i = 0; i < totalMonths; i++) {
     const currentMonth = (startMonth + i) % 12;
@@ -53,44 +53,56 @@ export const calculateMonthlyData = (batch: Batch, startMonth: number, startYear
       (batch.installationYear - startYear) * 12 + (batch.installationMonth - startMonth);
     const monthsSinceInstallation = i - installationStartIndex;
     
-    let phase: 'INSTALL' | 'BURN_IN' | 'LIVE' | null = null;
     let monthlyValue = 0;
+    let percentDeployed = 0;
     
     if (monthsSinceInstallation >= 0) {
-      // Calculate GPU financing payment (applies to all phases for 36 months)
-      const totalGpuCost = chipSettings.upfrontCost * batch.quantity;
-      const monthlyGpuPayment = calculateMonthlyPayment(totalGpuCost);
+      // Get deployment percentage for this specific month
+      const deploymentThisMonth = batch.deploymentSchedule[i] || 0;
+      cumulativeDeployedPercent = Math.min(100, cumulativeDeployedPercent + deploymentThisMonth);
+      percentDeployed = cumulativeDeployedPercent;
       
-      // Installation costs (one-time, spread over installation period) - chip-specific
-      const totalInstallationCost = chipSettings.installationCost * batch.quantity;
+      // Calculate number of GPUs deployed this month (new deployments only)
+      const newGpusDeployed = (deploymentThisMonth / 100) * batch.quantity;
+      const totalGpusDeployed = (percentDeployed / 100) * batch.quantity;
       
-      if (monthsSinceInstallation < batch.phases.installation.duration) {
-        // Installation phase - GPU payments + installation costs
-        phase = 'INSTALL';
-        const monthlyInstallationCost = totalInstallationCost / batch.phases.installation.duration;
-        
-        // For cash purchases, include upfront GPU cost in first month only
-        const upfrontGpuCost = (isCashPurchase && monthsSinceInstallation === 0) ? totalGpuCost : 0;
-        
-        monthlyValue = -(monthlyGpuPayment + monthlyInstallationCost + upfrontGpuCost);
-      } else if (monthsSinceInstallation < batch.phases.installation.duration + batch.phases.burnIn.duration) {
-        // Burn-in phase - GPU payments + overhead costs
-        phase = 'BURN_IN';
-        const monthlyOverhead = (datacenterOverheadPerGpu * batch.quantity) + electricalCost;
-        monthlyValue = -(monthlyGpuPayment + monthlyOverhead);
-      } else {
-        // Live phase - revenue minus (GPU payments + overhead)
-        phase = 'LIVE';
-        const monthlyRevenue = batch.quantity * hoursPerMonth * utilizationRate * gpuHourRate;
-        const monthlyOverhead = (datacenterOverheadPerGpu * batch.quantity) + electricalCost;
-        
-        // GPU payments continue for 36 months total, then stop
-        const monthsFromStart = monthsSinceInstallation;
-        const gpuPaymentActive = monthsFromStart < loanTermMonths;
-        const totalMonthlyCosts = monthlyOverhead + (gpuPaymentActive ? monthlyGpuPayment : 0);
-        
-        monthlyValue = monthlyRevenue - totalMonthlyCosts;
+      // === COSTS FOR NEW DEPLOYMENTS THIS MONTH ===
+      
+      // 1. Installation costs for newly deployed GPUs
+      const installationCostThisMonth = newGpusDeployed * chipSettings.installationCost;
+      
+      // 2. Upfront GPU cost for newly deployed GPUs (cash only)
+      const upfrontGpuCostThisMonth = isCashPurchase ? (newGpusDeployed * gpuCostPerUnit) : 0;
+      
+      // === ONGOING COSTS FOR ALL DEPLOYED GPUS ===
+      
+      // 3. GPU financing payments for all deployed GPUs (lease only)
+      // Only pay for GPUs within their financing term
+      let totalGpuFinancingPayment = 0;
+      for (let deployMonth = installationStartIndex; deployMonth <= i; deployMonth++) {
+        const monthsIntoFinancing = i - deployMonth;
+        if (monthsIntoFinancing < loanTermMonths) {
+          const gpusDeployedThatMonth = ((batch.deploymentSchedule[deployMonth] || 0) / 100) * batch.quantity;
+          totalGpuFinancingPayment += gpusDeployedThatMonth * monthlyGpuPaymentPerUnit;
+        }
       }
+      
+      // 4. Datacenter overhead for all deployed GPUs
+      const datacenterOverheadCost = totalGpusDeployed * datacenterOverheadPerGpu;
+      
+      // 5. Electrical cost for all deployed GPUs
+      const hoursGpusRun = hoursPerMonth * utilizationRate;
+      const totalPowerKw = totalGpusDeployed * powerPerGpuKw;
+      const baseElectricalCost = hoursGpusRun * totalPowerKw * settings.electricityCost;
+      const electricalCost = baseElectricalCost * settings.electricalOverhead; // Apply PUE
+      
+      // === REVENUE FOR ALL DEPLOYED GPUS ===
+      const monthlyRevenue = totalGpusDeployed * hoursPerMonth * utilizationRate * gpuHourRate;
+      
+      // === NET MONTHLY PROFIT ===
+      const totalCosts = installationCostThisMonth + upfrontGpuCostThisMonth + 
+                         totalGpuFinancingPayment + datacenterOverheadCost + electricalCost;
+      monthlyValue = monthlyRevenue - totalCosts;
       
       cumulativeProfit += monthlyValue;
     }
@@ -98,7 +110,7 @@ export const calculateMonthlyData = (batch: Batch, startMonth: number, startYear
     data.push({
       month: currentMonth,
       year: currentYear,
-      phase,
+      percentDeployed,
       value: cumulativeProfit,
     });
   }
@@ -121,7 +133,7 @@ export const calculateTotals = (allBatchData: MonthData[][]): MonthData[] => {
     totals.push({
       month: allBatchData[0][i].month,
       year: allBatchData[0][i].year,
-      phase: null,
+      percentDeployed: 0, // Not applicable for totals
       value: monthTotal,
     });
   }

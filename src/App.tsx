@@ -69,31 +69,7 @@ const defaultSettings: ProfitabilitySettings = {
   utilizationRate: 90, // 90% utilization
 };
 
-// Calculate costs and revenue for 36-month breakeven
-const calculateProfitability = (settings: ProfitabilitySettings, chipType: 'B200' | 'GB300') => {
-  // const gpuCount = chipType === 'B200' ? settings.gpusPerMW.b200 : settings.gpusPerMW.gb300;
-  const upfrontCost = chipType === 'B200' ? settings.upfrontGpuCost.b200 : settings.upfrontGpuCost.gb300;
-  
-  // Monthly costs - chip-specific
-  const installationCostPerGpu = chipType === 'B200' ? settings.installationCost.b200 : settings.installationCost.gb300;
-  const monthlyDatacenterOverhead = settings.datacenterOverhead;
-  
-  // Monthly revenue (assuming 730 hours per month) - chip-specific
-  // const monthlyRevenuePerGpu = settings.gpuHourRate * 730 * (settings.utilizationRate / 100);
-  
-  // For 36-month breakeven, total revenue should equal total costs
-  // Total costs = upfront + installation + 36 months of overhead
-  const totalCostPerGpu = upfrontCost + installationCostPerGpu + (monthlyDatacenterOverhead * 36);
-  
-  // Adjust revenue to achieve breakeven at 36 months
-  const adjustedMonthlyRevenue = totalCostPerGpu / 36;
-  
-  return {
-    installationCost: installationCostPerGpu,
-    burnInCost: monthlyDatacenterOverhead, // burn-in phase overhead
-    monthlyRevenue: adjustedMonthlyRevenue,
-  };
-};
+// No longer need calculateProfitability - costs/revenue are now calculated based on deployment %
 
 // Default sites based on IREN public filings
 const createDefaultSites = (): Site[] => {
@@ -172,7 +148,16 @@ const createDefaultBatches = (settings: ProfitabilitySettings, sites: Site[]): B
     const mwEquivalent = (config.quantity / gpusPerMW).toFixed(2);
     const site = sites.find(s => s.id === config.siteId);
     const siteName = site ? site.name : '';
-    const profitability = calculateProfitability(settings, config.chipType as 'B200' | 'GB300');
+    
+    // Create default deployment schedule: 25%, 50%, 75%, 100% over 4 months
+    // Starting from the installation month (Aug 2023 = index 0, Sept 2025 = index 25, etc.)
+    const startIndex = (config.year - 2023) * 12 + config.month;
+    const deploymentSchedule: { [monthIndex: number]: number } = {
+      [startIndex]: 25,      // Month 1: 25% deployed
+      [startIndex + 1]: 25,  // Month 2: 25% more (50% total)
+      [startIndex + 2]: 25,  // Month 3: 25% more (75% total)
+      [startIndex + 3]: 25,  // Month 4: 25% more (100% total)
+    };
     
     batches.push({
       id: `batch-${index}`,
@@ -188,19 +173,7 @@ const createDefaultBatches = (settings: ProfitabilitySettings, sites: Site[]): B
       residualCap: config.residualCap,
       leaseTerm: config.leaseTerm,
       apr: config.apr,
-      phases: {
-        installation: { 
-          duration: 1, 
-          costPerUnit: profitability.installationCost 
-        },
-        burnIn: { 
-          duration: 1, 
-          costPerUnit: profitability.burnInCost 
-        },
-        live: { 
-          revenuePerUnit: profitability.monthlyRevenue 
-        },
-      },
+      deploymentSchedule,
     });
   });
   
@@ -288,7 +261,7 @@ function App() {
         if (event.key === 'ArrowLeft') {
           // Move left, find previous valid cell
           for (let i = selectedCell.monthIndex - 1; i >= 0; i--) {
-            if (batchData[i]?.phase) {
+            if (batchData[i] && batchData[i].percentDeployed > 0) {
               newMonthIndex = i;
               break;
             }
@@ -296,7 +269,7 @@ function App() {
         } else if (event.key === 'ArrowRight') {
           // Move right, find next valid cell
           for (let i = selectedCell.monthIndex + 1; i < batchData.length; i++) {
-            if (batchData[i]?.phase) {
+            if (batchData[i] && batchData[i].percentDeployed > 0) {
               newMonthIndex = i;
               break;
             }
@@ -342,6 +315,35 @@ function App() {
 
   const handleDeleteBatch = (batchId: string) => {
     const updatedBatches = batches.filter(batch => batch.id !== batchId);
+    setBatches(updatedBatches);
+    saveBatchesToStorage(updatedBatches);
+  };
+
+  const handleUpdateDeployment = (batchId: string, monthIndex: number, percentage: number) => {
+    const updatedBatches = batches.map(batch => {
+      if (batch.id === batchId) {
+        // Calculate how much deployment percentage this would add
+        const currentCumulative = Object.entries(batch.deploymentSchedule)
+          .filter(([idx]) => parseInt(idx) < monthIndex)
+          .reduce((sum, [, pct]) => sum + pct, 0);
+        
+        const otherMonthsTotal = currentCumulative;
+        
+        // Ensure we don't exceed 100% total
+        const maxAllowed = 100 - otherMonthsTotal;
+        const clampedPercentage = Math.min(percentage, maxAllowed);
+        
+        return {
+          ...batch,
+          deploymentSchedule: {
+            ...batch.deploymentSchedule,
+            [monthIndex]: clampedPercentage
+          }
+        };
+      }
+      return batch;
+    });
+    
     setBatches(updatedBatches);
     saveBatchesToStorage(updatedBatches);
   };
@@ -416,21 +418,26 @@ function App() {
       for (let monthIndex = 0; monthIndex < totalMonths; monthIndex++) {
         let totalARR = 0;
         
-        // Calculate ARR for each live batch in this month
+        // Calculate ARR for each batch based on its deployed percentage
         batches.forEach((batch, batchIndex) => {
           const batchData = allBatchData[batchIndex];
-          if (batchData && batchData[monthIndex] && batchData[monthIndex].phase === 'LIVE') {
-            const gpuCount = batch.quantity || 0;
+          if (batchData && batchData[monthIndex]) {
+            const percentDeployed = batchData[monthIndex].percentDeployed;
             
-            // Use chip-specific rates instead of average
-            const hoursPerMonth = 730;
-            const utilizationRate = settings.utilizationRate / 100;
-            const chipKey = batch.chipType.toLowerCase() as 'b200' | 'b300' | 'gb300' | 'h100' | 'h200' | 'mi350x';
-            const gpuHourRate = settings.gpuHourRate[chipKey];
-            const monthlyRevenuePerGPU = hoursPerMonth * utilizationRate * gpuHourRate;
-            const annualRevenue = gpuCount * monthlyRevenuePerGPU * 12;
-            
-            totalARR += annualRevenue;
+            // Only count deployed GPUs
+            if (percentDeployed > 0) {
+              const deployedGpuCount = (percentDeployed / 100) * (batch.quantity || 0);
+              
+              // Use chip-specific rates
+              const hoursPerMonth = 730;
+              const utilizationRate = settings.utilizationRate / 100;
+              const chipKey = batch.chipType.toLowerCase() as 'b200' | 'b300' | 'gb300' | 'h100' | 'h200' | 'mi350x';
+              const gpuHourRate = settings.gpuHourRate[chipKey];
+              const monthlyRevenuePerGPU = hoursPerMonth * utilizationRate * gpuHourRate;
+              const annualRevenue = deployedGpuCount * monthlyRevenuePerGPU * 12;
+              
+              totalARR += annualRevenue;
+            }
           }
         });
         
@@ -447,6 +454,34 @@ function App() {
 
   const arrData = calculateARR();
 
+  // Calculate live chip count for each month
+  const calculateLiveChipCount = () => {
+    const liveChipData: { value: number }[] = [];
+    const totalMonths = 77; // Aug 2023 to Dec 2029
+    
+    for (let monthIndex = 0; monthIndex < totalMonths; monthIndex++) {
+      let totalLiveChips = 0;
+      
+      // Sum up deployed GPUs from all batches
+      batches.forEach((batch, batchIndex) => {
+        const batchData = allBatchData[batchIndex];
+        if (batchData && batchData[monthIndex]) {
+          const percentDeployed = batchData[monthIndex].percentDeployed;
+          if (percentDeployed > 0) {
+            const deployedGpuCount = (percentDeployed / 100) * (batch.quantity || 0);
+            totalLiveChips += deployedGpuCount;
+          }
+        }
+      });
+      
+      liveChipData.push({ value: totalLiveChips });
+    }
+    
+    return liveChipData;
+  };
+
+  const liveChipData = calculateLiveChipCount();
+
   // Format numbers with K for thousands, M for millions, B for billions
   const formatValue = (value: number) => {
     if (value === 0) return '';
@@ -462,6 +497,21 @@ function App() {
     } else {
       const thousands = absValue / 1000;
       return `${sign}$${thousands.toFixed(1)}K`;
+    }
+  };
+
+  // Format chip count (no dollar sign)
+  const formatChipCount = (value: number) => {
+    if (value === 0) return '';
+    
+    if (value >= 1000000) {
+      const millions = value / 1000000;
+      return `${millions.toFixed(1)}M`;
+    } else if (value >= 1000) {
+      const thousands = value / 1000;
+      return `${thousands.toFixed(0)}K`;
+    } else {
+      return `${Math.round(value)}`;
     }
   };
 
@@ -592,6 +642,7 @@ function App() {
                         globalMaxValue={globalMaxValue}
                         settings={settings}
                         onOpenSettings={handleOpenSettings}
+                        onUpdateDeployment={handleUpdateDeployment}
                       />
                     );
                   });
@@ -605,8 +656,31 @@ function App() {
               <tfoot className="sticky bottom-0 z-40" style={{ display: 'table-footer-group' }}>
                 {batches.length > 0 && (
                   <>
-                    {/* TOTAL row */}
+                    {/* Live Chip Count row */}
                     <tr className="border-t-2 border-gray-200 bg-white font-medium">
+                      <td className="px-4 py-3 text-gray-700 text-xs font-semibold uppercase tracking-wide sticky left-0 bg-white z-50 border-r">LIVE CHIP COUNT</td>
+                      {liveChipData.map((data, index) => {
+                        const isYearBoundary = index === 4 || index === 16 || index === 28 || index === 40 || index === 52 || index === 64;
+                        const isFirstMonth = index === 0;
+                        return (
+                          <td key={index} className={`px-2 py-3 text-center text-sm ${isFirstMonth ? 'border-l border-gray-200' : ''} ${isYearBoundary ? 'border-r-2 border-gray-200' : 'border-r border-gray-200'}`} style={{ minWidth: '80px' }}>
+                            {data.value !== 0 && (
+                              <div className="text-gray-700">
+                                {formatChipCount(data.value)}
+                              </div>
+                            )}
+                          </td>
+                        );
+                      })}
+                      <td className="px-4 py-3 text-center font-bold sticky right-0 bg-white z-50 border-l">
+                        <div className="text-gray-700">
+                          {formatChipCount(liveChipData[liveChipData.length - 1]?.value || 0)}
+                        </div>
+                      </td>
+                    </tr>
+                    
+                    {/* CUMULATIVE PROFIT row */}
+                    <tr className="border-t border-gray-200 bg-white font-medium">
                       <td className="px-4 py-3 text-gray-700 text-xs font-semibold uppercase tracking-wide sticky left-0 bg-white z-50 border-r">CUMULATIVE PROFIT</td>
                       {totals.map((data, index) => {
                         const isYearBoundary = index === 3 || index === 15 || index === 27 || index === 39 || index === 51;

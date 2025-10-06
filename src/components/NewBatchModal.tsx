@@ -55,6 +55,15 @@ export const NewBatchModal: React.FC<NewBatchModalProps> = ({ isOpen, onClose, o
     const mwEquivalent = (formData.quantity / gpusPerMW).toFixed(2);
     const site = sites.find(s => s.id === formData.siteId);
     const siteName = site ? site.name : '';
+    // Create default deployment schedule: 25%, 50%, 75%, 100% over 4 months
+    const startIndex = (formData.installationYear - 2023) * 12 + formData.installationMonth;
+    const deploymentSchedule: { [monthIndex: number]: number } = {
+      [startIndex]: 25,
+      [startIndex + 1]: 25,
+      [startIndex + 2]: 25,
+      [startIndex + 3]: 25,
+    };
+    
     const batch: Omit<Batch, 'id'> = {
       name: `${formData.quantity.toLocaleString()} ${formData.chipType}s\n(${mwEquivalent}MW${siteName ? ` • ${siteName}` : ''})`,
       chipType: formData.chipType,
@@ -68,19 +77,7 @@ export const NewBatchModal: React.FC<NewBatchModalProps> = ({ isOpen, onClose, o
       residualCap: formData.fundingType === 'Lease' ? formData.residualCap : undefined,
       leaseTerm: formData.fundingType === 'Lease' ? formData.leaseTerm : undefined,
       apr: formData.fundingType === 'Lease' ? formData.apr : undefined,
-      phases: {
-        installation: {
-          duration: 1, // Default 1 month
-          costPerUnit: 0, // Not used - costs come from global settings
-        },
-        burnIn: {
-          duration: 1, // Default 1 month
-          costPerUnit: 0, // Not used
-        },
-        live: {
-          revenuePerUnit: 0, // Calculated from settings, not stored per batch
-        },
-      },
+      deploymentSchedule,
     };
 
     onSave(batch);

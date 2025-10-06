@@ -1,5 +1,5 @@
 import React from 'react';
-import { X } from 'lucide-react';
+import { X, Edit2 } from 'lucide-react';
 import { Batch } from '../types';
 import { ProfitabilitySettings } from './SettingsModal';
 import { useModalBackdrop } from './ModalBackdrop';
@@ -10,7 +10,7 @@ interface CellDetailModalProps {
   onClose: () => void;
   batch: Batch | null;
   monthIndex: number;
-  phase: 'INSTALL' | 'BURN_IN' | 'LIVE' | null;
+  percentDeployed: number;
   cumulativeProfit: number;
   monthlyValue: number;
   previousCumulative?: number;
@@ -24,7 +24,7 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
   onClose,
   batch,
   monthIndex,
-  phase,
+  percentDeployed,
   cumulativeProfit,
   monthlyValue: _monthlyValue,
   previousCumulative = 0,
@@ -48,343 +48,202 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
     } else if (absValue >= 1000000) {
       const millions = absValue / 1000000;
       return `${sign}$${millions.toFixed(1)}M`;
-    } else if (absValue >= 1000) {
+    } else {
       const thousands = absValue / 1000;
       return `${sign}$${thousands.toFixed(1)}K`;
-    } else {
-      return `${sign}$${absValue.toFixed(0)}`;
     }
   };
 
+  // Calculate month relative to batch start
+  const batchInstallationIndex = (batch.installationYear - 2023) * 12 + batch.installationMonth;
+  const monthsSinceInstallation = monthIndex - batchInstallationIndex + 1;
 
-  // const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  // Calculate the batch's installation month index (Sep 2025 = 0)
-  const batchInstallationIndex = (batch.installationYear - 2023) * 12 + (batch.installationMonth - 7);
-  const monthsSinceInstallation = monthIndex - batchInstallationIndex;
-  
-  // Helper function to get chip-specific settings
-  const getChipKey = () => batch.chipType.toLowerCase() as 'b200' | 'b300' | 'gb300' | 'h100' | 'h200' | 'mi350x';
-  const chipKey = getChipKey();
-  
-  // Calculate chip-specific rate (needed in JSX)
+  // Get chip-specific settings
+  const chipKey = batch.chipType.toLowerCase() as 'b200' | 'b300' | 'gb300' | 'h100' | 'h200' | 'mi350x';
+  const hoursPerMonth = 730;
+  const utilizationRate = settings.utilizationRate / 100;
   const gpuHourRate = settings.gpuHourRate[chipKey];
+  const powerPerGpuKw = 1000 / settings.gpusPerMW[chipKey];
+  const installationCostPerGpu = settings.installationCost[chipKey];
+  const upfrontCostPerGpu = settings.upfrontGpuCost[chipKey];
+  const datacenterOverheadPerGpu = settings.datacenterOverhead;
+
+  // Calculate deployment this month
+  const deploymentThisMonth = batch.deploymentSchedule[monthIndex] || 0;
+  const newGpusDeployed = (deploymentThisMonth / 100) * batch.quantity;
+  const totalGpusDeployed = (percentDeployed / 100) * batch.quantity;
+
+  // === COSTS ===
   
-  // Calculate detailed breakdown based on phase
-  const getPhaseDetails = () => {
-    try {
-      const hoursPerMonth = 730; // Average hours per month
-      const utilizationRate = settings.utilizationRate / 100; // From settings
-      const datacenterOverhead = settings.datacenterOverhead; // From settings
-      // Calculate electrical cost based on actual GPU usage (same as calculations.ts)
-      const hoursGpusRun = hoursPerMonth * utilizationRate; // Hours GPUs actually run
-      const powerPerGpuKw = 1000 / settings.gpusPerMW[chipKey]; // Derive from GPUs/MW
-      const totalPowerKw = batch.quantity * powerPerGpuKw;
-      const baseElectricalCost = hoursGpusRun * totalPowerKw * settings.electricityCost;
-      const electricalCost = baseElectricalCost * settings.electricalOverhead; // Apply PUE multiplier
-      
-      // GPU financing calculations - now from batch level
-      const isCashPurchase = batch.fundingType === 'Cash';
-      const annualInterestRate = isCashPurchase ? 0 : (batch.apr || 0) / 100;
-      const monthlyInterestRate = annualInterestRate / 12;
-      const loanTermMonths = batch.leaseTerm || 36;
-      
-      const calculateMonthlyPayment = (principal: number) => {
-        if (isCashPurchase) return 0;
-        if (monthlyInterestRate === 0) return principal / loanTermMonths;
-        return principal * (monthlyInterestRate * Math.pow(1 + monthlyInterestRate, loanTermMonths)) / 
-               (Math.pow(1 + monthlyInterestRate, loanTermMonths) - 1);
-      };
-      
-      const gpuCostPerUnit = settings.upfrontGpuCost[chipKey];
-      const totalGpuCost = gpuCostPerUnit * batch.quantity;
-      const monthlyGpuPayment = calculateMonthlyPayment(totalGpuCost);
-      const installationCostPerGpu = settings.installationCost[chipKey];
-      const totalInstallationCost = installationCostPerGpu * batch.quantity;
-      
-      // GPU Financing section (only shown for financed purchases)
-      const gpuFinancingSection = isCashPurchase ? null : {
-        label: 'GPU Cost (Financed)',
-        value: (
-          <span title={`Formula: P × [r(1+r)^n] / [(1+r)^n - 1] where P = ${formatValue(totalGpuCost)}, r = ${((batch.apr || 0) / 12).toFixed(3)}% monthly, n = ${loanTermMonths} months`}>
-            {batch.quantity.toLocaleString()} GPUs × <ClickableVariable title="Click to edit upfront GPU cost in settings" field={`upfrontGpuCost.${batch.chipType.toLowerCase()}`} onOpenSettings={onOpenSettings}>{formatValue(gpuCostPerUnit)}</ClickableVariable> ÷ {loanTermMonths} months @ {batch.apr || 0}% = {formatValue(monthlyGpuPayment)}
-          </span>
-        )
-      };
+  // 1. Installation costs for newly deployed GPUs
+  const installationCost = newGpusDeployed * installationCostPerGpu;
 
-      switch (phase) {
-        case 'INSTALL':
-          const monthlyInstallationCost = totalInstallationCost / batch.phases.installation.duration;
-          // For cash purchases, add upfront GPU cost in first month only
-          const upfrontGpuCost = (isCashPurchase && monthsSinceInstallation === 0) ? totalGpuCost : 0;
-          const totalMonthlyCost = monthlyGpuPayment + monthlyInstallationCost + upfrontGpuCost;
-          
-          const installDetails = [
-            gpuFinancingSection,
-            { 
-              label: 'Installation Cost', 
-              value: (
-                <span>
-                  {batch.quantity.toLocaleString()} × <ClickableVariable title="Click to edit installation cost in settings" field={`installationCost.${batch.chipType.toLowerCase()}`} onOpenSettings={onOpenSettings}>{formatValue(installationCostPerGpu)}</ClickableVariable>{batch.phases.installation.duration !== 1 && ` ÷ ${batch.phases.installation.duration} months`} = {formatValue(monthlyInstallationCost)}
-                </span>
-              )
-            },
-          ].filter(Boolean);
-          
-          // Add upfront GPU cost line for cash purchases in first month
-          if (isCashPurchase && monthsSinceInstallation === 0) {
-            installDetails.push({
-              label: 'Upfront GPU Cost (Cash)',
-              value: (
-                <span>
-                  {batch.quantity.toLocaleString()} × <ClickableVariable title="Click to edit upfront GPU cost in settings" field={`upfrontGpuCost.${batch.chipType.toLowerCase()}`} onOpenSettings={onOpenSettings}>{formatValue(gpuCostPerUnit)}</ClickableVariable> = {formatValue(totalGpuCost)}
-                </span>
-              )
-            });
-          }
-          
-          return {
-            title: 'Installation Phase',
-            details: installDetails,
-            monthlyRevenue: 0,
-            monthlyCosts: totalMonthlyCost,
-            netMonthly: -totalMonthlyCost
-          };
-          
-        case 'BURN_IN':
-          const burnInOverhead = (datacenterOverhead * batch.quantity) + electricalCost;
-          const totalBurnInCost = monthlyGpuPayment + burnInOverhead;
-          
-          return {
-            title: 'Burn-in Phase',
-            details: [
-              gpuFinancingSection,
-              { 
-                label: 'Datacenter Overhead', 
-                value: (
-                  <span>
-                    {batch.quantity.toLocaleString()} × <ClickableVariable title="Click to edit datacenter overhead in settings" field="datacenterOverhead" onOpenSettings={onOpenSettings}>{formatValue(datacenterOverhead)}</ClickableVariable> = {formatValue(datacenterOverhead * batch.quantity)}
-                  </span>
-                )
-              },
-              { 
-                label: 'Electrical Cost', 
-                value: (
-                  <span>
-                    {hoursGpusRun.toLocaleString()}h × <ClickableVariable title="Click to edit GPUs per MW in settings" field={`gpusPerMW.${batch.chipType.toLowerCase()}`} onOpenSettings={onOpenSettings}>{totalPowerKw.toLocaleString()}kW</ClickableVariable> × <ClickableVariable title="Click to edit electricity cost in settings" field="electricityCost" onOpenSettings={onOpenSettings}>${settings.electricityCost}</ClickableVariable>/kWh × <ClickableVariable title="Click to edit PUE multiplier in settings" field="electricalOverhead" onOpenSettings={onOpenSettings}>{settings.electricalOverhead}</ClickableVariable> PUE = {formatValue(electricalCost)}
-                  </span>
-                )
-              },
-            ].filter(Boolean),
-            monthlyRevenue: 0,
-            monthlyCosts: totalBurnInCost,
-            netMonthly: -totalBurnInCost
-          };
-          
-        case 'LIVE':
-          const monthlyRevenue = batch.quantity * hoursPerMonth * utilizationRate * gpuHourRate;
-          const liveOverhead = (datacenterOverhead * batch.quantity) + electricalCost;
-          
-          // Check if GPU payments are still active (first 36 months from installation)
-          const gpuPaymentActive = monthsSinceInstallation < loanTermMonths;
-          const totalMonthlyCosts = liveOverhead + (gpuPaymentActive ? monthlyGpuPayment : 0);
-          const netMonthly = monthlyRevenue - totalMonthlyCosts;
-          
-          const details = [];
-          
-          // Add GPU financing section (show even if paid off)
-          if (gpuPaymentActive && gpuFinancingSection) {
-            details.push(gpuFinancingSection);
-          } else if (!isCashPurchase) {
-            details.push({ 
-              label: 'GPU Cost (Financed)', 
-              value: (
-                <div className="text-right">
-                  <div className="font-semibold text-base">$0</div>
-                  <div className="text-xs text-gray-500">Loan paid off (36 months complete)</div>
-                </div>
-              )
-            });
-          }
-          
-          details.push(
-            { 
-              label: 'Datacenter Overhead', 
-              value: (
-                <span>
-                  {batch.quantity.toLocaleString()} × <ClickableVariable title="Click to edit datacenter overhead in settings" field="datacenterOverhead" onOpenSettings={onOpenSettings}>{formatValue(datacenterOverhead)}</ClickableVariable> = {formatValue(datacenterOverhead * batch.quantity)}
-                </span>
-              )
-            },
-            { 
-              label: 'Electrical Cost', 
-              value: (
-                <span>
-                    {hoursGpusRun.toLocaleString()}h × <ClickableVariable title="Click to edit GPUs per MW in settings" field={`gpusPerMW.${batch.chipType.toLowerCase()}`} onOpenSettings={onOpenSettings}>{totalPowerKw.toLocaleString()}kW</ClickableVariable> × <ClickableVariable title="Click to edit electricity cost in settings" field="electricityCost" onOpenSettings={onOpenSettings}>${settings.electricityCost}</ClickableVariable>/kWh × <ClickableVariable title="Click to edit PUE multiplier in settings" field="electricalOverhead" onOpenSettings={onOpenSettings}>{settings.electricalOverhead}</ClickableVariable> PUE = {formatValue(electricalCost)}
-                </span>
-              )
-            }
-          );
-          
-          return {
-            title: 'Live Phase',
-            details,
-            monthlyRevenue,
-            monthlyCosts: totalMonthlyCosts,
-            netMonthly
-          };
-          
-        default:
-          return {
-            title: 'No Activity',
-            details: [
-              { label: 'Status', value: 'Batch not yet installed' }
-            ],
-            monthlyRevenue: 0,
-            monthlyCosts: 0,
-            netMonthly: 0
-          };
-      }
-    } catch (error) {
-      console.error('Error in getPhaseDetails:', error);
-      return {
-        title: 'Error',
-        details: [
-          { label: 'Error', value: 'Unable to calculate details' }
-        ],
-        monthlyRevenue: 0,
-        monthlyCosts: 0,
-        netMonthly: 0
-      };
-    }
+  // 2. Upfront GPU cost (cash purchases only)
+  const isCashPurchase = batch.fundingType === 'Cash';
+  const upfrontGpuCost = isCashPurchase ? (newGpusDeployed * upfrontCostPerGpu) : 0;
+
+  // 3. GPU financing payments (lease only)
+  const loanTermMonths = batch.leaseTerm || 36;
+  const annualInterestRate = isCashPurchase ? 0 : (batch.apr || 0) / 100;
+  const monthlyInterestRate = annualInterestRate / 12;
+  
+  const calculateMonthlyPaymentPerGpu = () => {
+    if (isCashPurchase) return 0;
+    if (monthlyInterestRate === 0) return upfrontCostPerGpu / loanTermMonths;
+    return upfrontCostPerGpu * (monthlyInterestRate * Math.pow(1 + monthlyInterestRate, loanTermMonths)) / 
+           (Math.pow(1 + monthlyInterestRate, loanTermMonths) - 1);
   };
+  
+  const monthlyGpuPaymentPerUnit = calculateMonthlyPaymentPerGpu();
+  
+  // Calculate total GPU financing for all deployed GPUs still in their term
+  let totalGpuFinancingPayment = 0;
+  for (let deployMonth = batchInstallationIndex; deployMonth <= monthIndex; deployMonth++) {
+    const monthsIntoFinancing = monthIndex - deployMonth;
+    if (monthsIntoFinancing < loanTermMonths) {
+      const gpusDeployedThatMonth = ((batch.deploymentSchedule[deployMonth] || 0) / 100) * batch.quantity;
+      totalGpuFinancingPayment += gpusDeployedThatMonth * monthlyGpuPaymentPerUnit;
+    }
+  }
 
-  const phaseDetails = getPhaseDetails();
+  // 4. Datacenter overhead
+  const datacenterOverheadCost = totalGpusDeployed * datacenterOverheadPerGpu;
+
+  // 5. Electrical cost
+  const hoursGpusRun = hoursPerMonth * utilizationRate;
+  const totalPowerKw = totalGpusDeployed * powerPerGpuKw;
+  const baseElectricalCost = hoursGpusRun * totalPowerKw * settings.electricityCost;
+  const electricalCost = baseElectricalCost * settings.electricalOverhead; // Apply PUE
+
+  // === REVENUE ===
+  const monthlyRevenue = totalGpusDeployed * hoursPerMonth * utilizationRate * gpuHourRate;
+
+  // === NET MONTHLY PROFIT ===
+  const totalCosts = installationCost + upfrontGpuCost + totalGpuFinancingPayment + datacenterOverheadCost + electricalCost;
+  const netProfitThisMonth = monthlyRevenue - totalCosts;
+
+  // Month name
+  const MONTHS = [
+    "Aug '23", "Sep '23", "Oct '23", "Nov '23", "Dec '23",
+    "Jan '24", "Feb '24", "Mar '24", "Apr '24", "May '24", "Jun '24", "Jul '24", "Aug '24", "Sep '24", "Oct '24", "Nov '24", "Dec '24",
+    "Jan '25", "Feb '25", "Mar '25", "Apr '25", "May '25", "Jun '25", "Jul '25", "Aug '25", "Sep '25", "Oct '25", "Nov '25", "Dec '25",
+    "Jan '26", "Feb '26", "Mar '26", "Apr '26", "May '26", "Jun '26", "Jul '26", "Aug '26", "Sep '26", "Oct '26", "Nov '26", "Dec '26",
+    "Jan '27", "Feb '27", "Mar '27", "Apr '27", "May '27", "Jun '27", "Jul '27", "Aug '27", "Sep '27", "Oct '27", "Nov '27", "Dec '27",
+    "Jan '28", "Feb '28", "Mar '28", "Apr '28", "May '28", "Jun '28", "Jul '28", "Aug '28", "Sep '28", "Oct '28", "Nov '28", "Dec '28",
+    "Jan '29", "Feb '29", "Mar '29", "Apr '29", "May '29", "Jun '29", "Jul '29", "Aug '29", "Sep '29", "Oct '29", "Nov '29", "Dec '29"
+  ];
+  const monthName = MONTHS[monthIndex] || `Month ${monthIndex + 1}`;
 
   return (
     <div
       className="fixed inset-0 flex items-start justify-center pt-16 z-[10000]"
       onClick={onClose}
     >
-      <div 
+      <div
         className="bg-white rounded-lg w-full max-w-2xl h-[75vh] flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex justify-between items-start p-6 border-b border-gray-200">
-          <div>
-            <div className="text-xs text-gray-500 mb-1">
-              {['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][batch.installationMonth]} {batch.installationYear}
-            </div>
-            <h2 className="text-xl font-semibold flex items-center">
-              <span 
-                className="text-green-600 underline cursor-pointer hover:text-green-700"
-                onClick={onEditBatch}
-                title="Click to edit batch"
-              >
-                {batch?.name?.split('\n')[0] || 'Unknown Batch'}
-              </span>
-              <span className="ml-2 text-gray-600">- Month {monthsSinceInstallation + 1}</span>
+        {/* Header */}
+        <div className="flex items-start justify-between p-6 border-b">
+          <div className="flex-1">
+            <div className="text-xs text-gray-500 mb-1">{monthName}</div>
+            <h2 className="text-xl font-semibold text-emerald-600 underline cursor-pointer flex items-center gap-2" onClick={onEditBatch}>
+              {batch.name.split('\n')[0]}
+              <Edit2 size={16} />
             </h2>
-          </div>
-          <div className="flex items-center space-x-2">
-            <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
-              <X size={20} />
-            </button>
-          </div>
-        </div>
-        <div className="flex-1 overflow-y-auto p-6">
-        
-
-        <div className="space-y-6">
-          <div className="bg-gray-50 p-6 rounded-lg">
-            <h3 className="font-medium text-xl mb-4 text-center">{phaseDetails.title}</h3>
-            
-            <div className="space-y-4">
-              <div className="py-2 border-b">
-                <div className="flex justify-between items-center mb-2">
-                  <span className="text-lg text-gray-700">Revenue:</span>
-                  <span className="font-bold text-lg text-green-600">
-                    {formatValue(phaseDetails.monthlyRevenue)}
-                  </span>
-                </div>
-                {phaseDetails.monthlyRevenue > 0 && (
-                  <div className="ml-4 space-y-1 text-sm text-gray-600">
-                    <div className="flex justify-between">
-                      <span>• Hours per Month:</span>
-                      <span>730</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>• Utilization Rate:</span>
-                      <span><ClickableVariable title="Click to edit utilization rate in settings" field="utilizationRate" onOpenSettings={onOpenSettings}>{settings.utilizationRate}%</ClickableVariable></span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>• GPU Hour Rate:</span>
-                      <span><ClickableVariable title="Click to edit GPU hour rate in settings" field={`gpuHourRate.${batch.chipType.toLowerCase()}`} onOpenSettings={onOpenSettings}>${gpuHourRate}</ClickableVariable></span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>• Revenue per GPU:</span>
-                      <span>730 × <ClickableVariable field="utilizationRate" onOpenSettings={onOpenSettings}>{settings.utilizationRate}%</ClickableVariable> × <ClickableVariable field={`gpuHourRate.${batch.chipType.toLowerCase()}`} onOpenSettings={onOpenSettings}>${gpuHourRate}</ClickableVariable> = {formatValue(730 * (settings.utilizationRate / 100) * gpuHourRate)}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>• Number of GPUs:</span>
-                      <span>{batch?.quantity?.toLocaleString()}</span>
-                    </div>
-                    <div className="flex justify-between font-medium">
-                      <span>• Total Revenue:</span>
-                      <span>{batch?.quantity?.toLocaleString()} × {formatValue(730 * (settings.utilizationRate / 100) * gpuHourRate)} = {formatValue(phaseDetails.monthlyRevenue)}</span>
-                    </div>
-                  </div>
-                )}
-              </div>
-              
-              <div className="py-2">
-                <div className="flex justify-between items-center mb-2">
-                  <span className="text-lg text-gray-700">Costs:</span>
-                  <span className="font-bold text-lg text-red-600">
-                    {formatValue(phaseDetails.monthlyCosts)}
-                  </span>
-                </div>
-                <div className="ml-4 space-y-1 text-sm text-gray-600">
-                  {phaseDetails.details.filter(Boolean).map((detail, index) => (
-                    <div key={index} className="flex justify-between">
-                      <span>• {detail!.label}:</span>
-                      <span>{detail!.value}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              
-              <div className="py-3 border-t-2 border-gray-300 mt-4">
-                <div className="flex justify-between items-center">
-                  <span className="text-lg font-medium text-gray-700">Net Profit This Month:</span>
-                  <span className="text-sm text-gray-600">
-                    {formatValue(phaseDetails.monthlyRevenue)} - {formatValue(phaseDetails.monthlyCosts)} = <span className={`font-bold text-lg ${(cumulativeProfit - previousCumulative) >= 0 ? 'text-green-600' : 'text-red-600'}`}>{formatValue(cumulativeProfit - previousCumulative)}</span>
-                  </span>
-                </div>
-              </div>
-              
+            <div className="text-sm text-gray-600 mt-1">
+              Month {monthsSinceInstallation} • {percentDeployed.toFixed(0)}% deployed ({Math.round(totalGpusDeployed).toLocaleString()} GPUs)
             </div>
           </div>
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+            <X size={24} />
+          </button>
+        </div>
+
+        {/* Scrollable content */}
+        <div className="flex-1 overflow-y-auto p-6 space-y-6">
           
-          <div className="bg-gray-50 p-4 rounded-lg mt-4">
-            <div className="flex justify-between items-center">
-              <span className="text-lg font-medium text-gray-700">Cumulative Impact:</span>
-              <span className="text-sm text-gray-600">
-                {formatValue(previousCumulative)} + {formatValue(cumulativeProfit - previousCumulative)} = <span className={`font-bold text-lg ${cumulativeProfit >= 0 ? 'text-green-600' : 'text-red-600'}`}>{formatValue(cumulativeProfit)}</span>
-              </span>
+          {/* Revenue Section */}
+          <div>
+            <h3 className="text-lg font-semibold mb-3 text-green-600">Revenue:</h3>
+            <div className="space-y-2 text-sm">
+              <div className="flex justify-between">
+                <span>
+                  {Math.round(totalGpusDeployed).toLocaleString()} GPUs × {hoursPerMonth} hrs × <ClickableVariable title="Click to edit utilization rate" field="utilizationRate" onOpenSettings={onOpenSettings}>{(utilizationRate * 100).toFixed(0)}%</ClickableVariable> × <ClickableVariable title="Click to edit GPU hour rate" field={`gpuHourRate.${chipKey}`} onOpenSettings={onOpenSettings}>${gpuHourRate.toFixed(2)}/hr</ClickableVariable> = {formatValue(monthlyRevenue)}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Costs Section */}
+          <div>
+            <h3 className="text-lg font-semibold mb-3 text-red-600">Costs: {formatValue(totalCosts)}</h3>
+            <div className="space-y-2 text-sm">
+              {deploymentThisMonth > 0 && (
+                <>
+                  <div className="flex justify-between">
+                    <span>Installation Cost: {Math.round(newGpusDeployed).toLocaleString()} × <ClickableVariable title="Click to edit installation cost" field={`installationCost.${chipKey}`} onOpenSettings={onOpenSettings}>${installationCostPerGpu}</ClickableVariable> = {formatValue(installationCost)}</span>
+                  </div>
+                  {isCashPurchase && (
+                    <div className="flex justify-between">
+                      <span>Upfront GPU Cost (Cash): {Math.round(newGpusDeployed).toLocaleString()} × <ClickableVariable title="Click to edit upfront GPU cost" field={`upfrontGpuCost.${chipKey}`} onOpenSettings={onOpenSettings}>${upfrontCostPerGpu.toLocaleString()}</ClickableVariable> = {formatValue(upfrontGpuCost)}</span>
+                    </div>
+                  )}
+                </>
+              )}
+              {!isCashPurchase && totalGpuFinancingPayment > 0 && (
+                <div className="flex justify-between flex-col">
+                  <span>GPU Financing Payment: {formatValue(totalGpuFinancingPayment)}</span>
+                  <div className="text-xs text-gray-500 ml-4 mt-1">
+                    Monthly payment per GPU: ${upfrontCostPerGpu.toLocaleString()} × (
+                    <ClickableVariable title="Click to edit APR" field="apr" onOpenSettings={onOpenSettings}>{(annualInterestRate * 100).toFixed(1)}%</ClickableVariable> / 12) × (1 + r)^{loanTermMonths} / ((1 + r)^{loanTermMonths} - 1) = ${monthlyGpuPaymentPerUnit.toFixed(2)}
+                  </div>
+                </div>
+              )}
+              <div className="flex justify-between">
+                <span>Datacenter Overhead: {Math.round(totalGpusDeployed).toLocaleString()} × <ClickableVariable title="Click to edit datacenter overhead" field="datacenterOverhead" onOpenSettings={onOpenSettings}>${datacenterOverheadPerGpu}/mo</ClickableVariable> = {formatValue(datacenterOverheadCost)}</span>
+              </div>
+              <div className="flex justify-between flex-col">
+                <span>Electrical Cost: {formatValue(electricalCost)}</span>
+                <div className="text-xs text-gray-500 ml-4 mt-1">
+                  {hoursGpusRun.toFixed(0)} hrs × {totalPowerKw.toFixed(1)} kW × <ClickableVariable title="Click to edit electricity cost" field="electricityCost" onOpenSettings={onOpenSettings}>${settings.electricityCost}/kWh</ClickableVariable> × <ClickableVariable title="Click to edit PUE" field="electricalOverhead" onOpenSettings={onOpenSettings}>{settings.electricalOverhead}x PUE</ClickableVariable>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Net Profit This Month */}
+          <div className="bg-gray-50 p-4 rounded">
+            <h3 className="text-lg font-semibold mb-2">Net Profit This Month:</h3>
+            <div className="text-2xl font-bold" style={{ color: netProfitThisMonth >= 0 ? '#047857' : '#991b1b' }}>
+              {formatValue(monthlyRevenue)} - {formatValue(totalCosts)} = {formatValue(netProfitThisMonth)}
+            </div>
+          </div>
+
+          {/* Cumulative Impact */}
+          <div className="bg-gray-50 p-4 rounded">
+            <h3 className="text-lg font-semibold mb-2">Cumulative Impact:</h3>
+            <div className="text-sm space-y-1">
+              <div>Previous Cumulative: {formatValue(previousCumulative)}</div>
+              <div>This Month's Impact: {formatValue(netProfitThisMonth)}</div>
+              <div className="pt-2 border-t border-gray-300">
+                <span className="font-semibold">New Cumulative Total: </span>
+                <span className="text-xl font-bold" style={{ color: cumulativeProfit >= 0 ? '#047857' : '#991b1b' }}>
+                  {formatValue(cumulativeProfit)}
+                </span>
+              </div>
             </div>
           </div>
         </div>
 
-        </div>
-        <div className="border-t border-gray-200 p-6">
-          <div className="flex justify-end">
-            <button
-              onClick={onClose}
-              className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700"
-            >
-              Close
-            </button>
-          </div>
+        {/* Footer */}
+        <div className="p-6 border-t">
+          <button
+            onClick={onClose}
+            className="w-full px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700"
+          >
+            Close
+          </button>
         </div>
       </div>
     </div>
