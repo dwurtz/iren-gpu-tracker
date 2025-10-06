@@ -150,8 +150,9 @@ const createDefaultBatches = (settings: ProfitabilitySettings, sites: Site[]): B
     const siteName = site ? site.name : '';
     
     // Create default deployment schedule: 25%, 50%, 75%, 100% over 4 months
-    // Starting from the installation month (Aug 2023 = index 0, Sept 2025 = index 25, etc.)
-    const startIndex = (config.year - 2023) * 12 + config.month;
+    // MONTHS array starts at Aug 2023 (index 0), so we need to offset
+    // Aug 2023 = index 0, Sep 2023 = index 1, etc.
+    const startIndex = (config.year - 2023) * 12 + (config.month - 7);
     const deploymentSchedule: { [monthIndex: number]: number } = {
       [startIndex]: 25,      // Month 1: 25% deployed
       [startIndex + 1]: 25,  // Month 2: 25% more (50% total)
@@ -188,7 +189,8 @@ const migrateBatch = (batch: any): Batch => {
   }
   
   // Migrate old batch with phases to new format with deploymentSchedule
-  const startIndex = (batch.installationYear - 2023) * 12 + batch.installationMonth;
+  // MONTHS array starts at Aug 2023 (index 0)
+  const startIndex = (batch.installationYear - 2023) * 12 + (batch.installationMonth - 7);
   const deploymentSchedule: { [monthIndex: number]: number } = {
     [startIndex]: 25,
     [startIndex + 1]: 25,

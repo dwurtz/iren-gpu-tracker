@@ -56,7 +56,8 @@ export const NewBatchModal: React.FC<NewBatchModalProps> = ({ isOpen, onClose, o
     const site = sites.find(s => s.id === formData.siteId);
     const siteName = site ? site.name : '';
     // Create default deployment schedule: 25%, 50%, 75%, 100% over 4 months
-    const startIndex = (formData.installationYear - 2023) * 12 + formData.installationMonth;
+    // MONTHS array starts at Aug 2023 (index 0)
+    const startIndex = (formData.installationYear - 2023) * 12 + (formData.installationMonth - 7);
     const deploymentSchedule: { [monthIndex: number]: number } = {
       [startIndex]: 25,
       [startIndex + 1]: 25,
