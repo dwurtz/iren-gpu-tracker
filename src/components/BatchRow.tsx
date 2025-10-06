@@ -118,10 +118,10 @@ export const BatchRow: React.FC<BatchRowProps> = ({
       const ratio = value / maxProfit;
       const intensity = Math.sqrt(ratio); // Square root scale for smoother gradient
       
-      // From white (248, 248, 248) to deep green (5, 95, 70)
-      const red = Math.round(248 - (248 - 5) * intensity);
-      const green = Math.round(248 - (248 - 95) * intensity);
-      const blue = Math.round(248 - (248 - 70) * intensity);
+      // From white (248, 248, 248) to IREN green (16, 185, 129) - #10b981
+      const red = Math.round(248 - (248 - 16) * intensity);
+      const green = Math.round(248 - (248 - 185) * intensity);
+      const blue = Math.round(248 - (248 - 129) * intensity);
       
       return {
         backgroundColor: `rgb(${red}, ${green}, ${blue})`,
