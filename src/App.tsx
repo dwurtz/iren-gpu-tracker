@@ -255,9 +255,23 @@ const migrateBatch = (batch: any): Batch => {
   } as Batch;
 };
 
+// Batch configuration version - increment this when default batches change
+const BATCH_CONFIG_VERSION = 2;
+
 // Initialize batches from storage or create defaults
 const initializeBatches = (settings: ProfitabilitySettings, sites: Site[]): Batch[] => {
+  const storedVersion = localStorage.getItem('batchConfigVersion');
   const storedBatches = loadBatchesFromStorage();
+  
+  // If version has changed, ignore stored batches and use defaults
+  if (storedVersion !== String(BATCH_CONFIG_VERSION)) {
+    console.log('Batch configuration version changed, loading new defaults');
+    localStorage.setItem('batchConfigVersion', String(BATCH_CONFIG_VERSION));
+    const defaultBatches = createDefaultBatches(settings, sites);
+    saveBatchesToStorage(defaultBatches);
+    return defaultBatches;
+  }
+  
   if (storedBatches && storedBatches.length > 0) {
     console.log('Loaded batches from storage:', storedBatches.length);
     // Migrate old batches if needed
@@ -268,6 +282,7 @@ const initializeBatches = (settings: ProfitabilitySettings, sites: Site[]): Batc
   }
   
   console.log('Creating default batch configuration');
+  localStorage.setItem('batchConfigVersion', String(BATCH_CONFIG_VERSION));
   const defaultBatches = createDefaultBatches(settings, sites);
   saveBatchesToStorage(defaultBatches);
   return defaultBatches;
@@ -444,6 +459,7 @@ function App() {
       const defaultBatches = createDefaultBatches(defaultSettings, sites);
       setBatches(defaultBatches);
       saveBatchesToStorage(defaultBatches);
+      localStorage.setItem('batchConfigVersion', String(BATCH_CONFIG_VERSION));
     }
   };
 
