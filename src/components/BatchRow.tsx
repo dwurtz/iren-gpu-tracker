@@ -100,26 +100,32 @@ export const BatchRow: React.FC<BatchRowProps> = ({
     const maxProfit = globalMaxValue || 100000000;
 
     if (value < 0) {
-      // Red gradient for losses
-      const intensity = Math.abs(value) / Math.abs(maxLoss); // Linear scale
-      const red = Math.round(220 + (255 - 220) * intensity);
-      const green = Math.round(180 - 100 * intensity);
-      const blue = Math.round(180 - 100 * intensity);
+      // Red gradient for losses (logarithmic scale for better distribution)
+      const ratio = Math.abs(value) / Math.abs(maxLoss);
+      const intensity = Math.sqrt(ratio); // Square root scale for smoother gradient
+      
+      // From white (248, 248, 248) to deep red (185, 28, 28)
+      const red = Math.round(248 - (248 - 185) * intensity);
+      const green = Math.round(248 - (248 - 28) * intensity);
+      const blue = Math.round(248 - (248 - 28) * intensity);
       
       return {
         backgroundColor: `rgb(${red}, ${green}, ${blue})`,
-        color: intensity > 0.3 ? '#7f1d1d' : '#991b1b',
+        color: intensity > 0.5 ? '#7f1d1d' : '#991b1b',
       };
     } else {
-      // Green gradient for profits
-      const intensity = value / maxProfit; // Linear scale
-      const red = Math.round(180 - 80 * intensity);
-      const green = Math.round(220 - 40 * intensity);
-      const blue = Math.round(180 - 80 * intensity);
+      // Green gradient for profits (logarithmic scale for better distribution)
+      const ratio = value / maxProfit;
+      const intensity = Math.sqrt(ratio); // Square root scale for smoother gradient
+      
+      // From white (248, 248, 248) to deep green (5, 95, 70)
+      const red = Math.round(248 - (248 - 5) * intensity);
+      const green = Math.round(248 - (248 - 95) * intensity);
+      const blue = Math.round(248 - (248 - 70) * intensity);
       
       return {
         backgroundColor: `rgb(${red}, ${green}, ${blue})`,
-        color: intensity > 0.3 ? '#065f46' : '#047857',
+        color: intensity > 0.5 ? '#065f46' : '#047857',
       };
     }
   };
