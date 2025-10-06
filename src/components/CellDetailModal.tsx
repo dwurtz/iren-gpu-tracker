@@ -170,27 +170,31 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
         {deploymentThisMonth > 0 && onUpdateDeployment && (
           <div className="px-6 py-4 bg-gray-50 border-b">
             <div className="text-sm font-medium text-gray-700 mb-2">
-              Adjust Deployment for this Month
+              Adjust Total Deployment by End of this Month
             </div>
             <div className="flex items-center gap-4">
               <input
                 type="range"
                 min="0"
                 max="100"
-                value={deploymentThisMonth}
+                value={percentDeployed}
                 onChange={(e) => {
-                  const newValue = parseInt(e.target.value);
-                  onUpdateDeployment(batch.id, monthIndex, newValue);
+                  const targetTotal = parseInt(e.target.value);
+                  // Calculate previous cumulative (before this month)
+                  const previousTotal = percentDeployed - deploymentThisMonth;
+                  // Calculate how much to deploy this month to reach target
+                  const newDeploymentThisMonth = Math.max(0, targetTotal - previousTotal);
+                  onUpdateDeployment(batch.id, monthIndex, newDeploymentThisMonth);
                 }}
                 className="flex-1 h-2 bg-gray-300 rounded-lg appearance-none cursor-pointer"
                 style={{ accentColor: '#10b981' }}
               />
               <div className="text-sm font-medium text-gray-700 min-w-[80px]">
-                +{deploymentThisMonth}% 
+                {percentDeployed.toFixed(0)}%
               </div>
             </div>
             <div className="text-xs text-gray-500 mt-1">
-              {deploymentThisMonth > 0 ? `Deploying ${Math.round(newGpusDeployed).toLocaleString()} GPUs this month` : 'No deployment this month'}
+              {deploymentThisMonth > 0 ? `Deploying ${Math.round(newGpusDeployed).toLocaleString()} GPUs this month (+${deploymentThisMonth}%)` : 'No deployment this month'}
             </div>
           </div>
         )}
