@@ -227,52 +227,68 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
           {/* Costs Section */}
           <div>
             <h3 className="text-lg font-semibold mb-3 text-red-600">Costs: {formatValue(totalCosts)}</h3>
-            <div className="space-y-2 text-sm">
-              {deploymentThisMonth > 0 && (
-                <div className="flex justify-between">
-                  <span>Installation Cost: {Math.round(newGpusDeployed).toLocaleString()} × <ClickableVariable title="Click to edit installation cost" field={`installationCost.${chipKey}`} onOpenSettings={onOpenSettings}>${installationCostPerGpu}</ClickableVariable> = {formatValue(installationCost)}</span>
-                </div>
-              )}
-              {gpuCostThisMonth > 0 && (
-                <div className="flex justify-between flex-col">
-                  <span>
-                    {isCashPurchase 
-                      ? `GPU Cost (Cash): ${batch.quantity.toLocaleString()} × $${upfrontCostPerGpu.toLocaleString()} = ${formatValue(gpuCostThisMonth)}`
-                      : `GPU Payment (Month ${monthsSinceInstallation} of ${batch.leaseTerm || 36}): ${formatValue(monthlyGpuPayment)}`
-                    }
-                  </span>
-                  {!isCashPurchase && (
-                    <div className="text-xs text-gray-500 ml-4 mt-1">
-                      Total batch cost: ${totalBatchGpuCost.toLocaleString()} financed at{' '}
-                      <span 
-                        className="bg-yellow-200 px-1 cursor-pointer hover:bg-yellow-300 transition-colors"
-                        onClick={() => onEditBatch?.('apr')}
-                        title="Click to edit batch financing terms"
-                      >
-                        {batch.apr}%
-                      </span>
-                      {' '}APR over{' '}
-                      <span 
-                        className="bg-yellow-200 px-1 cursor-pointer hover:bg-yellow-300 transition-colors"
-                        onClick={() => onEditBatch?.('leaseTerm')}
-                        title="Click to edit batch financing terms"
-                      >
-                        {batch.leaseTerm || 36} months
-                      </span>
-                    </div>
-                  )}
-                </div>
-              )}
-              <div className="flex justify-between">
-                <span>Datacenter Overhead: {Math.round(totalGpusDeployed).toLocaleString()} × <ClickableVariable title="Click to edit datacenter overhead" field="datacenterOverhead" onOpenSettings={onOpenSettings}>${datacenterOverheadPerGpu}/mo</ClickableVariable> = {formatValue(datacenterOverheadCost)}</span>
-              </div>
-              <div className="flex justify-between flex-col">
-                <span>Electrical Cost: {formatValue(electricalCost)}</span>
-                <div className="text-xs text-gray-500 ml-4 mt-1">
-                  {hoursGpusRun.toFixed(0)} hrs × {totalPowerKw.toFixed(1)} kW × <ClickableVariable title="Click to edit electricity cost" field="electricityCost" onOpenSettings={onOpenSettings}>${settings.electricityCost}/kWh</ClickableVariable> × <ClickableVariable title="Click to edit PUE" field="electricalOverhead" onOpenSettings={onOpenSettings}>{settings.electricalOverhead}x PUE</ClickableVariable>
-                </div>
-              </div>
-            </div>
+            <table className="w-full text-sm">
+              <tbody>
+                {deploymentThisMonth > 0 && (
+                  <tr>
+                    <td className="py-1 pr-4">Installation Cost</td>
+                    <td className="py-1 pr-4 text-gray-600">
+                      {Math.round(newGpusDeployed).toLocaleString()} × <ClickableVariable title="Click to edit installation cost" field={`installationCost.${chipKey}`} onOpenSettings={onOpenSettings}>${installationCostPerGpu}</ClickableVariable>
+                    </td>
+                    <td className="py-1 text-right font-medium">{formatValue(installationCost)}</td>
+                  </tr>
+                )}
+                {gpuCostThisMonth > 0 && (
+                  <>
+                    <tr>
+                      <td className="py-1 pr-4">
+                        {isCashPurchase ? 'GPU Cost (Cash)' : `GPU Payment (Month ${monthsSinceInstallation}/${batch.leaseTerm || 36})`}
+                      </td>
+                      <td className="py-1 pr-4 text-gray-600">
+                        {isCashPurchase 
+                          ? `${batch.quantity.toLocaleString()} × $${upfrontCostPerGpu.toLocaleString()}`
+                          : `$${totalBatchGpuCost.toLocaleString()} @ `
+                        }
+                        {!isCashPurchase && (
+                          <>
+                            <span 
+                              className="bg-yellow-200 px-1 cursor-pointer hover:bg-yellow-300 transition-colors"
+                              onClick={() => onEditBatch?.('apr')}
+                              title="Click to edit batch financing terms"
+                            >
+                              {batch.apr}%
+                            </span>
+                            {' '}APR / {' '}
+                            <span 
+                              className="bg-yellow-200 px-1 cursor-pointer hover:bg-yellow-300 transition-colors"
+                              onClick={() => onEditBatch?.('leaseTerm')}
+                              title="Click to edit batch financing terms"
+                            >
+                              {batch.leaseTerm || 36} mo
+                            </span>
+                          </>
+                        )}
+                      </td>
+                      <td className="py-1 text-right font-medium">{formatValue(gpuCostThisMonth)}</td>
+                    </tr>
+                  </>
+                )}
+                <tr>
+                  <td className="py-1 pr-4">Datacenter Overhead</td>
+                  <td className="py-1 pr-4 text-gray-600">
+                    {Math.round(totalGpusDeployed).toLocaleString()} × <ClickableVariable title="Click to edit datacenter overhead" field="datacenterOverhead" onOpenSettings={onOpenSettings}>${datacenterOverheadPerGpu}/mo</ClickableVariable>
+                  </td>
+                  <td className="py-1 text-right font-medium">{formatValue(datacenterOverheadCost)}</td>
+                </tr>
+                <tr>
+                  <td className="py-1 pr-4">Electrical Cost</td>
+                  <td className="py-1 pr-4 text-gray-600">
+                    {hoursGpusRun.toFixed(0)} hrs × {totalPowerKw.toFixed(1)} kW × <ClickableVariable title="Click to edit electricity cost" field="electricityCost" onOpenSettings={onOpenSettings}>${settings.electricityCost}/kWh</ClickableVariable> × <ClickableVariable title="Click to edit PUE" field="electricalOverhead" onOpenSettings={onOpenSettings}>{settings.electricalOverhead}x PUE</ClickableVariable>
+                  </td>
+                  <td className="py-1 text-right font-medium">{formatValue(electricalCost)}</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
 
           {/* Net Profit This Month */}
