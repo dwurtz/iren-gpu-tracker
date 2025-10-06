@@ -60,11 +60,26 @@ export const calculateMonthlyData = (batch: Batch, startMonth: number, startYear
       // 1. Installation costs for newly deployed GPUs
       const installationCostThisMonth = newGpusDeployed * chipSettings.installationCost;
       
-      // 2. GPU costs (simplified with effective rate)
-      const effectiveCostPerGpu = chipSettings.effectiveGpuCost;
-      const interestPremiumPerGpu = effectiveCostPerGpu - gpuCostPerUnit;
+      // 2. GPU costs (calculate interest from batch APR)
+      const loanTermMonths = batch.leaseTerm || 36;
+      const annualInterestRate = batch.apr || 0;
+      const monthlyInterestRate = annualInterestRate / 100 / 12;
+      
+      const calculateTotalInterestPerGpu = () => {
+        if (isCashPurchase || monthlyInterestRate === 0) return 0;
+        
+        // Calculate monthly payment
+        const monthlyPayment = gpuCostPerUnit * 
+          (monthlyInterestRate * Math.pow(1 + monthlyInterestRate, loanTermMonths)) / 
+          (Math.pow(1 + monthlyInterestRate, loanTermMonths) - 1);
+        
+        // Total interest = (monthly payment × months) - principal
+        return (monthlyPayment * loanTermMonths) - gpuCostPerUnit;
+      };
+      
+      const interestPremiumPerGpu = calculateTotalInterestPerGpu();
       const gpuPrincipalCost = newGpusDeployed * gpuCostPerUnit;
-      const gpuInterestPremium = isCashPurchase ? 0 : newGpusDeployed * interestPremiumPerGpu;
+      const gpuInterestPremium = newGpusDeployed * interestPremiumPerGpu;
       
       // === ONGOING COSTS FOR ALL DEPLOYED GPUS ===
       
