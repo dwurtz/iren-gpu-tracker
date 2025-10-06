@@ -167,7 +167,7 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
         </div>
 
         {/* Deployment Slider Section */}
-        {deploymentThisMonth > 0 && onUpdateDeployment && (
+        {onUpdateDeployment && monthsSinceInstallation >= 1 && (
           <div className="px-6 py-4 bg-gray-50 border-b">
             <div className="text-sm font-medium text-gray-700 mb-2">
               Adjust Total Deployment by End of this Month
@@ -175,7 +175,7 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
             <div className="flex items-center gap-4">
               <input
                 type="range"
-                min="0"
+                min={Math.max(0, percentDeployed - deploymentThisMonth)}
                 max="100"
                 value={percentDeployed}
                 onChange={(e) => {
