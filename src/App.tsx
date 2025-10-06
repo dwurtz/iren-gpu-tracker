@@ -180,12 +180,40 @@ const createDefaultBatches = (settings: ProfitabilitySettings, sites: Site[]): B
   return batches;
 };
 
+// Migrate old batches to new format (add deploymentSchedule if missing)
+const migrateBatch = (batch: any): Batch => {
+  // If batch already has deploymentSchedule, return as is
+  if (batch.deploymentSchedule) {
+    return batch as Batch;
+  }
+  
+  // Migrate old batch with phases to new format with deploymentSchedule
+  const startIndex = (batch.installationYear - 2023) * 12 + batch.installationMonth;
+  const deploymentSchedule: { [monthIndex: number]: number } = {
+    [startIndex]: 25,
+    [startIndex + 1]: 25,
+    [startIndex + 2]: 25,
+    [startIndex + 3]: 25,
+  };
+  
+  // Remove phases, add deploymentSchedule
+  const { phases, ...batchWithoutPhases } = batch;
+  return {
+    ...batchWithoutPhases,
+    deploymentSchedule,
+  } as Batch;
+};
+
 // Initialize batches from storage or create defaults
 const initializeBatches = (settings: ProfitabilitySettings, sites: Site[]): Batch[] => {
   const storedBatches = loadBatchesFromStorage();
   if (storedBatches && storedBatches.length > 0) {
     console.log('Loaded batches from storage:', storedBatches.length);
-    return storedBatches;
+    // Migrate old batches if needed
+    const migratedBatches = storedBatches.map(migrateBatch);
+    // Save migrated batches back to storage
+    saveBatchesToStorage(migratedBatches);
+    return migratedBatches;
   }
   
   console.log('Creating default batch configuration');
