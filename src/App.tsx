@@ -235,24 +235,29 @@ const createDefaultBatches = (settings: ProfitabilitySettings, sites: Site[]): B
   return batches;
 };
 
-// Migrate old batches to new format (add deploymentSchedule if missing OR fix incorrect schedule)
+// Migrate old batches to new format (add deploymentSchedule if missing)
 const migrateBatch = (batch: any): Batch => {
-  // Always recalculate deployment schedule to fix indexing issues
-  // MONTHS array starts at Aug 2023 (index 0)
-  const startIndex = (batch.installationYear - 2023) * 12 + (batch.installationMonth - 7);
-  const deploymentSchedule: { [monthIndex: number]: number } = {
-    [startIndex]: 25,
-    [startIndex + 1]: 25,
-    [startIndex + 2]: 25,
-    [startIndex + 3]: 25,
-  };
-  
-  // Remove phases if they exist, add correct deploymentSchedule
+  // Remove phases if they exist
   const { phases, ...batchWithoutPhases } = batch;
-  return {
-    ...batchWithoutPhases,
-    deploymentSchedule,
-  } as Batch;
+  
+  // Only create deployment schedule if it's missing
+  if (!batch.deploymentSchedule || Object.keys(batch.deploymentSchedule).length === 0) {
+    console.log('Migrating batch without deployment schedule:', batch.name);
+    const startIndex = (batch.installationYear - 2023) * 12 + (batch.installationMonth - 7);
+    const deploymentSchedule: { [monthIndex: number]: number } = {
+      [startIndex]: 25,
+      [startIndex + 1]: 25,
+      [startIndex + 2]: 25,
+      [startIndex + 3]: 25,
+    };
+    return {
+      ...batchWithoutPhases,
+      deploymentSchedule,
+    } as Batch;
+  }
+  
+  // Batch already has deployment schedule, preserve it
+  return batchWithoutPhases as Batch;
 };
 
 // Batch configuration version - increment this when default batches change
