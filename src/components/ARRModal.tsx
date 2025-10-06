@@ -20,7 +20,6 @@ interface ARRModalProps {
       mi350x: number;
     };
   };
-  onEditBatch?: (batch: Batch) => void;
   onSelectCell?: (batchId: string, monthIndex: number) => void;
 }
 
@@ -31,7 +30,6 @@ const ARRModal: React.FC<ARRModalProps> = ({
   batches,
   allBatchData,
   settings,
-  onEditBatch,
   onSelectCell
 }) => {
   useModalBackdrop(isOpen);
