@@ -240,6 +240,11 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
                   </td>
                   <td className="py-1 text-right font-medium">{formatValue(monthlyRevenue)}</td>
                 </tr>
+                <tr className="border-t border-gray-300">
+                  <td className="py-2 pr-4 font-semibold">Total Revenue</td>
+                  <td className="py-2 pr-4"></td>
+                  <td className="py-2 text-right font-bold">{formatValue(monthlyRevenue)}</td>
+                </tr>
               </tbody>
             </table>
           </div>
