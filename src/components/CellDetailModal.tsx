@@ -16,7 +16,7 @@ interface CellDetailModalProps {
   previousCumulative?: number;
   settings: ProfitabilitySettings;
   onOpenSettings: (field?: string) => void;
-  onEditBatch?: () => void;
+  onEditBatch?: (field?: string) => void;
   onUpdateDeployment?: (batchId: string, monthIndex: number, percentage: number) => void;
 }
 
@@ -150,7 +150,7 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
         <div className="flex items-start justify-between p-6 border-b">
           <div className="flex-1">
             <div className="text-xs text-gray-500 mb-1">{monthName}</div>
-            <h2 className="text-xl font-semibold text-emerald-600 underline cursor-pointer flex items-center gap-2" onClick={onEditBatch}>
+            <h2 className="text-xl font-semibold text-emerald-600 underline cursor-pointer flex items-center gap-2" onClick={() => onEditBatch?.()}>
               {batch.name.split('\n')[0]}
               <Edit2 size={16} />
             </h2>
@@ -236,7 +236,7 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
                         Financing ${upfrontCostPerGpu.toLocaleString()} at{' '}
                         <span 
                           className="bg-yellow-200 px-1 cursor-pointer hover:bg-yellow-300 transition-colors"
-                          onClick={onEditBatch}
+                          onClick={() => onEditBatch?.('apr')}
                           title="Click to edit batch financing terms"
                         >
                           {annualInterestRate}%
@@ -244,7 +244,7 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
                         {' '}APR over{' '}
                         <span 
                           className="bg-yellow-200 px-1 cursor-pointer hover:bg-yellow-300 transition-colors"
-                          onClick={onEditBatch}
+                          onClick={() => onEditBatch?.('leaseTerm')}
                           title="Click to edit batch financing terms"
                         >
                           {loanTermMonths} months

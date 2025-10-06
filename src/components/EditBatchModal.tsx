@@ -14,11 +14,20 @@ interface EditBatchModalProps {
   onEditSite: (siteId: string) => void;
   onOpenSettings: (field?: string) => void;
   settings: ProfitabilitySettings;
+  highlightField?: string;
 }
 
-export const EditBatchModal: React.FC<EditBatchModalProps> = ({ isOpen, onClose, batch, onSave, sites, onEditSite, onOpenSettings, settings }) => {
+export const EditBatchModal: React.FC<EditBatchModalProps> = ({ isOpen, onClose, batch, onSave, sites, onEditSite, onOpenSettings, settings, highlightField }) => {
   useModalBackdrop(isOpen);
   const [formData, setFormData] = useState<Partial<Batch>>(batch || {});
+
+  // Function to get highlight classes for pulsing effect
+  const getHighlightClass = (fieldName: string) => {
+    if (highlightField === fieldName) {
+      return "animate-pulse bg-yellow-200 border-yellow-400";
+    }
+    return "";
+  };
 
   React.useEffect(() => {
     if (batch) {
@@ -225,7 +234,7 @@ export const EditBatchModal: React.FC<EditBatchModalProps> = ({ isOpen, onClose,
                   type="number"
                   value={formData.leaseTerm || 36}
                   onChange={(e) => setFormData({ ...formData, leaseTerm: parseInt(e.target.value) })}
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className={`w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${getHighlightClass('leaseTerm')}`}
                   min="1"
                   required
                 />
@@ -239,7 +248,7 @@ export const EditBatchModal: React.FC<EditBatchModalProps> = ({ isOpen, onClose,
                   step="0.1"
                   value={formData.apr || 9}
                   onChange={(e) => setFormData({ ...formData, apr: parseFloat(e.target.value) })}
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className={`w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${getHighlightClass('apr')}`}
                   min="0"
                   required
                 />

@@ -245,6 +245,7 @@ function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [highlightField, setHighlightField] = useState<string | undefined>(undefined);
+  const [highlightBatchField, setHighlightBatchField] = useState<string | undefined>(undefined);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingBatch, setEditingBatch] = useState<Batch | null>(null);
   const [selectedCell, setSelectedCell] = useState<{ batchId: string; monthIndex: number } | null>(null);
@@ -332,8 +333,9 @@ function App() {
     saveBatchesToStorage(updatedBatches);
   };
 
-  const handleEditBatch = (batch: Batch) => {
+  const handleEditBatch = (batch: Batch, field?: string) => {
     setEditingBatch(batch);
+    setHighlightBatchField(field);
     setIsEditModalOpen(true);
   };
 
@@ -809,9 +811,11 @@ function App() {
         onClose={() => {
           setIsEditModalOpen(false);
           setEditingBatch(null);
+          setHighlightBatchField(undefined);
         }}
         batch={editingBatch}
         onSave={handleSaveEditBatch}
+        highlightField={highlightBatchField}
         sites={sites}
         onEditSite={handleEditSite}
         onOpenSettings={handleOpenSettings}

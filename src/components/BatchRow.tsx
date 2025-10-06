@@ -6,7 +6,7 @@ import { CellDetailModal } from './CellDetailModal';
 interface BatchRowProps {
   batch: Batch;
   monthlyData: MonthData[];
-  onEdit: (batch: Batch) => void;
+  onEdit: (batch: Batch, field?: string) => void;
   onDelete: (batchId: string) => void;
   onEditSite?: (siteId: string) => void;
   isFirstOfYear?: boolean;
@@ -258,7 +258,7 @@ export const BatchRow: React.FC<BatchRowProps> = ({
         previousCumulative={modalCell?.previousCumulative || 0}
         settings={settings || {} as any}
         onOpenSettings={onOpenSettings || (() => {})}
-        onEditBatch={() => onEdit(batch)}
+        onEditBatch={(field) => onEdit(batch, field)}
         onUpdateDeployment={onUpdateDeployment}
       />
     </tr>
