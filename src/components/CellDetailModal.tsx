@@ -178,7 +178,7 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
                 min="0"
                 max="100"
                 step="1"
-                value={percentDeployed}
+                value={Math.round(percentDeployed)}
                 onChange={(e) => {
                   const targetTotal = parseInt(e.target.value);
                   // Calculate previous cumulative (before this month)
@@ -192,7 +192,7 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
                 style={{ accentColor: '#10b981' }}
               />
               <div className="text-sm font-medium text-gray-700 min-w-[80px]">
-                {percentDeployed.toFixed(0)}%
+                {Math.round(percentDeployed)}%
               </div>
             </div>
             <div className="text-xs text-gray-500 mt-1">
