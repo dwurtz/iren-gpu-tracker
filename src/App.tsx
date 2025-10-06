@@ -261,7 +261,7 @@ const migrateBatch = (batch: any): Batch => {
 };
 
 // Batch configuration version - increment this when default batches change
-const BATCH_CONFIG_VERSION = 2;
+const BATCH_CONFIG_VERSION = 3;
 
 // Initialize batches from storage or create defaults
 const initializeBatches = (settings: ProfitabilitySettings, sites: Site[]): Batch[] => {
