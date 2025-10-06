@@ -157,16 +157,62 @@ const createDefaultBatches = (settings: ProfitabilitySettings, sites: Site[]): B
     const site = sites.find(s => s.id === config.siteId);
     const siteName = site ? site.name : '';
     
-    // Create default deployment schedule: 25%, 50%, 75%, 100% over 4 months
+    // Create deployment schedule based on batch-specific rollout
     // MONTHS array starts at Aug 2023 (index 0), so we need to offset
     // Aug 2023 = index 0, Sep 2023 = index 1, etc.
     const startIndex = (config.year - 2023) * 12 + (config.month - 7);
-    const deploymentSchedule: { [monthIndex: number]: number } = {
-      [startIndex]: 25,      // Month 1: 25% deployed
-      [startIndex + 1]: 25,  // Month 2: 25% more (50% total)
-      [startIndex + 2]: 25,  // Month 3: 25% more (75% total)
-      [startIndex + 3]: 25,  // Month 4: 25% more (100% total)
-    };
+    let deploymentSchedule: { [monthIndex: number]: number } = {};
+    
+    // Custom deployment schedules based on screenshot
+    if (config.quantity === 1200 && config.chipType === 'B300' && config.month === 7) {
+      // 1,200 B300s (Aug '25): Aug=0%, Sep-Dec deployment (25%, 50%, 75%, 100%)
+      deploymentSchedule = {
+        [startIndex + 1]: 25,  // Sep '25
+        [startIndex + 2]: 25,  // Oct '25
+        [startIndex + 3]: 25,  // Nov '25
+        [startIndex + 4]: 25,  // Dec '25
+      };
+    } else if (config.quantity === 1200 && config.chipType === 'GB300') {
+      // 1,200 GB300s: Jan-Apr '26 deployment (25%, 50%, 75%, 100%)
+      deploymentSchedule = {
+        [startIndex + 5]: 25,  // Jan '26
+        [startIndex + 6]: 25,  // Feb '26
+        [startIndex + 7]: 25,  // Mar '26
+        [startIndex + 8]: 25,  // Apr '26
+      };
+    } else if (config.quantity === 7100 && config.chipType === 'B300') {
+      // 7,100 B300s (Sep '25): Sep-Dec '25 deployment
+      deploymentSchedule = {
+        [startIndex]: 25,      // Sep '25
+        [startIndex + 1]: 25,  // Oct '25
+        [startIndex + 2]: 25,  // Nov '25
+        [startIndex + 3]: 25,  // Dec '25
+      };
+    } else if (config.quantity === 4200 && config.chipType === 'B200' && config.month === 8) {
+      // 4,200 B200s (Sep '25): Sep-Dec '25 deployment
+      deploymentSchedule = {
+        [startIndex]: 25,      // Sep '25
+        [startIndex + 1]: 25,  // Oct '25
+        [startIndex + 2]: 25,  // Nov '25
+        [startIndex + 3]: 25,  // Dec '25
+      };
+    } else if (config.quantity === 1100 && config.chipType === 'MI350X') {
+      // 1,100 MI350Xs: Oct '25 - Jan '26 deployment
+      deploymentSchedule = {
+        [startIndex + 1]: 25,  // Oct '25
+        [startIndex + 2]: 25,  // Nov '25
+        [startIndex + 3]: 25,  // Dec '25
+        [startIndex + 4]: 25,  // Jan '26
+      };
+    } else {
+      // Default deployment for other batches: immediate 4-month rollout
+      deploymentSchedule = {
+        [startIndex]: 25,
+        [startIndex + 1]: 25,
+        [startIndex + 2]: 25,
+        [startIndex + 3]: 25,
+      };
+    }
     
     batches.push({
       id: `batch-${index}`,
