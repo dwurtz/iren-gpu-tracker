@@ -181,20 +181,20 @@ const createDefaultBatches = (settings: ProfitabilitySettings, sites: Site[]): B
         [startIndex + 8]: 25,  // Apr '26
       };
     } else if (config.quantity === 7100 && config.chipType === 'B300') {
-      // 7,100 B300s (Sep '25): Sep-Dec '25 deployment
+      // 7,100 B300s (Sep '25): 0% Sep-Dec, then Jan-Apr '26 deployment
       deploymentSchedule = {
-        [startIndex]: 25,      // Sep '25
-        [startIndex + 1]: 25,  // Oct '25
-        [startIndex + 2]: 25,  // Nov '25
-        [startIndex + 3]: 25,  // Dec '25
+        [startIndex + 4]: 25,  // Jan '26
+        [startIndex + 5]: 25,  // Feb '26
+        [startIndex + 6]: 25,  // Mar '26
+        [startIndex + 7]: 25,  // Apr '26
       };
     } else if (config.quantity === 4200 && config.chipType === 'B200' && config.month === 8) {
-      // 4,200 B200s (Sep '25): Sep-Dec '25 deployment
+      // 4,200 B200s (Sep '25): 0% Sep, then Oct-Jan deployment
       deploymentSchedule = {
-        [startIndex]: 25,      // Sep '25
         [startIndex + 1]: 25,  // Oct '25
         [startIndex + 2]: 25,  // Nov '25
         [startIndex + 3]: 25,  // Dec '25
+        [startIndex + 4]: 25,  // Jan '26
       };
     } else if (config.quantity === 1100 && config.chipType === 'MI350X') {
       // 1,100 MI350Xs: Oct '25 - Jan '26 deployment
@@ -261,7 +261,7 @@ const migrateBatch = (batch: any): Batch => {
 };
 
 // Batch configuration version - increment this when default batches change
-const BATCH_CONFIG_VERSION = 3;
+const BATCH_CONFIG_VERSION = 4;
 
 // Initialize batches from storage or create defaults
 const initializeBatches = (settings: ProfitabilitySettings, sites: Site[]): Batch[] => {
