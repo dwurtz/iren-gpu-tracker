@@ -109,7 +109,7 @@ export const NewBatchModal: React.FC<NewBatchModalProps> = ({ isOpen, onClose, o
 
   return (
     <div className="fixed inset-0 flex items-start justify-center pt-16 z-[9999]">
-      <div className="bg-white rounded-lg w-full max-w-2xl h-[75vh] flex flex-col">
+      <div className="bg-white rounded-lg w-full max-w-2xl h-[85vh] flex flex-col">
         <div className="flex justify-between items-center p-6 border-b border-gray-200">
           <h2 className="text-xl font-semibold">New Batch</h2>
           <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
