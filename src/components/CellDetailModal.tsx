@@ -175,7 +175,7 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
             <div className="flex items-center gap-4">
               <input
                 type="range"
-                min={Math.max(0, percentDeployed - deploymentThisMonth)}
+                min="0"
                 max="100"
                 value={percentDeployed}
                 onChange={(e) => {
@@ -183,7 +183,8 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
                   // Calculate previous cumulative (before this month)
                   const previousTotal = percentDeployed - deploymentThisMonth;
                   // Calculate how much to deploy this month to reach target
-                  const newDeploymentThisMonth = Math.max(0, targetTotal - previousTotal);
+                  // Allow going backwards (negative deployment means reducing from previous)
+                  const newDeploymentThisMonth = targetTotal - previousTotal;
                   onUpdateDeployment(batch.id, monthIndex, newDeploymentThisMonth);
                 }}
                 className="flex-1 h-2 bg-gray-300 rounded-lg appearance-none cursor-pointer"
@@ -194,7 +195,11 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
               </div>
             </div>
             <div className="text-xs text-gray-500 mt-1">
-              {deploymentThisMonth > 0 ? `Deploying ${Math.round(newGpusDeployed).toLocaleString()} GPUs this month (+${deploymentThisMonth}%)` : 'No deployment this month'}
+              {deploymentThisMonth > 0 
+                ? `Deploying ${Math.round(newGpusDeployed).toLocaleString()} GPUs this month (+${deploymentThisMonth}%)`
+                : deploymentThisMonth < 0
+                ? `Reducing by ${Math.round(Math.abs(newGpusDeployed)).toLocaleString()} GPUs this month (${deploymentThisMonth}%)`
+                : 'No deployment change this month'}
             </div>
           </div>
         )}
