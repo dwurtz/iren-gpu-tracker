@@ -150,7 +150,7 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-lg w-full max-w-2xl h-[75vh] flex flex-col"
+        className="bg-white rounded-lg w-full max-w-2xl h-[85vh] flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -243,7 +243,7 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
                 <tr className="border-t border-gray-300">
                   <td className="py-2 pr-4 font-semibold">Total Revenue</td>
                   <td className="py-2 pr-4"></td>
-                  <td className="py-2 text-right font-bold">{formatValue(monthlyRevenue)}</td>
+                  <td className="py-2 text-right font-bold text-green-600">{formatValue(monthlyRevenue)}</td>
                 </tr>
               </tbody>
             </table>
@@ -315,7 +315,7 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
                 <tr className="border-t border-gray-300">
                   <td className="py-2 pr-4 font-semibold">Total Costs</td>
                   <td className="py-2 pr-4"></td>
-                  <td className="py-2 text-right font-bold">{formatValue(totalCosts)}</td>
+                  <td className="py-2 text-right font-bold text-red-600">{formatValue(totalCosts)}</td>
                 </tr>
               </tbody>
             </table>
