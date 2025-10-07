@@ -867,7 +867,7 @@ function App() {
                         const previousValue = index > 0 ? liveChipData[index - 1]?.value || 0 : 0;
                         const change = data.value - previousValue;
                         return (
-                          <td key={index} className={`px-2 py-3 text-center text-sm ${isFirstMonth ? 'border-l border-gray-200' : ''} ${isYearBoundary ? 'border-r-2 border-gray-200' : 'border-r border-gray-200'}`} style={{ minWidth: '80px' }}>
+                          <td key={index} className={`px-2 py-3 text-center text-sm bg-white ${isFirstMonth ? 'border-l border-gray-200' : ''} ${isYearBoundary ? 'border-r-2 border-gray-200' : 'border-r border-gray-200'}`} style={{ minWidth: '80px' }}>
                             {data.value !== 0 && (
                               <div className="text-gray-700">
                                 {change !== 0 && (
@@ -895,7 +895,7 @@ function App() {
                         const isYearBoundary = index === 3 || index === 15 || index === 27 || index === 39 || index === 51;
                         const isFirstMonth = index === 0;
                         return (
-                          <td key={index} className={`px-2 py-3 text-center text-sm ${isFirstMonth ? 'border-l border-gray-200' : ''} ${isYearBoundary ? 'border-r-2 border-gray-200' : 'border-r border-gray-200'}`} style={{ minWidth: '80px' }}>
+                          <td key={index} className={`px-2 py-3 text-center text-sm bg-white ${isFirstMonth ? 'border-l border-gray-200' : ''} ${isYearBoundary ? 'border-r-2 border-gray-200' : 'border-r border-gray-200'}`} style={{ minWidth: '80px' }}>
                             {data.value !== 0 && (
                               <div className={data.value < 0 ? 'text-red-600' : 'text-green-600'}>
                                 {formatValue(data.value)}
@@ -920,7 +920,7 @@ function App() {
                         return (
                           <td 
                             key={index} 
-                            className={`px-2 py-3 text-center text-sm ${isFirstMonth ? 'border-l border-gray-200' : ''} ${isYearBoundary ? 'border-r-2 border-gray-200' : 'border-r border-gray-200'} cursor-pointer hover:bg-gray-50`}
+                            className={`px-2 py-3 text-center text-sm bg-white ${isFirstMonth ? 'border-l border-gray-200' : ''} ${isYearBoundary ? 'border-r-2 border-gray-200' : 'border-r border-gray-200'} cursor-pointer hover:bg-gray-50`}
                             style={{ minWidth: '80px' }}
                           onClick={() => {
                             setSelectedARRMonth(index);
