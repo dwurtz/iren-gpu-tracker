@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { X } from 'lucide-react';
 import { Batch } from '../types';
 import { useModalBackdrop } from './ModalBackdrop';
@@ -33,6 +33,18 @@ const ARRModal: React.FC<ARRModalProps> = ({
   onOpenCellModal
 }) => {
   useModalBackdrop(isOpen);
+  
+  // Handle escape key
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isOpen) {
+        onClose();
+      }
+    };
+    
+    window.addEventListener('keydown', handleEscape);
+    return () => window.removeEventListener('keydown', handleEscape);
+  }, [isOpen, onClose]);
   
   if (!isOpen) return null;
 

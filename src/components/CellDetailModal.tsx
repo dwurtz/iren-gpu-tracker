@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { X, Edit2 } from 'lucide-react';
 import { Batch } from '../types';
 import { ProfitabilitySettings } from './SettingsModal';
@@ -35,6 +35,18 @@ export const CellDetailModal: React.FC<CellDetailModalProps> = ({
   onUpdateDeployment
 }) => {
   useModalBackdrop(isOpen);
+  
+  // Handle escape key
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isOpen) {
+        onClose();
+      }
+    };
+    
+    window.addEventListener('keydown', handleEscape);
+    return () => window.removeEventListener('keydown', handleEscape);
+  }, [isOpen, onClose]);
   
   if (!isOpen || !batch) return null;
 

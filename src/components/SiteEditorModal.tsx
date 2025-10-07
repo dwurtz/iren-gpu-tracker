@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 import { Site, Batch } from '../types';
 import { useModalBackdrop } from './ModalBackdrop';
@@ -15,11 +15,23 @@ export const SiteEditorModal: React.FC<SiteEditorModalProps> = ({ isOpen, onClos
   useModalBackdrop(isOpen);
   const [formData, setFormData] = useState<Partial<Site>>(site || {});
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (site) {
       setFormData(site);
     }
   }, [site]);
+  
+  // Handle escape key
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isOpen) {
+        onClose();
+      }
+    };
+    
+    window.addEventListener('keydown', handleEscape);
+    return () => window.removeEventListener('keydown', handleEscape);
+  }, [isOpen, onClose]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

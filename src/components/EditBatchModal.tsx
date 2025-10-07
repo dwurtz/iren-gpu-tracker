@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 import { Batch, ChipType, Site } from '../types';
 import { useModalBackdrop } from './ModalBackdrop';
@@ -20,6 +20,18 @@ interface EditBatchModalProps {
 export const EditBatchModal: React.FC<EditBatchModalProps> = ({ isOpen, onClose, batch, onSave, sites, onEditSite, onOpenSettings, settings, highlightField }) => {
   useModalBackdrop(isOpen);
   const [formData, setFormData] = useState<Partial<Batch>>(batch || {});
+  
+  // Handle escape key
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isOpen) {
+        onClose();
+      }
+    };
+    
+    window.addEventListener('keydown', handleEscape);
+    return () => window.removeEventListener('keydown', handleEscape);
+  }, [isOpen, onClose]);
 
   // Function to get highlight classes for pulsing effect
   const getHighlightClass = (fieldName: string) => {

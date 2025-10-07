@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 import { ChipType, Batch, Site } from '../types';
 import { useModalBackdrop } from './ModalBackdrop';
@@ -17,6 +17,18 @@ interface NewBatchModalProps {
 
 export const NewBatchModal: React.FC<NewBatchModalProps> = ({ isOpen, onClose, onSave, sites, onEditSite, onOpenSettings, settings }) => {
   useModalBackdrop(isOpen);
+  
+  // Handle escape key
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isOpen) {
+        onClose();
+      }
+    };
+    
+    window.addEventListener('keydown', handleEscape);
+    return () => window.removeEventListener('keydown', handleEscape);
+  }, [isOpen, onClose]);
   const [formData, setFormData] = useState<{
     chipType: ChipType;
     quantity: number;

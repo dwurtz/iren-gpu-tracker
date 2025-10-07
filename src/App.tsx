@@ -74,7 +74,7 @@ const defaultSettings: ProfitabilitySettings = {
   electricityCost: 0.0325, // per kWh
   datacenterOverhead: 150, // per GPU per month
   electricalOverhead: 1.5, // PUE multiplier
-  utilizationRate: 90, // 90% utilization
+  utilizationRate: 100, // 100% utilization
 };
 
 // No longer need calculateProfitability - costs/revenue are now calculated based on deployment %

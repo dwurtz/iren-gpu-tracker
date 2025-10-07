@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ChevronRight, AlertCircle } from 'lucide-react';
 import { useModalBackdrop } from './ModalBackdrop';
 
@@ -13,11 +13,23 @@ export const WelcomeModal: React.FC<WelcomeModalProps> = ({ isOpen, onClose }) =
   useModalBackdrop(isOpen);
 
   // Reset to step 1 when modal opens
-  React.useEffect(() => {
+  useEffect(() => {
     if (isOpen) {
       setStep(1);
     }
   }, [isOpen]);
+  
+  // Handle escape key
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isOpen) {
+        onClose();
+      }
+    };
+    
+    window.addEventListener('keydown', handleEscape);
+    return () => window.removeEventListener('keydown', handleEscape);
+  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
