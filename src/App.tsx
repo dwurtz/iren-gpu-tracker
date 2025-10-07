@@ -487,11 +487,16 @@ function App() {
           .filter(([idx]) => parseInt(idx) < monthIndex)
           .reduce((sum, [, pct]) => sum + pct, 0);
         
+        // Calculate cumulative deployment after this month (future months)
+        const futureCumulative = Object.entries(batch.deploymentSchedule)
+          .filter(([idx]) => parseInt(idx) > monthIndex)
+          .reduce((sum, [, pct]) => sum + pct, 0);
+        
         // Constraints:
-        // 1. Can't go below 0% total (can reduce from previous, but cumulative can't be negative)
-        // 2. Can't exceed 100% total
+        // 1. Can't go below 0% total (previousCumulative + thisMonth >= 0)
+        // 2. Can't exceed 100% total (previousCumulative + thisMonth + futureCumulative <= 100)
         const minAllowed = -previousCumulative; // This ensures cumulative stays >= 0
-        const maxAllowed = 100 - previousCumulative;
+        const maxAllowed = 100 - previousCumulative - futureCumulative; // This ensures we don't exceed 100% even with future deployments
         const clampedPercentage = Math.max(minAllowed, Math.min(percentage, maxAllowed));
         
         return {
