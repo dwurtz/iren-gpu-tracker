@@ -168,13 +168,24 @@ export const BatchRow: React.FC<BatchRowProps> = ({
     <tr className={`border-t border-gray-200 ${isFirstOfYear ? 'border-t-2' : ''} hover:bg-gray-50`}>
       <td className="px-4 py-3 text-left sticky left-0 bg-white z-20 border-r border-gray-200">
         <div className="flex items-center justify-between">
-          <div>
-            <div className="font-medium text-emerald-600 underline cursor-pointer" onClick={() => onEdit(batch)}>
-              {batchTitle}
+          <div className="flex items-center gap-1.5">
+            <div>
+              <div className="font-medium text-emerald-600 underline cursor-pointer" onClick={() => onEdit(batch)}>
+                {batchTitle}
+              </div>
+              <div className="text-xs text-gray-500 mt-0.5">
+                {batchSubtext}
+              </div>
             </div>
-            <div className="text-xs text-gray-500 mt-0.5">
-              {batchSubtext}
-            </div>
+            {batch.fundingType === 'Cash' && (
+              <span 
+                className="text-base" 
+                title="Cash paid"
+                style={{ cursor: 'help' }}
+              >
+                💰
+              </span>
+            )}
           </div>
           <div className="flex space-x-1 ml-2">
             <button
