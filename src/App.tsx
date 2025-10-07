@@ -163,65 +163,59 @@ const createDefaultBatches = (settings: ProfitabilitySettings, sites: Site[]): B
     const startIndex = (config.year - 2023) * 12 + (config.month - 7);
     let deploymentSchedule: { [monthIndex: number]: number } = {};
     
-    // Custom deployment schedules based on screenshot
-    if (config.quantity === 1300 && config.chipType === 'B200') {
-      // 1,300 B200s: 25%, 50%, 75%, 100% (4 months)
-      deploymentSchedule = {
-        [startIndex]: 25,
-        [startIndex + 1]: 25,
-        [startIndex + 2]: 25,
-        [startIndex + 3]: 25,
-      };
-    } else if (config.quantity === 1100 && config.chipType === 'B300') {
-      // 1,100 B300s: 25%, 50%, 75%, then stays at 75%
-      deploymentSchedule = {
-        [startIndex]: 25,
-        [startIndex + 1]: 25,
-        [startIndex + 2]: 25,
-        // Stays at 75%, no further deployment
-      };
-    } else if (config.quantity === 4200 && config.chipType === 'B200' && config.month === 7) {
-      // First 4,200 B200s (Aug '25): 20%, 45%, 70%, then stays at 70%
+    // Custom deployment schedules based on latest screenshot
+    if (config.quantity === 4200 && config.chipType === 'B200' && config.month === 7) {
+      // First 4,200 B200s: 20%, 30%, 55%, 70%, 85%, 100%
       deploymentSchedule = {
         [startIndex + 1]: 20,  // Sep '25
-        [startIndex + 2]: 25,  // Oct '25 (20+25=45%)
-        [startIndex + 3]: 25,  // Nov '25 (45+25=70%)
-        // Stays at 70%, no further deployment
-      };
-    } else if (config.quantity === 4200 && config.chipType === 'B200' && config.month === 8) {
-      // Second 4,200 B200s (Sep '25): 10%, 20%, 30%, 40%, 60%
-      deploymentSchedule = {
-        [startIndex + 2]: 10,  // Nov '25
-        [startIndex + 3]: 10,  // Dec '25 (10+10=20%)
-        [startIndex + 4]: 10,  // Jan '26 (20+10=30%)
-        [startIndex + 5]: 10,  // Feb '26 (30+10=40%)
-        [startIndex + 6]: 20,  // Mar '26 (40+20=60%)
-        // Stays at 60%, no further deployment
-      };
-    } else if (config.quantity === 1200 && config.chipType === 'B300') {
-      // 1,200 B300s: 100% immediately (deep red losses)
-      deploymentSchedule = {
-        [startIndex + 5]: 100,  // Jan '26 (100% in one month)
-      };
-    } else if (config.quantity === 1100 && config.chipType === 'MI350X') {
-      // 1,100 MI350Xs: 25%, 25%, 25%, stays at 25%
-      deploymentSchedule = {
-        [startIndex + 5]: 25,  // Jan '26
-        // Stays at 25%, no further deployment
-      };
-    } else if (config.quantity === 7100 && config.chipType === 'B300') {
-      // 7,100 B300s: 25%, 50%, 75%
-      deploymentSchedule = {
-        [startIndex + 5]: 25,  // Jan '26
-        [startIndex + 6]: 25,  // Feb '26
-        [startIndex + 7]: 25,  // Mar '26
-        // Stays at 75%, no further deployment
+        [startIndex + 2]: 10,  // Oct '25 (20+10=30%)
+        [startIndex + 3]: 25,  // Nov '25 (30+25=55%)
+        [startIndex + 4]: 15,  // Dec '25 (55+15=70%)
+        [startIndex + 5]: 15,  // Jan '26 (70+15=85%)
+        [startIndex + 6]: 15,  // Feb '26 (85+15=100%)
       };
     } else if (config.quantity === 1200 && config.chipType === 'GB300') {
-      // 1,200 GB300s: 25% only
+      // 1,200 GB300s: 25%, 25%, 50%, 75%, 100%
       deploymentSchedule = {
-        [startIndex]: 25,
-        // Stays at 25%, no further deployment
+        [startIndex]: 25,      // Oct '25
+        [startIndex + 1]: 0,   // Nov '25 (25+0=25%)
+        [startIndex + 2]: 25,  // Dec '25 (25+25=50%)
+        [startIndex + 3]: 25,  // Jan '26 (50+25=75%)
+        [startIndex + 4]: 25,  // Feb '26 (75+25=100%)
+      };
+    } else if (config.quantity === 4200 && config.chipType === 'B200' && config.month === 8) {
+      // Second 4,200 B200s: 10%, 15%, 25%, 35%, 55%, 75%, 100%
+      deploymentSchedule = {
+        [startIndex + 2]: 10,  // Nov '25
+        [startIndex + 3]: 5,   // Dec '25 (10+5=15%)
+        [startIndex + 4]: 10,  // Jan '26 (15+10=25%)
+        [startIndex + 5]: 10,  // Feb '26 (25+10=35%)
+        [startIndex + 6]: 20,  // Mar '26 (35+20=55%)
+        [startIndex + 7]: 20,  // Apr '26 (55+20=75%)
+        [startIndex + 8]: 25,  // May '26 (75+25=100%)
+      };
+    } else if (config.quantity === 1200 && config.chipType === 'B300') {
+      // 1,200 B300s: 50%, 75%, 100%
+      deploymentSchedule = {
+        [startIndex + 5]: 50,  // Jan '26
+        [startIndex + 6]: 25,  // Feb '26 (50+25=75%)
+        [startIndex + 7]: 25,  // Mar '26 (75+25=100%)
+      };
+    } else if (config.quantity === 1100 && config.chipType === 'MI350X') {
+      // 1,100 MI350Xs: 25%, 50%, 75%, 100%
+      deploymentSchedule = {
+        [startIndex + 5]: 25,  // Jan '26
+        [startIndex + 6]: 25,  // Feb '26 (25+25=50%)
+        [startIndex + 7]: 25,  // Mar '26 (50+25=75%)
+        [startIndex + 8]: 25,  // Apr '26 (75+25=100%)
+      };
+    } else if (config.quantity === 7100 && config.chipType === 'B300') {
+      // 7,100 B300s: 25%, 50%, 75%, 100%
+      deploymentSchedule = {
+        [startIndex + 5]: 25,  // Jan '26
+        [startIndex + 6]: 25,  // Feb '26 (25+25=50%)
+        [startIndex + 7]: 25,  // Mar '26 (50+25=75%)
+        [startIndex + 8]: 25,  // Apr '26 (75+25=100%)
       };
     } else {
       // Default deployment for other batches: immediate 4-month rollout (100%)
@@ -336,7 +330,7 @@ const migrateBatch = (batch: any): Batch => {
 };
 
 // Batch configuration version - increment this when default batches change
-const BATCH_CONFIG_VERSION = 9;
+const BATCH_CONFIG_VERSION = 10;
 
 // Initialize batches from storage or create defaults
 const initializeBatches = (settings: ProfitabilitySettings, sites: Site[]): Batch[] => {
