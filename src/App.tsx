@@ -487,24 +487,55 @@ function App() {
           .filter(([idx]) => parseInt(idx) < monthIndex)
           .reduce((sum, [, pct]) => sum + pct, 0);
         
-        // Calculate cumulative deployment after this month (future months)
-        const futureCumulative = Object.entries(batch.deploymentSchedule)
-          .filter(([idx]) => parseInt(idx) > monthIndex)
-          .reduce((sum, [, pct]) => sum + pct, 0);
-        
         // Constraints:
         // 1. Can't go below 0% total (previousCumulative + thisMonth >= 0)
-        // 2. Can't exceed 100% total (previousCumulative + thisMonth + futureCumulative <= 100)
+        // 2. Can't exceed 100% total (previousCumulative + thisMonth <= 100)
         const minAllowed = -previousCumulative; // This ensures cumulative stays >= 0
-        const maxAllowed = 100 - previousCumulative - futureCumulative; // This ensures we don't exceed 100% even with future deployments
+        const maxAllowed = 100 - previousCumulative; // Max we can add this month
         const clampedPercentage = Math.max(minAllowed, Math.min(percentage, maxAllowed));
+        
+        // Calculate what the new cumulative total will be after this update
+        const newCumulativeTotal = previousCumulative + clampedPercentage;
+        
+        // Update the deployment schedule
+        const updatedSchedule = { ...batch.deploymentSchedule };
+        updatedSchedule[monthIndex] = clampedPercentage;
+        
+        // If we've reached 100%, clear all future deployments
+        // Otherwise, adjust future deployments proportionally if needed
+        if (newCumulativeTotal >= 100) {
+          // Clear all future months
+          Object.keys(updatedSchedule).forEach(key => {
+            const keyNum = parseInt(key);
+            if (keyNum > monthIndex) {
+              delete updatedSchedule[keyNum];
+            }
+          });
+        } else {
+          // Calculate remaining deployment capacity
+          const remainingCapacity = 100 - newCumulativeTotal;
+          
+          // Get future months and their current percentages
+          const futureMonths = Object.entries(updatedSchedule)
+            .filter(([idx]) => parseInt(idx) > monthIndex)
+            .sort(([a], [b]) => parseInt(a) - parseInt(b));
+          
+          if (futureMonths.length > 0) {
+            const futureTotal = futureMonths.reduce((sum, [, pct]) => sum + pct, 0);
+            
+            // If future deployments exceed remaining capacity, scale them down proportionally
+            if (futureTotal > remainingCapacity) {
+              const scaleFactor = remainingCapacity / futureTotal;
+              futureMonths.forEach(([idx, pct]) => {
+                updatedSchedule[parseInt(idx)] = pct * scaleFactor;
+              });
+            }
+          }
+        }
         
         return {
           ...batch,
-          deploymentSchedule: {
-            ...batch.deploymentSchedule,
-            [monthIndex]: clampedPercentage
-          }
+          deploymentSchedule: updatedSchedule
         };
       }
       return batch;
