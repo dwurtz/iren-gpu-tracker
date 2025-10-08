@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Settings, RotateCcw, Info } from 'lucide-react';
+import { Plus, Settings, Info } from 'lucide-react';
 import { Batch, Site, ChipType, LeaseType } from './types';
 import { NewBatchModal } from './components/NewBatchModal';
 import { BatchRow } from './components/BatchRow';
@@ -806,14 +806,53 @@ function App() {
           <img src="https://iren.com/icons/logo.svg" alt="IREN" className="h-8" />
           <h1 className="text-xl font-semibold text-gray-700">GPU Tracker</h1>
         </div>
-        <div className="flex space-x-3">
-          <button
-            onClick={handleResetToDefaults}
-            className="flex items-center space-x-2 bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 border border-gray-300 transition-colors"
-          >
-            <RotateCcw size={16} />
-            <span className="text-sm font-medium">RESET</span>
-          </button>
+        <div className="flex items-center space-x-3">
+          {/* Settings Mode Toggle */}
+          <div className="flex items-center gap-3">
+            <div className="flex bg-gray-100 rounded-lg p-1 border border-gray-300">
+              <button
+                onClick={() => {
+                  setSettingsMode('default');
+                  setSettings(defaultSettings);
+                  saveSettingsModeToStorage('default');
+                }}
+                className={`px-3 py-1.5 rounded text-sm font-medium transition-colors ${
+                  settingsMode === 'default'
+                    ? 'bg-white text-gray-900 shadow-sm'
+                    : 'text-gray-600 hover:text-gray-900'
+                }`}
+              >
+                Default
+              </button>
+              <button
+                onClick={() => {
+                  setSettingsMode('custom');
+                  const customSettings = loadCustomSettingsFromStorage();
+                  if (customSettings) {
+                    setSettings(customSettings);
+                  }
+                  saveSettingsModeToStorage('custom');
+                }}
+                className={`px-3 py-1.5 rounded text-sm font-medium transition-colors ${
+                  settingsMode === 'custom'
+                    ? 'bg-white text-gray-900 shadow-sm'
+                    : 'text-gray-600 hover:text-gray-900'
+                }`}
+              >
+                Custom
+              </button>
+            </div>
+            
+            {settingsMode === 'custom' && (
+              <button
+                onClick={handleResetToDefaults}
+                className="text-sm text-emerald-600 hover:text-emerald-700 underline"
+              >
+                Reset
+              </button>
+            )}
+          </div>
+          
           <button
             onClick={() => setIsWelcomeOpen(true)}
             className="flex items-center space-x-2 bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 border border-gray-300 transition-colors"
