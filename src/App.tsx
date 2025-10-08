@@ -35,6 +35,8 @@ const defaultSettings: ProfitabilitySettings = {
     b200: 532, // 500-550 GPUs/MW (~1.8-2.0 kW/GPU) - good
     b300: 520, // 500-540 GPUs/MW (~1.85-2.0 kW/GPU) - good for planning
     gb300: 432, // 420-460 GPUs/MW (~2.17-2.38 kW/GPU) - right in the pocket
+    'gb200 nvl72': 72, // 72 GPUs per rack system
+    'gb300 nvl72': 72, // 72 GPUs per rack system
     h100: 620, // 600-650 GPUs/MW (~1.5-1.65 kW/GPU) - bumped from 500
     h200: 580, // 560-610 GPUs/MW (~1.64-1.8 kW/GPU) - bumped from 485
     mi350x: 475, // 460-500 GPUs/MW (~2.0-2.17 kW/GPU) - fine
@@ -43,6 +45,8 @@ const defaultSettings: ProfitabilitySettings = {
     b200: 46233, // Principal cost per GPU
     b300: 58674, // Principal cost per GPU
     gb300: 80000, // Principal cost per GPU
+    'gb200 nvl72': 36111, // $2.6M / 72 GPUs per rack
+    'gb300 nvl72': 41667, // $3M / 72 GPUs per rack
     h100: 39216, // Principal cost per GPU
     h200: 40648, // Principal cost per GPU
     mi350x: 43637, // Principal cost per GPU
@@ -51,6 +55,8 @@ const defaultSettings: ProfitabilitySettings = {
     b200: 52927, // Effective cost per GPU including financing
     b300: 66061, // Effective cost per GPU including financing
     gb300: 87715, // Effective cost per GPU including financing
+    'gb200 nvl72': 36111, // Effective cost per GPU (estimate, adjust based on financing)
+    'gb300 nvl72': 41667, // Effective cost per GPU (estimate, adjust based on financing)
     h100: 39216, // Effective cost per GPU (cash purchase, no interest)
     h200: 40648, // Effective cost per GPU (cash purchase, no interest)
     mi350x: 49955, // Effective cost per GPU including financing
@@ -59,6 +65,8 @@ const defaultSettings: ProfitabilitySettings = {
     b200: 20, // per GPU
     b300: 20, // per GPU
     gb300: 20, // per GPU
+    'gb200 nvl72': 20, // per GPU
+    'gb300 nvl72': 20, // per GPU
     h100: 20, // per GPU
     h200: 20, // per GPU
     mi350x: 20, // per GPU
@@ -67,6 +75,8 @@ const defaultSettings: ProfitabilitySettings = {
     b200: 3.08, // $3.08 per GPU hour (2yr-payback rate)
     b300: 3.85, // $3.85 per GPU hour (2yr-payback rate)
     gb300: 5.11, // $5.11 per GPU hour (2yr-payback rate)
+    'gb200 nvl72': 4.00, // $4.00 per GPU hour (estimate based on GB200 NVL72 positioning)
+    'gb300 nvl72': 5.50, // $5.50 per GPU hour (estimate based on GB300 NVL72 positioning)
     h100: 2.28, // $2.28 per GPU hour (2yr-payback rate)
     h200: 2.37, // $2.37 per GPU hour (2yr-payback rate)
     mi350x: 2.91, // $2.91 per GPU hour (2yr-payback rate)

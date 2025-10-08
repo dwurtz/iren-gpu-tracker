@@ -3,7 +3,7 @@ import { ProfitabilitySettings } from '../components/SettingsModal';
 
 // Helper function to get chip-specific settings
 const getChipSettings = (chipType: ChipType, settings: ProfitabilitySettings) => {
-  const key = chipType.toLowerCase() as 'b200' | 'b300' | 'gb300' | 'h100' | 'h200' | 'mi350x';
+  const key = chipType.toLowerCase() as 'b200' | 'b300' | 'gb300' | 'gb200 nvl72' | 'gb300 nvl72' | 'h100' | 'h200' | 'mi350x';
   return {
     gpuHourRate: settings.gpuHourRate[key],
     powerConsumption: 1000 / settings.gpusPerMW[key], // Derive from GPUs/MW (1000 kW / GPUs per MW)

@@ -1,4 +1,4 @@
-export type ChipType = 'B200' | 'B300' | 'GB300' | 'H100' | 'H200' | 'MI350X';
+export type ChipType = 'B200' | 'B300' | 'GB300' | 'GB200 NVL72' | 'GB300 NVL72' | 'H100' | 'H200' | 'MI350X';
 
 export interface Site {
   id: string;

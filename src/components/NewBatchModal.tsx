@@ -56,7 +56,7 @@ export const NewBatchModal: React.FC<NewBatchModalProps> = ({ isOpen, onClose, o
   });
 
   const getGpusPerMW = () => {
-    const chipKey = formData.chipType.toLowerCase() as 'b200' | 'b300' | 'gb300' | 'h100' | 'h200' | 'mi350x';
+    const chipKey = formData.chipType.toLowerCase() as 'b200' | 'b300' | 'gb300' | 'gb200 nvl72' | 'gb300 nvl72' | 'h100' | 'h200' | 'mi350x';
     return settings.gpusPerMW[chipKey];
   };
 
@@ -145,6 +145,8 @@ export const NewBatchModal: React.FC<NewBatchModalProps> = ({ isOpen, onClose, o
               <option value="B200">B200</option>
               <option value="B300">B300</option>
               <option value="GB300">GB300</option>
+              <option value="GB200 NVL72">GB200 NVL72</option>
+              <option value="GB300 NVL72">GB300 NVL72</option>
               <option value="H100">H100</option>
               <option value="H200">H200</option>
               <option value="MI350X">MI350X</option>
