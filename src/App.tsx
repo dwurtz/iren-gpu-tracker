@@ -860,14 +860,14 @@ function App() {
                   <>
                     {/* Live Chip Count row */}
                     <tr className="bg-white font-medium">
-                      <td className="px-4 py-3 text-gray-700 text-xs font-semibold uppercase tracking-wide sticky left-0 bg-white z-50 border-r border-t-2 border-t-white">LIVE CHIP COUNT</td>
+                      <td className="px-4 py-3 text-gray-700 text-xs font-semibold uppercase tracking-wide sticky left-0 bg-white z-50 border-r border-t-4 border-t-white">LIVE CHIP COUNT</td>
                       {liveChipData.map((data, index) => {
                         const isYearBoundary = index === 4 || index === 16 || index === 28 || index === 40 || index === 52 || index === 64;
                         const isFirstMonth = index === 0;
                         const previousValue = index > 0 ? liveChipData[index - 1]?.value || 0 : 0;
                         const change = data.value - previousValue;
                         return (
-                          <td key={index} className={`px-2 py-3 text-center text-sm bg-white border-t-2 border-t-white ${isFirstMonth ? 'border-l border-gray-200' : ''} ${isYearBoundary ? 'border-r-2 border-gray-200' : 'border-r border-gray-200'}`} style={{ minWidth: '80px' }}>
+                          <td key={index} className={`px-2 py-3 text-center text-sm bg-white border-t-4 border-t-white ${isFirstMonth ? 'border-l border-gray-200' : ''} ${isYearBoundary ? 'border-r-2 border-gray-200' : 'border-r border-gray-200'}`} style={{ minWidth: '80px' }}>
                             {data.value !== 0 && (
                               <div className="text-gray-700">
                                 {change !== 0 && (
@@ -881,7 +881,7 @@ function App() {
                           </td>
                         );
                       })}
-                      <td className="px-4 py-3 text-center font-bold sticky right-0 bg-white z-50 border-l border-t-2 border-t-white">
+                      <td className="px-4 py-3 text-center font-bold sticky right-0 bg-white z-50 border-l border-t-4 border-t-white">
                         <div className="text-gray-700">
                           {formatChipCount(liveChipData[liveChipData.length - 1]?.value || 0)}
                         </div>
