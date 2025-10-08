@@ -776,13 +776,13 @@ function App() {
                 {/* Year headers */}
                 <tr className="bg-gray-50 border-b border-gray-200">
                   <th className="px-4 py-2 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide sticky left-0 bg-gray-50 z-50 border-r border-gray-200" style={{ minWidth: '240px', width: '240px' }}></th>
-                  <th className="px-2 py-2 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200" colSpan={5}>2023</th>
-                  <th className="px-2 py-2 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide border-r" colSpan={12}>2024</th>
-                  <th className="px-2 py-2 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide border-r" colSpan={12}>2025</th>
-                  <th className="px-2 py-2 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide border-r" colSpan={12}>2026</th>
-                  <th className="px-2 py-2 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide border-r" colSpan={12}>2027</th>
-                  <th className="px-2 py-2 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide border-r" colSpan={12}>2028</th>
-                  <th className="px-2 py-2 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide border-r" colSpan={12}>2029</th>
+                  <th className="px-2 py-2 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide bg-gray-50 border-r border-gray-200" colSpan={5}>2023</th>
+                  <th className="px-2 py-2 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide bg-gray-50 border-r" colSpan={12}>2024</th>
+                  <th className="px-2 py-2 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide bg-gray-50 border-r" colSpan={12}>2025</th>
+                  <th className="px-2 py-2 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide bg-gray-50 border-r" colSpan={12}>2026</th>
+                  <th className="px-2 py-2 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide bg-gray-50 border-r" colSpan={12}>2027</th>
+                  <th className="px-2 py-2 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide bg-gray-50 border-r" colSpan={12}>2028</th>
+                  <th className="px-2 py-2 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide bg-gray-50 border-r" colSpan={12}>2029</th>
                   <th className="px-4 py-2 text-center text-xs font-semibold text-gray-500 uppercase tracking-wide w-24 sticky right-0 bg-gray-50 z-50 border-l"></th>
                 </tr>
                 {/* Month headers */}
@@ -793,7 +793,7 @@ function App() {
                     const isYearBoundary = index === 3 || index === 15 || index === 27 || index === 39 || index === 51;
                     const isFirstMonth = index === 0;
                     return (
-                      <th key={index} className={`px-2 py-3 text-center text-xs font-medium text-gray-600 ${isFirstMonth ? 'border-l border-gray-200' : ''} ${isYearBoundary ? 'border-r-2 border-gray-200' : 'border-r border-gray-200'}`} style={{ minWidth: '80px' }}>
+                      <th key={index} className={`px-2 py-3 text-center text-xs font-medium text-gray-600 bg-white ${isFirstMonth ? 'border-l border-gray-200' : ''} ${isYearBoundary ? 'border-r-2 border-gray-200' : 'border-r border-gray-200'}`} style={{ minWidth: '80px' }}>
                         {month}
                       </th>
                     );
