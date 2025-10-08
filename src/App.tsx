@@ -771,7 +771,7 @@ function App() {
       {/* Matrix Table Container */}
       <div className="flex-1 bg-white overflow-hidden relative">
         <div className="h-full w-full overflow-auto">
-          <table className="w-full border-collapse" style={{ minHeight: '100%', display: 'table' }}>
+          <table className="w-full" style={{ minHeight: '100%', display: 'table', borderCollapse: 'separate', borderSpacing: 0 }}>
               <thead className="sticky top-0 z-40" style={{ display: 'table-header-group' }}>
                 {/* Year headers */}
                 <tr className="bg-gray-50">
