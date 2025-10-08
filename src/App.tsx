@@ -774,31 +774,31 @@ function App() {
           <table className="w-full border-collapse" style={{ minHeight: '100%', display: 'table' }}>
               <thead className="sticky top-0 z-40" style={{ display: 'table-header-group' }}>
                 {/* Year headers */}
-                <tr className="bg-gray-50 border-b border-gray-200">
-                  <th className="px-4 py-2 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide sticky left-0 bg-gray-50 z-50 border-r border-gray-200" style={{ minWidth: '240px', width: '240px' }}></th>
-                  <th className="px-2 py-2 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide bg-gray-50 border-r border-gray-200" colSpan={5}>2023</th>
-                  <th className="px-2 py-2 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide bg-gray-50 border-r" colSpan={12}>2024</th>
-                  <th className="px-2 py-2 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide bg-gray-50 border-r" colSpan={12}>2025</th>
-                  <th className="px-2 py-2 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide bg-gray-50 border-r" colSpan={12}>2026</th>
-                  <th className="px-2 py-2 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide bg-gray-50 border-r" colSpan={12}>2027</th>
-                  <th className="px-2 py-2 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide bg-gray-50 border-r" colSpan={12}>2028</th>
-                  <th className="px-2 py-2 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide bg-gray-50 border-r" colSpan={12}>2029</th>
-                  <th className="px-4 py-2 text-center text-xs font-semibold text-gray-500 uppercase tracking-wide w-24 sticky right-0 bg-gray-50 z-50 border-l"></th>
+                <tr className="bg-gray-50">
+                  <th className="px-4 py-2 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide sticky left-0 bg-gray-50 z-50 border-r border-b border-gray-200" style={{ minWidth: '240px', width: '240px' }}></th>
+                  <th className="px-2 py-2 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide bg-gray-50 border-r border-b border-gray-200" colSpan={5}>2023</th>
+                  <th className="px-2 py-2 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide bg-gray-50 border-r border-b border-gray-200" colSpan={12}>2024</th>
+                  <th className="px-2 py-2 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide bg-gray-50 border-r border-b border-gray-200" colSpan={12}>2025</th>
+                  <th className="px-2 py-2 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide bg-gray-50 border-r border-b border-gray-200" colSpan={12}>2026</th>
+                  <th className="px-2 py-2 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide bg-gray-50 border-r border-b border-gray-200" colSpan={12}>2027</th>
+                  <th className="px-2 py-2 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide bg-gray-50 border-r border-b border-gray-200" colSpan={12}>2028</th>
+                  <th className="px-2 py-2 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide bg-gray-50 border-r border-b border-gray-200" colSpan={12}>2029</th>
+                  <th className="px-4 py-2 text-center text-xs font-semibold text-gray-500 uppercase tracking-wide w-24 sticky right-0 bg-gray-50 z-50 border-l border-b border-gray-200"></th>
                 </tr>
                 {/* Month headers */}
-                <tr className="bg-white border-b border-gray-200">
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-600 sticky left-0 bg-white z-50" style={{ minWidth: '240px', width: '240px' }}></th>
+                <tr className="bg-white">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-600 sticky left-0 bg-white z-50 border-b border-gray-200" style={{ minWidth: '240px', width: '240px' }}></th>
                   {MONTHS.map((month, index) => {
                     // Add heavier border at year boundaries (after Dec, which is at indices 3, 15, 27, 39)
                     const isYearBoundary = index === 3 || index === 15 || index === 27 || index === 39 || index === 51;
                     const isFirstMonth = index === 0;
                     return (
-                      <th key={index} className={`px-2 py-3 text-center text-xs font-medium text-gray-600 bg-white ${isFirstMonth ? 'border-l border-gray-200' : ''} ${isYearBoundary ? 'border-r-2 border-gray-200' : 'border-r border-gray-200'}`} style={{ minWidth: '80px' }}>
+                      <th key={index} className={`px-2 py-3 text-center text-xs font-medium text-gray-600 bg-white border-b border-gray-200 ${isFirstMonth ? 'border-l border-gray-200' : ''} ${isYearBoundary ? 'border-r-2 border-gray-200' : 'border-r border-gray-200'}`} style={{ minWidth: '80px' }}>
                         {month}
                       </th>
                     );
                   })}
-                  <th className="px-4 py-3 text-center text-xs font-semibold text-gray-600 uppercase tracking-wide w-24 sticky right-0 bg-white z-50 border-l">
+                  <th className="px-4 py-3 text-center text-xs font-semibold text-gray-600 uppercase tracking-wide w-24 sticky right-0 bg-white z-50 border-l border-b border-gray-200">
                     TOTAL
                   </th>
                 </tr>
@@ -860,14 +860,14 @@ function App() {
                   <>
                     {/* Live Chip Count row */}
                     <tr className="bg-white font-medium">
-                      <td className="px-4 py-3 text-gray-700 text-xs font-semibold uppercase tracking-wide sticky left-0 bg-white z-50 border-r border-t-4 border-t-white">LIVE CHIP COUNT</td>
+                      <td className="px-4 py-3 text-gray-700 text-xs font-semibold uppercase tracking-wide sticky left-0 bg-white z-50 border-r border-t-4 border-t-white border-b border-gray-200">LIVE CHIP COUNT</td>
                       {liveChipData.map((data, index) => {
                         const isYearBoundary = index === 4 || index === 16 || index === 28 || index === 40 || index === 52 || index === 64;
                         const isFirstMonth = index === 0;
                         const previousValue = index > 0 ? liveChipData[index - 1]?.value || 0 : 0;
                         const change = data.value - previousValue;
                         return (
-                          <td key={index} className={`px-2 py-3 text-center text-sm bg-white border-t-4 border-t-white ${isFirstMonth ? 'border-l border-gray-200' : ''} ${isYearBoundary ? 'border-r-2 border-gray-200' : 'border-r border-gray-200'}`} style={{ minWidth: '80px' }}>
+                          <td key={index} className={`px-2 py-3 text-center text-sm bg-white border-t-4 border-t-white border-b border-gray-200 ${isFirstMonth ? 'border-l border-gray-200' : ''} ${isYearBoundary ? 'border-r-2 border-gray-200' : 'border-r border-gray-200'}`} style={{ minWidth: '80px' }}>
                             {data.value !== 0 && (
                               <div className="text-gray-700">
                                 {change !== 0 && (
@@ -881,7 +881,7 @@ function App() {
                           </td>
                         );
                       })}
-                      <td className="px-4 py-3 text-center font-bold sticky right-0 bg-white z-50 border-l border-t-4 border-t-white">
+                      <td className="px-4 py-3 text-center font-bold sticky right-0 bg-white z-50 border-l border-t-4 border-t-white border-b border-gray-200">
                         <div className="text-gray-700">
                           {formatChipCount(liveChipData[liveChipData.length - 1]?.value || 0)}
                         </div>
@@ -889,13 +889,13 @@ function App() {
                     </tr>
                     
                     {/* CUMULATIVE PROFIT row */}
-                    <tr className="border-t border-gray-200 bg-white font-medium">
-                      <td className="px-4 py-3 text-gray-700 text-xs font-semibold uppercase tracking-wide sticky left-0 bg-white z-50 border-r">CUMULATIVE PROFIT</td>
+                    <tr className="bg-white font-medium">
+                      <td className="px-4 py-3 text-gray-700 text-xs font-semibold uppercase tracking-wide sticky left-0 bg-white z-50 border-r border-t border-b border-gray-200">CUMULATIVE PROFIT</td>
                       {totals.map((data, index) => {
                         const isYearBoundary = index === 3 || index === 15 || index === 27 || index === 39 || index === 51;
                         const isFirstMonth = index === 0;
                         return (
-                          <td key={index} className={`px-2 py-3 text-center text-sm bg-white ${isFirstMonth ? 'border-l border-gray-200' : ''} ${isYearBoundary ? 'border-r-2 border-gray-200' : 'border-r border-gray-200'}`} style={{ minWidth: '80px' }}>
+                          <td key={index} className={`px-2 py-3 text-center text-sm bg-white border-t border-b border-gray-200 ${isFirstMonth ? 'border-l border-gray-200' : ''} ${isYearBoundary ? 'border-r-2 border-gray-200' : 'border-r border-gray-200'}`} style={{ minWidth: '80px' }}>
                             {data.value !== 0 && (
                               <div className={data.value < 0 ? 'text-red-600' : 'text-green-600'}>
                                 {formatValue(data.value)}
@@ -904,7 +904,7 @@ function App() {
                           </td>
                         );
                       })}
-                      <td className="px-4 py-3 text-center font-bold sticky right-0 bg-white z-50 border-l">
+                      <td className="px-4 py-3 text-center font-bold sticky right-0 bg-white z-50 border-l border-t border-b border-gray-200">
                         <div className={grandTotal < 0 ? 'text-red-600' : 'text-green-600'}>
                           {formatValue(grandTotal)}
                         </div>
@@ -912,15 +912,15 @@ function App() {
                     </tr>
                     
                     {/* ARR row */}
-                    <tr className="border-t border-gray-200 bg-white font-medium">
-                      <td className="px-4 py-3 text-gray-700 text-xs font-semibold uppercase tracking-wide sticky left-0 bg-white z-50 border-r">ARR</td>
+                    <tr className="bg-white font-medium">
+                      <td className="px-4 py-3 text-gray-700 text-xs font-semibold uppercase tracking-wide sticky left-0 bg-white z-50 border-r border-t border-b border-gray-200">ARR</td>
                       {arrData.map((data, index) => {
                         const isYearBoundary = index === 3 || index === 15 || index === 27 || index === 39 || index === 51;
                         const isFirstMonth = index === 0;
                         return (
                           <td 
                             key={index} 
-                            className={`px-2 py-3 text-center text-sm bg-white ${isFirstMonth ? 'border-l border-gray-200' : ''} ${isYearBoundary ? 'border-r-2 border-gray-200' : 'border-r border-gray-200'} cursor-pointer hover:bg-gray-50`}
+                            className={`px-2 py-3 text-center text-sm bg-white border-t border-b border-gray-200 ${isFirstMonth ? 'border-l border-gray-200' : ''} ${isYearBoundary ? 'border-r-2 border-gray-200' : 'border-r border-gray-200'} cursor-pointer hover:bg-gray-50`}
                             style={{ minWidth: '80px' }}
                           onClick={() => {
                             setSelectedARRMonth(index);
@@ -935,7 +935,7 @@ function App() {
                         </td>
                         );
                       })}
-                      <td className="px-4 py-3 text-center font-bold sticky right-0 bg-white z-50 border-l">
+                      <td className="px-4 py-3 text-center font-bold sticky right-0 bg-white z-50 border-l border-t border-b border-gray-200">
                         <div className="text-green-600">
                           {formatValue(arrData.length > 0 ? arrData[arrData.length - 1].value : 0)}
                         </div>
