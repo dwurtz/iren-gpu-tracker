@@ -772,7 +772,7 @@ function App() {
       <div className="flex-1 bg-white overflow-hidden relative">
         <div className="h-full w-full overflow-auto">
           <table className="w-full border-collapse" style={{ minHeight: '100%', display: 'table' }}>
-              <thead className="sticky top-0 z-40" style={{ display: 'table-header-group' }}>
+              <thead className="sticky top-0 z-40" style={{ display: 'table-header-group', boxShadow: '0 2px 0 0 white' }}>
                 {/* Year headers */}
                 <tr className="bg-gray-50">
                   <th className="px-4 py-2 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide sticky left-0 bg-gray-50 z-50 border-r border-b border-gray-200" style={{ minWidth: '240px', width: '240px' }}></th>
@@ -855,7 +855,7 @@ function App() {
               
               
               {/* Sticky bottom total rows */}
-              <tfoot className="sticky bottom-0 z-40" style={{ display: 'table-footer-group' }}>
+              <tfoot className="sticky bottom-0 z-40" style={{ display: 'table-footer-group', boxShadow: '0 -2px 0 0 white' }}>
                 {batches.length > 0 && (
                   <>
                     {/* Live Chip Count row */}
