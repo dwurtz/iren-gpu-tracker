@@ -772,7 +772,7 @@ function App() {
       <div className="flex-1 bg-white overflow-hidden relative">
         <div className="h-full w-full overflow-auto">
           <table className="w-full border-collapse" style={{ minHeight: '100%', display: 'table' }}>
-              <thead className="sticky top-0 z-40" style={{ display: 'table-header-group', boxShadow: '0 2px 0 0 white' }}>
+              <thead className="sticky top-0 z-40" style={{ display: 'table-header-group' }}>
                 {/* Year headers */}
                 <tr className="bg-gray-50">
                   <th className="px-4 py-2 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide sticky left-0 bg-gray-50 z-50 border-r border-b border-gray-200" style={{ minWidth: '240px', width: '240px' }}></th>
@@ -855,19 +855,19 @@ function App() {
               
               
               {/* Sticky bottom total rows */}
-              <tfoot className="sticky bottom-0 z-40" style={{ display: 'table-footer-group', boxShadow: '0 -2px 0 0 white' }}>
+              <tfoot className="sticky bottom-0 z-40" style={{ display: 'table-footer-group' }}>
                 {batches.length > 0 && (
                   <>
                     {/* Live Chip Count row */}
                     <tr className="bg-white font-medium">
-                      <td className="px-4 py-3 text-gray-700 text-xs font-semibold uppercase tracking-wide sticky left-0 bg-white z-50 border-r border-t-4 border-t-white border-b border-gray-200">LIVE CHIP COUNT</td>
+                      <td className="px-4 py-3 text-gray-700 text-xs font-semibold uppercase tracking-wide sticky left-0 bg-white z-50 border-r border-t-8 border-t-white border-b border-gray-200">LIVE CHIP COUNT</td>
                       {liveChipData.map((data, index) => {
                         const isYearBoundary = index === 4 || index === 16 || index === 28 || index === 40 || index === 52 || index === 64;
                         const isFirstMonth = index === 0;
                         const previousValue = index > 0 ? liveChipData[index - 1]?.value || 0 : 0;
                         const change = data.value - previousValue;
                         return (
-                          <td key={index} className={`px-2 py-3 text-center text-sm bg-white border-t-4 border-t-white border-b border-gray-200 ${isFirstMonth ? 'border-l border-gray-200' : ''} ${isYearBoundary ? 'border-r-2 border-gray-200' : 'border-r border-gray-200'}`} style={{ minWidth: '80px' }}>
+                          <td key={index} className={`px-2 py-3 text-center text-sm bg-white border-t-8 border-t-white border-b border-gray-200 ${isFirstMonth ? 'border-l border-gray-200' : ''} ${isYearBoundary ? 'border-r-2 border-gray-200' : 'border-r border-gray-200'}`} style={{ minWidth: '80px' }}>
                             {data.value !== 0 && (
                               <div className="text-gray-700">
                                 {change !== 0 && (
@@ -881,7 +881,7 @@ function App() {
                           </td>
                         );
                       })}
-                      <td className="px-4 py-3 text-center font-bold sticky right-0 bg-white z-50 border-l border-t-4 border-t-white border-b border-gray-200">
+                      <td className="px-4 py-3 text-center font-bold sticky right-0 bg-white z-50 border-l border-t-8 border-t-white border-b border-gray-200">
                         <div className="text-gray-700">
                           {formatChipCount(liveChipData[liveChipData.length - 1]?.value || 0)}
                         </div>
