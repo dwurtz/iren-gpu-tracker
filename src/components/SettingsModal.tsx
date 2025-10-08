@@ -63,11 +63,13 @@ interface SettingsModalProps {
   isOpen: boolean;
   onClose: () => void;
   settings: ProfitabilitySettings;
-  onSave: (settings: ProfitabilitySettings) => void;
+  defaultSettings: ProfitabilitySettings;
+  mode: 'default' | 'custom';
+  onSave: (settings: ProfitabilitySettings, mode: 'default' | 'custom') => void;
   highlightField?: string;
 }
 
-export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, settings, onSave, highlightField }) => {
+export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, settings, defaultSettings, mode, onSave, highlightField }) => {
   
   // Handle escape key
   useEffect(() => {
@@ -80,7 +82,17 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, s
     window.addEventListener('keydown', handleEscape);
     return () => window.removeEventListener('keydown', handleEscape);
   }, [isOpen, onClose]);
+  
+  const [currentMode, setCurrentMode] = useState<'default' | 'custom'>(mode);
   const [formData, setFormData] = useState<ProfitabilitySettings>(settings);
+  
+  // Reset form data when modal opens or mode changes
+  useEffect(() => {
+    if (isOpen) {
+      setCurrentMode(mode);
+      setFormData(mode === 'default' ? defaultSettings : settings);
+    }
+  }, [isOpen, mode, settings, defaultSettings]);
 
   // Function to get highlight classes for pulsing effect
   const getHighlightClass = (fieldName: string) => {
@@ -92,11 +104,16 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, s
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSave(formData);
+    onSave(formData, currentMode);
     onClose();
   };
 
   const updateNestedField = (path: string[], value: number) => {
+    // Automatically switch to custom mode when user makes edits
+    if (currentMode === 'default') {
+      setCurrentMode('custom');
+    }
+    
     setFormData(prev => {
       const newData = { ...prev };
       let current: any = newData;
@@ -107,6 +124,20 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, s
       return newData;
     });
   };
+  
+  const handleResetToDefault = () => {
+    setCurrentMode('default');
+    setFormData(defaultSettings);
+  };
+  
+  const handleModeToggle = (newMode: 'default' | 'custom') => {
+    setCurrentMode(newMode);
+    if (newMode === 'default') {
+      setFormData(defaultSettings);
+    } else {
+      setFormData(settings);
+    }
+  };
 
   useModalBackdrop(isOpen);
 
@@ -115,14 +146,54 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, s
   return (
     <div className="fixed inset-0 flex items-start justify-center pt-16 z-[10003]">
       <div className="bg-white rounded-lg w-full max-w-2xl h-[85vh] flex flex-col">
-        <div className="flex justify-between items-center p-6 border-b border-gray-200">
-          <h2 className="text-xl font-semibold flex items-center">
-            <Settings className="mr-2" size={20} />
-            Settings
-          </h2>
-          <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
-            <X size={20} />
-          </button>
+        <div className="p-6 border-b border-gray-200">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-xl font-semibold flex items-center">
+              <Settings className="mr-2" size={20} />
+              Settings
+            </h2>
+            <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
+              <X size={20} />
+            </button>
+          </div>
+          
+          {/* Mode Toggle */}
+          <div className="flex items-center gap-4">
+            <div className="flex bg-gray-100 rounded-md p-1">
+              <button
+                type="button"
+                onClick={() => handleModeToggle('default')}
+                className={`px-4 py-2 rounded text-sm font-medium transition-colors ${
+                  currentMode === 'default'
+                    ? 'bg-white text-gray-900 shadow-sm'
+                    : 'text-gray-600 hover:text-gray-900'
+                }`}
+              >
+                Default
+              </button>
+              <button
+                type="button"
+                onClick={() => handleModeToggle('custom')}
+                className={`px-4 py-2 rounded text-sm font-medium transition-colors ${
+                  currentMode === 'custom'
+                    ? 'bg-white text-gray-900 shadow-sm'
+                    : 'text-gray-600 hover:text-gray-900'
+                }`}
+              >
+                Custom
+              </button>
+            </div>
+            
+            {currentMode === 'custom' && (
+              <button
+                type="button"
+                onClick={handleResetToDefault}
+                className="text-sm text-emerald-600 hover:text-emerald-700 underline"
+              >
+                Reset to default
+              </button>
+            )}
+          </div>
         </div>
         <div className="flex-1 overflow-y-auto p-6">
 
@@ -451,7 +522,10 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, s
                     type="number"
                     step="0.001"
                     value={formData.electricityCost}
-                    onChange={(e) => setFormData({...formData, electricityCost: parseFloat(e.target.value)})}
+                    onChange={(e) => {
+                      if (currentMode === 'default') setCurrentMode('custom');
+                      setFormData({...formData, electricityCost: parseFloat(e.target.value)});
+                    }}
                     className={`w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${getHighlightClass('electricityCost')}`}
                   />
                 </div>
@@ -465,7 +539,10 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, s
                   <input
                     type="number"
                     value={formData.datacenterOverhead}
-                    onChange={(e) => setFormData({...formData, datacenterOverhead: parseInt(e.target.value)})}
+                    onChange={(e) => {
+                      if (currentMode === 'default') setCurrentMode('custom');
+                      setFormData({...formData, datacenterOverhead: parseInt(e.target.value)});
+                    }}
                     className={`w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${getHighlightClass('datacenterOverhead')}`}
                   />
                 </div>
@@ -477,7 +554,10 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, s
                     type="number"
                     step="0.1"
                     value={formData.electricalOverhead}
-                    onChange={(e) => setFormData({...formData, electricalOverhead: parseFloat(e.target.value)})}
+                    onChange={(e) => {
+                      if (currentMode === 'default') setCurrentMode('custom');
+                      setFormData({...formData, electricalOverhead: parseFloat(e.target.value)});
+                    }}
                     className={`w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${getHighlightClass('electricalOverhead')}`}
                   />
                 </div>
@@ -492,7 +572,10 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, s
                   min="0"
                   max="100"
                   value={formData.utilizationRate}
-                  onChange={(e) => setFormData({...formData, utilizationRate: parseInt(e.target.value)})}
+                  onChange={(e) => {
+                    if (currentMode === 'default') setCurrentMode('custom');
+                    setFormData({...formData, utilizationRate: parseInt(e.target.value)});
+                  }}
                   className={`w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${getHighlightClass('utilizationRate')}`}
                 />
               </div>

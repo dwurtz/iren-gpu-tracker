@@ -101,9 +101,11 @@ const createDefaultSites = (): Site[] => {
   ];
 };
 
-// Storage utilities for batches and sites
+// Storage utilities for batches, sites, and settings
 const BATCHES_STORAGE_KEY = 'iren-energization-batches';
 const SITES_STORAGE_KEY = 'iren-sites';
+const SETTINGS_STORAGE_KEY = 'iren-custom-settings';
+const SETTINGS_MODE_STORAGE_KEY = 'iren-settings-mode';
 
 const saveBatchesToStorage = (batches: Batch[]) => {
   try {
@@ -138,6 +140,42 @@ const loadSitesFromStorage = (): Site[] | null => {
   } catch (error) {
     console.error('Failed to load sites from storage:', error);
     return null;
+  }
+};
+
+const saveCustomSettingsToStorage = (settings: ProfitabilitySettings) => {
+  try {
+    localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(settings));
+  } catch (error) {
+    console.error('Failed to save custom settings to storage:', error);
+  }
+};
+
+const loadCustomSettingsFromStorage = (): ProfitabilitySettings | null => {
+  try {
+    const stored = localStorage.getItem(SETTINGS_STORAGE_KEY);
+    return stored ? JSON.parse(stored) : null;
+  } catch (error) {
+    console.error('Failed to load custom settings from storage:', error);
+    return null;
+  }
+};
+
+const saveSettingsModeToStorage = (mode: 'default' | 'custom') => {
+  try {
+    localStorage.setItem(SETTINGS_MODE_STORAGE_KEY, mode);
+  } catch (error) {
+    console.error('Failed to save settings mode to storage:', error);
+  }
+};
+
+const loadSettingsModeFromStorage = (): 'default' | 'custom' => {
+  try {
+    const stored = localStorage.getItem(SETTINGS_MODE_STORAGE_KEY);
+    return (stored === 'custom' ? 'custom' : 'default') as 'default' | 'custom';
+  } catch (error) {
+    console.error('Failed to load settings mode from storage:', error);
+    return 'default';
   }
 };
 
@@ -373,7 +411,15 @@ const initializeBatches = (settings: ProfitabilitySettings, sites: Site[]): Batc
 };
 
 function App() {
-  const [settings, setSettings] = useState<ProfitabilitySettings>(defaultSettings);
+  const [settingsMode, setSettingsMode] = useState<'default' | 'custom'>(() => loadSettingsModeFromStorage());
+  const [settings, setSettings] = useState<ProfitabilitySettings>(() => {
+    const mode = loadSettingsModeFromStorage();
+    if (mode === 'custom') {
+      const customSettings = loadCustomSettingsFromStorage();
+      return customSettings || defaultSettings;
+    }
+    return defaultSettings;
+  });
   const [batches, setBatches] = useState<Batch[]>([]);
   const [sites, setSites] = useState<Site[]>([]);
   
@@ -577,10 +623,15 @@ function App() {
     if (window.confirm('Are you sure you want to reset all batches and settings to default values? This will delete all current batches and reset all profitability settings.')) {
       // Reset settings to defaults
       setSettings(defaultSettings);
+      setSettingsMode('default');
+      saveSettingsModeToStorage('default');
       
-      // Reset batches to defaults
-      const defaultBatches = createDefaultBatches(defaultSettings, sites);
+      // Reset batches and sites to defaults
+      const defaultSites = createDefaultSites();
+      const defaultBatches = createDefaultBatches(defaultSettings, defaultSites);
+      setSites(defaultSites);
       setBatches(defaultBatches);
+      saveSitesToStorage(defaultSites);
       saveBatchesToStorage(defaultBatches);
       localStorage.setItem('batchConfigVersion', String(BATCH_CONFIG_VERSION));
     }
@@ -603,8 +654,17 @@ function App() {
     setEditingSite(null);
   };
 
-  const handleSaveSettings = (newSettings: ProfitabilitySettings) => {
+  const handleSaveSettings = (newSettings: ProfitabilitySettings, mode: 'default' | 'custom') => {
     setSettings(newSettings);
+    setSettingsMode(mode);
+    
+    // Save to localStorage if in custom mode
+    if (mode === 'custom') {
+      saveCustomSettingsToStorage(newSettings);
+      saveSettingsModeToStorage('custom');
+    } else {
+      saveSettingsModeToStorage('default');
+    }
     // Note: Batches are now persistent data, settings changes don't regenerate them
     // Users can modify individual batches as needed
   };
@@ -985,6 +1045,8 @@ function App() {
           setHighlightField(undefined);
         }}
         settings={settings}
+        defaultSettings={defaultSettings}
+        mode={settingsMode}
         onSave={handleSaveSettings}
         highlightField={highlightField}
       />
